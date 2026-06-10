@@ -1,634 +1,2177 @@
 {
   "comment": "AI generation manifest for Thornmere. One entry per AI-candidate sprite. This is the production record and regeneration source of truth.",
   "style_suffixes": {
-    "monster":   "pixel art, upper body monster portrait, close-up, facing viewer, fantasy dungeon crawler monster, 16-bit Amiga style, limited palette, solid black background, game asset",
-    "showpiece":  "pixel art, boss monster portrait, dramatic full composition, facing viewer, fantasy dungeon boss, 16-bit Amiga style, 1985 computer RPG, limited palette, solid black background, game asset",
+    "monster": "pixel art, upper body monster portrait, close-up, facing viewer, fantasy dungeon crawler monster, 16-bit Amiga style, limited palette, solid black background, game asset",
+    "showpiece": "pixel art, boss monster portrait, dramatic full composition, facing viewer, fantasy dungeon boss, 16-bit Amiga style, 1985 computer RPG, limited palette, solid black background, game asset",
     "character": "pixel art, fantasy RPG character portrait, head and shoulders, close-up, facing viewer, dungeon adventurer, 16-bit Amiga style, limited palette, solid black background, game asset",
-    "scene":     "pixel art, wide panoramic fantasy landscape illustration, atmospheric, 16-bit Amiga style, muted limited palette, dark background, game screen art"
+    "scene": "pixel art, wide panoramic fantasy landscape illustration, atmospheric, 16-bit Amiga style, muted limited palette, dark background, game screen art"
   },
   "gen_dims": {
-    "monster":   [480, 400],
-    "showpiece":  [480, 400],
-    "character": [256, 320],
-    "scene":     [640, 256],
-    "scene_wide": [640, 480]
+    "monster": [
+      480,
+      400
+    ],
+    "showpiece": [
+      480,
+      400
+    ],
+    "character": [
+      256,
+      320
+    ],
+    "scene": [
+      640,
+      256
+    ],
+    "scene_wide": [
+      640,
+      480
+    ]
   },
   "preview_scale": 4,
-  "seeds_default":   [3, 7, 11, 17, 23, 42],
-  "seeds_showpiece": [1, 3, 5, 7, 11, 13, 17, 23, 31, 42],
+  "seeds_default": [
+    3,
+    7,
+    11,
+    17,
+    23,
+    42
+  ],
+  "seeds_showpiece": [
+    1,
+    3,
+    5,
+    7,
+    11,
+    13,
+    17,
+    23,
+    31,
+    42
+  ],
   "entries": [
-
     {
-      "id":               "mon_sorcerer",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters2.json",
-      "subject":          "hooded cult mage in dark robes, pointed cowl, knotted wooden staff, blood-red glowing eyes, pale bony hands",
+      "id": "mon_sorcerer",
+      "art_class": "monster",
+      "art_file": "data/art/monsters2.json",
+      "subject": "hooded cult mage in dark robes, pointed cowl, knotted wooden staff, blood-red glowing eyes, pale bony hands",
       "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 19, 20, 24, 25, 26],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 30, "y": 26, "w": 36, "h": 12}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Dark blue-brown robe; blood-red glowing eyes. Drop gold indices to avoid hue bleed into staff."
-    },
-
-    {
-      "id":               "mon_ghost",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters2.json",
-      "subject":          "translucent spectral shroud-wight, pale chalk face, hollow black eye sockets, howling open mouth, mist-blue ethereal trailing form",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 7, 19, 20, 21, 22, 23],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 32, "y": 24, "w": 32, "h": 10}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Pure grey-blue palette: no warm, no green, no gold. Spectral glow from mist-blue ramp."
-    },
-
-    {
-      "id":               "mon_bird",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters2.json",
-      "subject":          "gaunt predatory storm-bird, outstretched dark feathered wings, sharp hooked beak, fierce yellow eyes, sharp talons",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 19, 20, 21, 25, 26, 27],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 34, "y": 22, "w": 28, "h": 10}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Dark feathers (grey chain), storm-blue atmosphere, ember-to-flame beak and eye highlight."
-    },
-
-    {
-      "id":               "mon_hag",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters2.json",
-      "subject":          "ancient fen hag with green-tinged warty skin, wild honey-coloured matted hair, hooked nose, clawed grasping hands, rotten teeth",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 24, 25],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 28, "y": 24, "w": 40, "h": 12}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Green skin ramp + brown hair (honey). Exclude blue indices to keep her earthy. Blood eyes."
-    },
-
-    {
-      "id":               "mon_knight",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters2.json",
-      "subject":          "undead plate-armour knight, closed visor with violet glowing slit, kite shield, notched broadsword, tattered tabard",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 7, 19, 20, 21, 22, 28, 29, 31],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 32, "y": 26, "w": 32, "h": 8}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Full grey metal armour. Violet visor slit. Gold-dark decoration. No warm flesh tones."
-    },
-
-    {
-      "id":               "mon_choir",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters2.json",
-      "subject":          "three hooded singers bound side by side, centre figure taller, all three mouths open in gaping black O shapes, hollow dark eyes",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 19, 20, 24, 25],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 24, "y": 22, "w": 48, "h": 12}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Three faces wide. Dark hooded robes. Pale parchment/bone faces. Blood-dark open mouths."
-    },
-
-    {
-      "id":               "mon_gargoyle",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters2.json",
-      "subject":          "stone gargoyle with two cracked horns, deep orange ember glowing eyes, wide fanged grin, crouched stone wings spread behind",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 24, 25, 26, 27, 29],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 30, "y": 24, "w": 36, "h": 10}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Stone grey + warm peat-umber. Ember-to-flame eye glow. Drop index 27 if flame bleeds."
-    },
-
-    {
-      "id":               "mon_golem",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters2.json",
-      "subject":          "blocky rune-carved stone golem, rectangular angular head, wide shoulders, sky-blue glowing chest rune symbol, inlaid glowing eye slits",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 19, 20, 21, 22],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 32, "y": 26, "w": 32, "h": 8}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Stone body in grey-to-chalk ramp, warm stone accents. Sky-blue rune glow."
-    },
-
-    {
-      "id":               "mon_moth",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters2.json",
-      "subject":          "giant basilisk moth with enormous spread wings, wings covered in concentric ring eye-spots, feathery antennae, segmented thorax body",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 19, 20, 25, 26, 27, 31],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 20, "y": 16, "w": 56, "h": 20}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Warm brown wings. Eye-spot rings: blood-to-flame + violet. Blue-black eye centers."
-    },
-
-    {
-      "id":               "mon_rat",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters.json",
-      "subject":          "large fen rat, upright pose, round grey body, round cupped ears with inner ear, prominent buck teeth, long hairless tail, small red beady eyes",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 24, 25, 26],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 32, "y": 24, "w": 32, "h": 10}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Existing procedural art scores PASS. Generate to compare."
-    },
-
-    {
-      "id":               "mon_beetle",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters.json",
-      "subject":          "large dungeon beetle, shiny silver dome carapace with concentric ridge rings, faceted red compound eyes, sharp mandibles, six articulated legs",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 7, 19, 20, 21, 24, 25, 26],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 28, "y": 28, "w": 40, "h": 10}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Grey dome + red compound eyes. Blue for iridescent wing flash on frame b."
-    },
-
-    {
-      "id":               "mon_hound",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters.json",
-      "subject":          "upright wolf hound, large stocky grey body, pointed ears, single large red glowing eye, bared white fangs, four thick pillar legs",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 7, 24, 25, 26, 27],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 34, "y": 22, "w": 28, "h": 10}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Pure grey body ramp; single red-to-flame eye for contrast. Procedural PASS — compare carefully."
-    },
-
-    {
-      "id":               "mon_spider",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters.json",
-      "subject":          "large dungeon spider, brown two-segment body cephalothorax and abdomen, eight hairy legs spread wide, four-pair red eye cluster, chelicera fangs",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 24, 25, 26],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 28, "y": 22, "w": 40, "h": 14}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Brown body; 4-pair red eye cluster is key feature. Keep purely brown-red."
-    },
-
-    {
-      "id":               "mon_snake",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters.json",
-      "subject":          "large dungeon adder snake in S-coil pose, green scaled body, triangular head, gold slit vertical pupils, forked tongue",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 11, 12, 13, 14, 15, 16, 17, 28, 29, 30],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 36, "y": 18, "w": 24, "h": 10}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Green scale ramp. Honey-parchment belly stripe. Gold slit eyes."
-    },
-
-    {
-      "id":               "mon_zombie",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters.json",
-      "subject":          "rotting undead zombie, greenish decaying flesh, outstretched clutching arms, red wound patches, one milky dead eye and one empty hollow socket, slack open mouth",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 8, 9, 14, 15, 16, 17, 24, 25, 26],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 28, "y": 20, "w": 40, "h": 12}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Green decay. Red wounds. Peat-umber dark shadows under eyes."
-    },
-
-    {
-      "id":               "mon_skeleton",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters.json",
-      "subject":          "animated skeleton warrior, yellowed bone skull with dark hollow eye sockets, visible ribcage, exposed spine and hip joints, holding a gold sword",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 6, 7, 12, 13, 28, 29, 30],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 32, "y": 16, "w": 32, "h": 10}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Bone whites (bone/chalk/honey). Dark hollow sockets. Gold sword accent."
-    },
-
-    {
-      "id":               "mon_blob",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters.json",
-      "subject":          "amorphous tallow blob monster, tan-amber pyramid mound shape, two gold coin eyes with black pupils, dashed toothy grin, side pseudopod arms, shiny gelatinous surface",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 8, 9, 10, 11, 12, 13, 28, 29, 30],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 30, "y": 26, "w": 36, "h": 12}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Warm amber-brown body; gold eyes. Drop green/blue entirely."
-    },
-
-    {
-      "id":               "mon_wisp",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters.json",
-      "subject":          "glowing will-o-wisp orb monster, vivid concentric ring orb from dark honey to bright candle at center, six orbiting spark particles, trailing wisp legs below",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 7, 12, 26, 27, 29, 30],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 24, "y": 18, "w": 48, "h": 28}},
-      "frame_ms":         {"a": 400, "b": 320},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Very tight palette: dark ring to candle center. Ember-flame-gold-candle ramp."
-    },
-
-    {
-      "id":               "mon_brute",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters.json",
-      "subject":          "hulking swamp troll brute, mossy green skin, tusked underbite, hunched shoulders, glowing red eyes, massive fists",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 6, 7, 13, 14, 15, 16, 17, 18, 24, 25, 26, 27],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      42,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 30, "y": 24, "w": 36, "h": 12}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "candidates",
-      "verdict":          null,
-      "notes":            "Benchmark: brute_s42_sub16.png is gold standard. Index 27 removed keeps tusk streaking clean. Existing raws in candidates/."
-    },
-
-    {
-      "id":               "mon_humanoid",
-      "art_class":        "monster",
-      "art_file":         "data/art/monsters.json",
-      "subject":          "cloaked dungeon thief humanoid, dark triangular hooded robe, glinting gold eye beneath hood, holding a gold-hilted dagger",
-      "style_suffix_key": "monster",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 8, 9, 11, 12, 13, 28, 29, 30],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 32, "y": 24, "w": 32, "h": 8}},
-      "frame_ms":         {"a": 400, "b": 400},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Dark robe. Gold eye glint + gold dagger. No blue or green."
-    },
-
-    {
-      "id":               "mon_candleking",
-      "art_class":        "showpiece",
-      "art_file":         "data/art/monsters3.json",
-      "subject":          "massive wax golem king, pale waxy body seated on candle throne, eight tall candle pillars flanking left and right, crown of blue flames on head, large sunken red ember eye-sockets, gaping mouth with wax teeth",
-      "style_suffix_key": "showpiece",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 19, 20, 21, 24, 25, 26, 27, 29, 30],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [1, 3, 5, 7, 11, 13, 17, 23, 31, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"], "c": ["eye_pulse", "eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 28, "y": 22, "w": 40, "h": 14}},
-      "frame_ms":         {"a": 500, "b": 400, "c": 300},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Bar: would ship in 1985 as box art. Blue-flame crown critical. Red ember eyes must read at 2x."
-    },
-
-    {
-      "id":               "mon_choir_eldest",
-      "art_class":        "showpiece",
-      "art_file":         "data/art/monsters3.json",
-      "subject":          "vast robed figure in black triangular robe filling frame, single giant concentric-ring eye dominating the hood with void center and blue iris and bright core and black pupil, dozens of tiny trapped faces across robe like imprisoned souls, green pendant gem, one skeletal clawed hand emerging",
-      "style_suffix_key": "showpiece",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [1, 3, 5, 7, 11, 13, 17, 23, 31, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"], "c": ["eye_pulse", "eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 30, "y": 14, "w": 36, "h": 24}},
-      "frame_ms":         {"a": 500, "b": 400, "c": 300},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Concentric eye is the defining feature. Trapped faces are secondary detail."
-    },
-
-    {
-      "id":               "mon_mock_king",
-      "art_class":        "showpiece",
-      "art_file":         "data/art/monsters3.json",
-      "subject":          "squat blue glazed ceramic tile golem, body covered in blue tile pattern with gold grout lines, three gold crown prongs on head, wide rectangular glowing sky-blue eyes, round gold belly medallion, stubby branch arms",
-      "style_suffix_key": "showpiece",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 19, 20, 21, 22, 23, 28, 29, 30],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [1, 3, 5, 7, 11, 13, 17, 23, 31, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"], "c": ["eye_pulse", "eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 28, "y": 24, "w": 40, "h": 10}},
-      "frame_ms":         {"a": 500, "b": 400, "c": 300},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Blue-gold tile body is the key read. Must look tiled/ceramic, not smooth."
-    },
-
-    {
-      "id":               "mon_maldrec",
-      "art_class":        "showpiece",
-      "art_file":         "data/art/monsters3.json",
-      "subject":          "sinister sorcerer in black triangular robe, angular boxy face with violet glowing eyes and wide upturned grin, tall staff topped with bright blue orb, one arm raised in casting pose",
-      "style_suffix_key": "showpiece",
-      "dims":             [96, 80],
-      "allowed":          [0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 19, 20, 21, 22, 28, 29, 31],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [1, 3, 5, 7, 11, 13, 17, 23, 31, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["eye_pulse"], "c": ["eye_pulse", "eye_pulse"]},
-      "frame_regions":    {"eye": {"x": 28, "y": 24, "w": 40, "h": 10}},
-      "frame_ms":         {"a": 500, "b": 400, "c": 300},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Violet eyes and blue orb are key. Staff must be prominent. Grin should read clearly."
-    },
-
-    {
-      "id":               "pc_warrior",
-      "art_class":        "character",
-      "art_file":         "data/art/people.json",
-      "subject":          "fantasy warrior adventurer, head and shoulders portrait, plate mail shoulder armour, strong determined face, short hair, intense focused eyes",
-      "style_suffix_key": "character",
-      "dims":             [32, 40],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 19, 20],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["breathe", "eye_pulse"]},
-      "frame_regions":    {
-        "eye":   {"x": 8, "y": 8,  "w": 16, "h": 6},
-        "torso": {"x": 4, "y": 24, "w": 24, "h": 14}
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        19,
+        20,
+        24,
+        25,
+        26
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
       },
-      "frame_ms":         {"a": 600, "b": 600},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Face must survive crush at 1x. Plate mail grey; face warm tones. No magic colour."
-    },
-
-    {
-      "id":               "pc_rogue",
-      "art_class":        "character",
-      "art_file":         "data/art/people.json",
-      "subject":          "fantasy rogue adventurer, head and shoulders portrait, hooded dark leather armour, sharp watchful angular eyes, calculating expression, shadowed face under hood",
-      "style_suffix_key": "character",
-      "dims":             [32, 40],
-      "allowed":          [0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 24, 25],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["breathe", "eye_pulse"]},
-      "frame_regions":    {
-        "eye":   {"x": 8, "y": 10, "w": 16, "h": 5},
-        "torso": {"x": 4, "y": 24, "w": 24, "h": 14}
+      "frame_regions": {
+        "eye": {
+          "x": 30,
+          "y": 26,
+          "w": 36,
+          "h": 12
+        }
       },
-      "frame_ms":         {"a": 600, "b": 600},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Reject any candidate whose face doesn't survive crush at 1x."
-    },
-
-    {
-      "id":               "pc_caster",
-      "art_class":        "character",
-      "art_file":         "data/art/people.json",
-      "subject":          "fantasy magic user, head and shoulders portrait, wide-sleeved robe, alert luminous magical eyes, flowing hair, arcane focus amulet",
-      "style_suffix_key": "character",
-      "dims":             [32, 40],
-      "allowed":          [0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 19, 20, 21, 22],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["breathe", "eye_pulse"]},
-      "frame_regions":    {
-        "eye":   {"x": 8, "y": 9,  "w": 16, "h": 5},
-        "torso": {"x": 4, "y": 24, "w": 24, "h": 14}
+      "frame_ms": {
+        "a": 400,
+        "b": 400
       },
-      "frame_ms":         {"a": 600, "b": 600},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Blue arcane eyes are the distinguishing mark. Warm skin tones."
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Dark blue-brown robe; blood-red glowing eyes. Drop gold indices to avoid hue bleed into staff."
     },
-
     {
-      "id":               "pc_skald",
-      "art_class":        "character",
-      "art_file":         "data/art/people.json",
-      "subject":          "fantasy bard-warrior skald, head and shoulders portrait, layered travelling garb, expressive open face, holding or wearing a small drum or lyre, performer's confident look",
-      "style_suffix_key": "character",
-      "dims":             [32, 40],
-      "allowed":          [0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 20],
-      "bg_indices":       [0, 1],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {"b": ["breathe", "eye_pulse"]},
-      "frame_regions":    {
-        "eye":   {"x": 8, "y": 9,  "w": 16, "h": 5},
-        "torso": {"x": 4, "y": 24, "w": 24, "h": 14}
+      "id": "mon_ghost",
+      "art_class": "monster",
+      "art_file": "data/art/monsters2.json",
+      "subject": "translucent spectral shroud-wight, pale chalk face, hollow black eye sockets, howling open mouth, mist-blue ethereal trailing form",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
       },
-      "frame_ms":         {"a": 600, "b": 600},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Green accent in garb to distinguish from warrior. Warm expressive face."
+      "frame_regions": {
+        "eye": {
+          "x": 32,
+          "y": 24,
+          "w": 32,
+          "h": 10
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Pure grey-blue palette: no warm, no green, no gold. Spectral glow from mist-blue ramp."
     },
-
     {
-      "id":               "scene_title",
-      "art_class":        "scene",
-      "art_file":         "data/art/scenes.json",
-      "subject":          "Thornmere medieval town at dusk on a misty fen, stone bell tower silhouette on the right, low thatched rooftops, fen mist rolling in from the left, dark moody sky",
+      "id": "mon_bird",
+      "art_class": "monster",
+      "art_file": "data/art/monsters2.json",
+      "subject": "gaunt predatory storm-bird, outstretched dark feathered wings, sharp hooked beak, fierce yellow eyes, sharp talons",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        19,
+        20,
+        21,
+        25,
+        26,
+        27
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 34,
+          "y": 22,
+          "w": 28,
+          "h": 10
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Dark feathers (grey chain), storm-blue atmosphere, ember-to-flame beak and eye highlight."
+    },
+    {
+      "id": "mon_hag",
+      "art_class": "monster",
+      "art_file": "data/art/monsters2.json",
+      "subject": "ancient fen hag with green-tinged warty skin, wild honey-coloured matted hair, hooked nose, clawed grasping hands, rotten teeth",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        24,
+        25
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 28,
+          "y": 24,
+          "w": 40,
+          "h": 12
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Green skin ramp + brown hair (honey). Exclude blue indices to keep her earthy. Blood eyes."
+    },
+    {
+      "id": "mon_knight",
+      "art_class": "monster",
+      "art_file": "data/art/monsters2.json",
+      "subject": "undead plate-armour knight, closed visor with violet glowing slit, kite shield, notched broadsword, tattered tabard",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        19,
+        20,
+        21,
+        22,
+        28,
+        29,
+        31
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 32,
+          "y": 26,
+          "w": 32,
+          "h": 8
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Full grey metal armour. Violet visor slit. Gold-dark decoration. No warm flesh tones."
+    },
+    {
+      "id": "mon_choir",
+      "art_class": "monster",
+      "art_file": "data/art/monsters2.json",
+      "subject": "three hooded singers bound side by side, centre figure taller, all three mouths open in gaping black O shapes, hollow dark eyes",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13,
+        19,
+        20,
+        24,
+        25
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 24,
+          "y": 22,
+          "w": 48,
+          "h": 12
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Three faces wide. Dark hooded robes. Pale parchment/bone faces. Blood-dark open mouths."
+    },
+    {
+      "id": "mon_gargoyle",
+      "art_class": "monster",
+      "art_file": "data/art/monsters2.json",
+      "subject": "stone gargoyle with two cracked horns, deep orange ember glowing eyes, wide fanged grin, crouched stone wings spread behind",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        24,
+        25,
+        26,
+        27,
+        29
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 30,
+          "y": 24,
+          "w": 36,
+          "h": 10
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Stone grey + warm peat-umber. Ember-to-flame eye glow. Drop index 27 if flame bleeds."
+    },
+    {
+      "id": "mon_golem",
+      "art_class": "monster",
+      "art_file": "data/art/monsters2.json",
+      "subject": "blocky rune-carved stone golem, rectangular angular head, wide shoulders, sky-blue glowing chest rune symbol, inlaid glowing eye slits",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        19,
+        20,
+        21,
+        22
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 32,
+          "y": 26,
+          "w": 32,
+          "h": 8
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Stone body in grey-to-chalk ramp, warm stone accents. Sky-blue rune glow."
+    },
+    {
+      "id": "mon_moth",
+      "art_class": "monster",
+      "art_file": "data/art/monsters2.json",
+      "subject": "giant basilisk moth with enormous spread wings, wings covered in concentric ring eye-spots, feathery antennae, segmented thorax body",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        19,
+        20,
+        25,
+        26,
+        27,
+        31
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 7,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 20,
+          "y": 16,
+          "w": 56,
+          "h": 20
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Warm brown wings. Eye-spot rings: blood-to-flame + violet. Blue-black eye centers."
+    },
+    {
+      "id": "mon_rat",
+      "art_class": "monster",
+      "art_file": "data/art/monsters.json",
+      "subject": "large fen rat, upright pose, round grey body, round cupped ears with inner ear, prominent buck teeth, long hairless tail, small red beady eyes",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        11,
+        24,
+        25,
+        26
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 32,
+          "y": 24,
+          "w": 32,
+          "h": 10
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Existing procedural art scores PASS. Generate to compare."
+    },
+    {
+      "id": "mon_beetle",
+      "art_class": "monster",
+      "art_file": "data/art/monsters.json",
+      "subject": "large dungeon beetle, shiny silver dome carapace with concentric ridge rings, faceted red compound eyes, sharp mandibles, six articulated legs",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        19,
+        20,
+        21,
+        24,
+        25,
+        26
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 28,
+          "y": 28,
+          "w": 40,
+          "h": 10
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Grey dome + red compound eyes. Blue for iridescent wing flash on frame b."
+    },
+    {
+      "id": "mon_hound",
+      "art_class": "monster",
+      "art_file": "data/art/monsters.json",
+      "subject": "upright wolf hound, large stocky grey body, pointed ears, single large red glowing eye, bared white fangs, four thick pillar legs",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        24,
+        25,
+        26,
+        27
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 34,
+          "y": 22,
+          "w": 28,
+          "h": 10
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Pure grey body ramp; single red-to-flame eye for contrast. Procedural PASS \u2014 compare carefully."
+    },
+    {
+      "id": "mon_spider",
+      "art_class": "monster",
+      "art_file": "data/art/monsters.json",
+      "subject": "large dungeon spider, brown two-segment body cephalothorax and abdomen, eight hairy legs spread wide, four-pair red eye cluster, chelicera fangs",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        24,
+        25,
+        26
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 28,
+          "y": 22,
+          "w": 40,
+          "h": 14
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Brown body; 4-pair red eye cluster is key feature. Keep purely brown-red."
+    },
+    {
+      "id": "mon_snake",
+      "art_class": "monster",
+      "art_file": "data/art/monsters.json",
+      "subject": "large dungeon adder snake in S-coil pose, green scaled body, triangular head, gold slit vertical pupils, forked tongue",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        28,
+        29,
+        30
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 36,
+          "y": 18,
+          "w": 24,
+          "h": 10
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Green scale ramp. Honey-parchment belly stripe. Gold slit eyes."
+    },
+    {
+      "id": "mon_zombie",
+      "art_class": "monster",
+      "art_file": "data/art/monsters.json",
+      "subject": "rotting undead zombie, greenish decaying flesh, outstretched clutching arms, red wound patches, one milky dead eye and one empty hollow socket, slack open mouth",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        8,
+        9,
+        14,
+        15,
+        16,
+        17,
+        24,
+        25,
+        26
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 28,
+          "y": 20,
+          "w": 40,
+          "h": 12
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Green decay. Red wounds. Peat-umber dark shadows under eyes."
+    },
+    {
+      "id": "mon_skeleton",
+      "art_class": "monster",
+      "art_file": "data/art/monsters.json",
+      "subject": "animated skeleton warrior, yellowed bone skull with dark hollow eye sockets, visible ribcage, exposed spine and hip joints, holding a gold sword",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        6,
+        7,
+        12,
+        13,
+        28,
+        29,
+        30
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 32,
+          "y": 16,
+          "w": 32,
+          "h": 10
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Bone whites (bone/chalk/honey). Dark hollow sockets. Gold sword accent."
+    },
+    {
+      "id": "mon_blob",
+      "art_class": "monster",
+      "art_file": "data/art/monsters.json",
+      "subject": "amorphous tallow blob monster, tan-amber pyramid mound shape, two gold coin eyes with black pupils, dashed toothy grin, side pseudopod arms, shiny gelatinous surface",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        28,
+        29,
+        30
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 30,
+          "y": 26,
+          "w": 36,
+          "h": 12
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Warm amber-brown body; gold eyes. Drop green/blue entirely."
+    },
+    {
+      "id": "mon_wisp",
+      "art_class": "monster",
+      "art_file": "data/art/monsters.json",
+      "subject": "glowing will-o-wisp orb monster, vivid concentric ring orb from dark honey to bright candle at center, six orbiting spark particles, trailing wisp legs below",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        7,
+        12,
+        26,
+        27,
+        29,
+        30
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 24,
+          "y": 18,
+          "w": 48,
+          "h": 28
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 320
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Very tight palette: dark ring to candle center. Ember-flame-gold-candle ramp."
+    },
+    {
+      "id": "mon_brute",
+      "art_class": "monster",
+      "art_file": "data/art/monsters.json",
+      "subject": "hulking swamp troll brute, mossy green skin, tusked underbite, hunched shoulders, glowing red eyes, massive fists",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        6,
+        7,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        24,
+        25,
+        26,
+        27
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 30,
+          "y": 24,
+          "w": 36,
+          "h": 12
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Benchmark: brute_s42_sub16.png is gold standard. Index 27 removed keeps tusk streaking clean. Existing raws in candidates/."
+    },
+    {
+      "id": "mon_humanoid",
+      "art_class": "monster",
+      "art_file": "data/art/monsters.json",
+      "subject": "cloaked dungeon thief humanoid, dark triangular hooded robe, glinting gold eye beneath hood, holding a gold-hilted dagger",
+      "style_suffix_key": "monster",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        8,
+        9,
+        11,
+        12,
+        13,
+        28,
+        29,
+        30
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 32,
+          "y": 24,
+          "w": 32,
+          "h": 8
+        }
+      },
+      "frame_ms": {
+        "a": 400,
+        "b": 400
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Dark robe. Gold eye glint + gold dagger. No blue or green."
+    },
+    {
+      "id": "mon_candleking",
+      "art_class": "showpiece",
+      "art_file": "data/art/monsters3.json",
+      "subject": "massive wax golem king, pale waxy body seated on candle throne, eight tall candle pillars flanking left and right, crown of blue flames on head, large sunken red ember eye-sockets, gaping mouth with wax teeth",
+      "style_suffix_key": "showpiece",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        19,
+        20,
+        21,
+        24,
+        25,
+        26,
+        27,
+        29,
+        30
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        1,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        23,
+        31,
+        42
+      ],
+      "seeds_generated": [
+        1,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        23,
+        31,
+        42
+      ],
+      "chosen_seed": 31,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ],
+        "c": [
+          "eye_pulse",
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 28,
+          "y": 22,
+          "w": 40,
+          "h": 14
+        }
+      },
+      "frame_ms": {
+        "a": 500,
+        "b": 400,
+        "c": 300
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Bar: would ship in 1985 as box art. Blue-flame crown critical. Red ember eyes must read at 2x."
+    },
+    {
+      "id": "mon_choir_eldest",
+      "art_class": "showpiece",
+      "art_file": "data/art/monsters3.json",
+      "subject": "vast robed figure in black triangular robe filling frame, single giant concentric-ring eye dominating the hood with void center and blue iris and bright core and black pupil, dozens of tiny trapped faces across robe like imprisoned souls, green pendant gem, one skeletal clawed hand emerging",
+      "style_suffix_key": "showpiece",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        1,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        23,
+        31,
+        42
+      ],
+      "seeds_generated": [
+        1,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        23,
+        31,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ],
+        "c": [
+          "eye_pulse",
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 30,
+          "y": 14,
+          "w": 36,
+          "h": 24
+        }
+      },
+      "frame_ms": {
+        "a": 500,
+        "b": 400,
+        "c": 300
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Concentric eye is the defining feature. Trapped faces are secondary detail."
+    },
+    {
+      "id": "mon_mock_king",
+      "art_class": "showpiece",
+      "art_file": "data/art/monsters3.json",
+      "subject": "squat blue glazed ceramic tile golem, body covered in blue tile pattern with gold grout lines, three gold crown prongs on head, wide rectangular glowing sky-blue eyes, round gold belly medallion, stubby branch arms",
+      "style_suffix_key": "showpiece",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        19,
+        20,
+        21,
+        22,
+        23,
+        28,
+        29,
+        30
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        1,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        23,
+        31,
+        42
+      ],
+      "seeds_generated": [
+        1,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        23,
+        31,
+        42
+      ],
+      "chosen_seed": 42,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ],
+        "c": [
+          "eye_pulse",
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 28,
+          "y": 24,
+          "w": 40,
+          "h": 10
+        }
+      },
+      "frame_ms": {
+        "a": 500,
+        "b": 400,
+        "c": 300
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Blue-gold tile body is the key read. Must look tiled/ceramic, not smooth."
+    },
+    {
+      "id": "mon_maldrec",
+      "art_class": "showpiece",
+      "art_file": "data/art/monsters3.json",
+      "subject": "sinister sorcerer in black triangular robe, angular boxy face with violet glowing eyes and wide upturned grin, tall staff topped with bright blue orb, one arm raised in casting pose",
+      "style_suffix_key": "showpiece",
+      "dims": [
+        96,
+        80
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        19,
+        20,
+        21,
+        22,
+        28,
+        29,
+        31
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        1,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        23,
+        31,
+        42
+      ],
+      "seeds_generated": [
+        1,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        23,
+        31,
+        42
+      ],
+      "chosen_seed": 31,
+      "frame_effects": {
+        "b": [
+          "eye_pulse"
+        ],
+        "c": [
+          "eye_pulse",
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 28,
+          "y": 24,
+          "w": 40,
+          "h": 10
+        }
+      },
+      "frame_ms": {
+        "a": 500,
+        "b": 400,
+        "c": 300
+      },
+      "status": "imported",
+      "verdict": "replace",
+      "notes": "Violet eyes and blue orb are key. Staff must be prominent. Grin should read clearly."
+    },
+    {
+      "id": "pc_warrior",
+      "art_class": "character",
+      "art_file": "data/art/people.json",
+      "subject": "fantasy warrior adventurer, head and shoulders portrait, plate mail shoulder armour, strong determined face, short hair, intense focused eyes",
+      "style_suffix_key": "character",
+      "dims": [
+        32,
+        40
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        19,
+        20
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": null,
+      "frame_effects": {
+        "b": [
+          "breathe",
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 8,
+          "y": 8,
+          "w": 16,
+          "h": 6
+        },
+        "torso": {
+          "x": 4,
+          "y": 24,
+          "w": 24,
+          "h": 14
+        }
+      },
+      "frame_ms": {
+        "a": 600,
+        "b": 600
+      },
+      "status": "candidates",
+      "verdict": null,
+      "notes": "Face must survive crush at 1x. Plate mail grey; face warm tones. No magic colour."
+    },
+    {
+      "id": "pc_rogue",
+      "art_class": "character",
+      "art_file": "data/art/people.json",
+      "subject": "fantasy rogue adventurer, head and shoulders portrait, hooded dark leather armour, sharp watchful angular eyes, calculating expression, shadowed face under hood",
+      "style_suffix_key": "character",
+      "dims": [
+        32,
+        40
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        24,
+        25
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": null,
+      "frame_effects": {
+        "b": [
+          "breathe",
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 8,
+          "y": 10,
+          "w": 16,
+          "h": 5
+        },
+        "torso": {
+          "x": 4,
+          "y": 24,
+          "w": 24,
+          "h": 14
+        }
+      },
+      "frame_ms": {
+        "a": 600,
+        "b": 600
+      },
+      "status": "candidates",
+      "verdict": null,
+      "notes": "Reject any candidate whose face doesn't survive crush at 1x."
+    },
+    {
+      "id": "pc_caster",
+      "art_class": "character",
+      "art_file": "data/art/people.json",
+      "subject": "fantasy magic user, head and shoulders portrait, wide-sleeved robe, alert luminous magical eyes, flowing hair, arcane focus amulet",
+      "style_suffix_key": "character",
+      "dims": [
+        32,
+        40
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        19,
+        20,
+        21,
+        22
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": null,
+      "frame_effects": {
+        "b": [
+          "breathe",
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 8,
+          "y": 9,
+          "w": 16,
+          "h": 5
+        },
+        "torso": {
+          "x": 4,
+          "y": 24,
+          "w": 24,
+          "h": 14
+        }
+      },
+      "frame_ms": {
+        "a": 600,
+        "b": 600
+      },
+      "status": "candidates",
+      "verdict": null,
+      "notes": "Blue arcane eyes are the distinguishing mark. Warm skin tones."
+    },
+    {
+      "id": "pc_skald",
+      "art_class": "character",
+      "art_file": "data/art/people.json",
+      "subject": "fantasy bard-warrior skald, head and shoulders portrait, layered travelling garb, expressive open face, holding or wearing a small drum or lyre, performer's confident look",
+      "style_suffix_key": "character",
+      "dims": [
+        32,
+        40
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        19,
+        20
+      ],
+      "bg_indices": [
+        0,
+        1
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": null,
+      "frame_effects": {
+        "b": [
+          "breathe",
+          "eye_pulse"
+        ]
+      },
+      "frame_regions": {
+        "eye": {
+          "x": 8,
+          "y": 9,
+          "w": 16,
+          "h": 5
+        },
+        "torso": {
+          "x": 4,
+          "y": 24,
+          "w": 24,
+          "h": 14
+        }
+      },
+      "frame_ms": {
+        "a": 600,
+        "b": 600
+      },
+      "status": "candidates",
+      "verdict": null,
+      "notes": "Green accent in garb to distinguish from warrior. Warm expressive face."
+    },
+    {
+      "id": "scene_title",
+      "art_class": "scene",
+      "art_file": "data/art/scenes.json",
+      "subject": "Thornmere medieval town at dusk on a misty fen, stone bell tower silhouette on the right, low thatched rooftops, fen mist rolling in from the left, dark moody sky",
       "style_suffix_key": "scene",
-      "dims":             [160, 64],
-      "allowed":          [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 19, 20, 21, 22, 23, 24, 25],
-      "bg_indices":       [0],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42, 53, 67],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {},
-      "frame_regions":    {},
-      "frame_ms":         {},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Wide 160x64 title bar. Dark atmospheric. Bell tower silhouette must read clearly. gen_dims key: scene (640x256)."
+      "dims": [
+        160,
+        64
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "bg_indices": [
+        0
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42,
+        53,
+        67
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42,
+        53,
+        67
+      ],
+      "chosen_seed": null,
+      "frame_effects": {},
+      "frame_regions": {},
+      "frame_ms": {},
+      "status": "candidates",
+      "verdict": null,
+      "notes": "Wide 160x64 title bar. Dark atmospheric. Bell tower silhouette must read clearly. gen_dims key: scene (640x256)."
     },
-
     {
-      "id":               "scene_victory",
-      "art_class":        "scene_wide",
-      "art_file":         "data/art/scenes.json",
-      "subject":          "Thornmere bell tower at dawn, great bell ringing visible in the tower window, golden sunrise light flooding from behind, jubilant warm atmosphere, fen glowing amber in morning light",
+      "id": "scene_victory",
+      "art_class": "scene_wide",
+      "art_file": "data/art/scenes.json",
+      "subject": "Thornmere bell tower at dawn, great bell ringing visible in the tower window, golden sunrise light flooding from behind, jubilant warm atmosphere, fen glowing amber in morning light",
       "style_suffix_key": "scene",
-      "dims":             [160, 120],
-      "allowed":          [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 19, 20, 21, 22, 23, 26, 27, 28, 29, 30],
-      "bg_indices":       [0],
-      "seeds_to_generate": [3, 7, 11, 17, 23, 42, 53, 67],
-      "seeds_generated":  [],
-      "chosen_seed":      null,
-      "frame_effects":    {},
-      "frame_regions":    {},
-      "frame_ms":         {},
-      "status":           "pending",
-      "verdict":          null,
-      "notes":            "Taller 160x120. Warm golden dawn. Bell tower lit against sunrise. gen_dims key: scene_wide (640x480)."
+      "dims": [
+        160,
+        120
+      ],
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        19,
+        20,
+        21,
+        22,
+        23,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "bg_indices": [
+        0
+      ],
+      "seeds_to_generate": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42,
+        53,
+        67
+      ],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42,
+        53,
+        67
+      ],
+      "chosen_seed": null,
+      "frame_effects": {},
+      "frame_regions": {},
+      "frame_ms": {},
+      "status": "candidates",
+      "verdict": null,
+      "notes": "Taller 160x120. Warm golden dawn. Bell tower lit against sunrise. gen_dims key: scene_wide (640x480)."
     }
-
   ]
 }

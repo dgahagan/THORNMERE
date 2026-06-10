@@ -1,3 +1,5 @@
 __pycache__/
 .playwright-mcp/
 .mcp.json
+dev/pixel-art/candidates/
+dev/pixel-art/gen_request.json

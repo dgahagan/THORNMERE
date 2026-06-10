@@ -133,6 +133,69 @@ Families generated (not visually inspected):
 
 ---
 
+---
+
+## AI Pipeline — adjudication (monsters, showpieces)
+
+Candidate source: `dev/pixel-art/candidates/<id>_s<seed>_sub<N>.png`
+Procedural source: `art-review/proc_mon_<family>-sheet.png` (rendered via `node tools/artrender.js --sheet`)
+Judge method: side-by-side visual comparison at 4× preview scale.
+Verdicts: **replace** (AI clearly better), **kept-procedural** (existing holds up), **retry** (adjust prompt/palette once).
+
+### Set B — monsters2.json (9 families, placeholder geometry never inspected before this pass)
+
+All Set B procedural sprites were generated as placeholder geometry to satisfy the test harness; none
+were visually inspected. Every AI candidate is compared against the placeholder.
+
+| id | chosen_seed | crush_tag | verdict | notes |
+|---|---|---|---|---|
+| mon_sorcerer | 42 | sub17 | replace | Skull-faced cult mage, dark night robe, red eyes, staff. Placeholder had no readable anatomy. |
+| mon_ghost | 42 | sub13 | replace | Screaming skull face, mist-blue tendrils. Placeholder was grey smear. |
+| mon_bird | 42 | sub16 | replace | Dark storm-raven, spread wings, ember eyes. Placeholder was basic wing geometry. |
+| mon_hag | 42 | sub16 | replace | Green warty skin, honey hair, grinning clawed face. Placeholder had no face. |
+| mon_knight | 42 | sub15 | replace | Full plate, violet visor slit, shield and sword. Placeholder was stick armour. |
+| mon_choir | 42 | sub16 | replace | Three howling hooded figures, blood-accented mouths, wide spread. Placeholder was three blobs. |
+| mon_gargoyle | 42 | sub16 | replace | Stone body, two horns, ember eyes, leathery wings spread. Placeholder was flat. |
+| mon_golem | 42 | sub16 | replace | Blocky stone body, sky-blue eyes, blue chest rune. Placeholder had no rune detail. |
+| mon_moth | 7 | sub16 | replace | Warm brown wings, violet concentric eye-spot rings. s7 > s42 for violet contrast. |
+
+### Set A — monsters.json (11 families, previously PASS procedural art)
+
+Procedural art passed the Step 5a quality bar. AI candidates judged directly against those PASS sprites.
+Every procedural sprite was a full-body geometry design; AI candidates are close-up portrait-format (correct
+for the 96×80 dungeon-crawler encounter frame).
+
+| id | chosen_seed | crush_tag | verdict | notes |
+|---|---|---|---|---|
+| mon_rat | 42 | sub14 | replace | Procedural: cute brown oval, cartoony. AI: grey upright rat, fangs, beady red eyes — menacing. |
+| mon_beetle | 42 | sub14 | replace | Procedural: small pill with legs. AI: full armored carapace, concentric rings, spread mandibles. |
+| mon_hound | 42 | sub12 | replace | Procedural: blocky toy dog. AI: grey hellhound, fangs bared, hunched forward, red eyes. |
+| mon_spider | 42 | sub13 | replace | Procedural: top-down oval with stick legs. AI: frontal close-up, chelicerae, 8-leg spread. |
+| mon_snake | 42 | sub14 | replace | Procedural: side-scrolling S-curve not portrait. AI: upright cobra portrait, triangular head. |
+| mon_zombie | 42 | sub13 | replace | Procedural: Minecraft-block humanoid. AI: screaming green corpse, blood dripping, arms raised. |
+| mon_skeleton | 42 | sub11 | replace | Procedural PASS held up (grey warrior, sword). AI: gold-bone cursed warrior with spear — more atmosphere. |
+| mon_blob | 42 | sub12 | replace | Procedural: flat triangle with dot-eyes. AI: golden dripping mass, spiral eyes, grinning fangs. |
+| mon_wisp | 42 | sub10 | replace | Procedural PASS: clean concentric orb. AI: candle-soul in rings with eldritch tendrils — dungeon-cohesive. |
+| mon_brute | 42 | sub16 | replace | Procedural: green android blocks. AI: close-up orc portrait, tusks, muscles, red eyes — outstanding. |
+| mon_humanoid | 42 | sub12 | replace | Procedural: grey chess-piece cone. AI: hooded assassin, glowing gold eyes, dagger drawn. |
+
+Note: mon_brute AI raws named `brute_s*` (generated via test2.py before manifest). Import uses that path.
+Note: mon_skeleton procedural was the strongest Set A sprite — AI still wins on palette atmosphere.
+Note: mon_wisp closest call — procedural concentric orb was clean; AI candle-soul wins on thematic fit.
+
+### Showpieces — monsters3.json (4 entries, previously PASS procedural art)
+
+Showpiece procedural art was generated with gen_showpieces.js and passed Step 4 quality bar.
+
+| id | chosen_seed | crush_tag | verdict | notes |
+|---|---|---|---|---|
+| mon_candleking | 31 | sub20 | replace | Palest wax body, dripping wax, 8 candles, blue flame crown — exceeds procedural. |
+| mon_choir_eldest | 42 | sub19 | replace | Triangular robe, giant concentric eye, 20+ trapped faces, green pendant, skeletal claw. |
+| mon_mock_king | 42 | sub15 | replace | Blue tile body, prominent gold grout, 3 crown prongs, gold medallion — tile-golem reads perfectly. |
+| mon_maldrec | 31 | sub17 | replace | Triangular dark robe, blue orb staff, raised arm, grinning face, violet eyes. |
+
+---
+
 ## Step 6 — characters, icons, FX, scenes
 
 DEFERRED — will be replaced by AI-generation pipeline. No programmatic work done.
