@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>THORNMERE — sprite preview</title>
+  <style>
+    body { background: #101018; color: #c4c2cc; font-family: monospace; padding: 16px; }
+    h2 { color: #d8a224; border-bottom: 1px solid #46424f; padding-bottom: 4px; }
+    .grid { display: flex; flex-wrap: wrap; gap: 12px; }
+    .cell { background: #16121e; border: 1px solid #46424f; padding: 6px; text-align: center; }
+    .cell canvas { image-rendering: pixelated; display: block; margin: 0 auto 4px; background: #000; }
+    .cell .nm { font-size: 11px; max-width: 140px; word-break: break-all; }
+    .cell.broken { border-color: #c84032; color: #ee7a4e; }
+    #palette .sw { display: inline-block; width: 40px; height: 40px; text-align: center; font-size: 10px; color: #fff; text-shadow: 0 0 2px #000; padding-top: 2px; }
+  </style>
+</head>
+<body>
+  <h1>THORNMERE — every sprite, texture, animation &amp; variant</h1>
+  <div id="palette"></div>
+  <div id="out"></div>
+  <script type="module">
+    import { loadArt, ART, frameAt, resolveVariant } from './src/ui/art.js';
+
+    const fetchJson = async p => (await fetch(p)).json();
+    await loadArt(fetchJson);
+
+    // palette swatches
+    const pal = document.getElementById('palette');
+    pal.innerHTML = '<h2>palette (' + ART.rgb.length + ')</h2>' +
+      ART.palette.colors.map(c => `<span class="sw" style="background:${c.hex}">${c.i}<br>${c.name}</span>`).join('');
+
+    const out = document.getElementById('out');
+    const SCALE = 4;
+
+    function drawSprite(ctx, sp, remap, scale) {
+      for (let y = 0; y < sp.h; y++) for (let x = 0; x < sp.w; x++) {
+        let v = sp.data[y * sp.w + x];
+        if (v < 0) continue;
+        if (remap && remap[v] !== undefined) v = remap[v];
+        ctx.fillStyle = ART.palette.colors[v].hex;
+        ctx.fillRect(x * scale, y * scale, scale, scale);
+      }
+    }
+
+    function cell(name, w, h) {
+      const div = document.createElement('div');
+      div.className = 'cell';
+      const cv = document.createElement('canvas');
+      cv.width = w * SCALE; cv.height = h * SCALE;
+      const nm = document.createElement('div');
+      nm.className = 'nm'; nm.textContent = name;
+      div.append(cv, nm);
+      return { div, cv };
+    }
+
+    function section(title) {
+      const h = document.createElement('h2'); h.textContent = title;
+      const g = document.createElement('div'); g.className = 'grid';
+      out.append(h, g);
+      return g;
+    }
+
+    // static sprites grouped by prefix
+    const groups = {};
+    for (const name of Object.keys(ART.sprites).sort()) {
+      const g = name.split('_')[0];
+      (groups[g] ??= []).push(name);
+    }
+    for (const [g, names] of Object.entries(groups)) {
+      const grid = section(`sprites: ${g} (${names.length})`);
+      for (const name of names) {
+        const sp = ART.sprites[name];
+        const { div, cv } = cell(name, sp.w, sp.h);
+        drawSprite(cv.getContext('2d'), sp, null, SCALE);
+        grid.append(div);
+      }
+    }
+
+    // animations, live
+    const anims = Object.keys(ART.anims).sort();
+    if (anims.length) {
+      const grid = section(`animations (${anims.length})`);
+      const live = [];
+      for (const name of anims) {
+        const fr = ART.anims[name].frames;
+        const broken = fr.some(f => !ART.sprites[f.sprite]);
+        const first = ART.sprites[fr[0]?.sprite];
+        const { div, cv } = cell(name, first?.w || 16, first?.h || 16);
+        if (broken) { div.classList.add('broken'); div.querySelector('.nm').textContent += ' (BROKEN)'; }
+        else live.push({ cv, drawable: { anim: ART.anims[name], remap: null } });
+        grid.append(div);
+      }
+      setInterval(() => {
+        const now = Date.now();
+        for (const { cv, drawable } of live) {
+          const fr = frameAt(drawable, now);
+          const sp = ART.sprites[fr.name];
+          const ctx = cv.getContext('2d');
+          ctx.clearRect(0, 0, cv.width, cv.height);
+          drawSprite(ctx, sp, null, SCALE);
+        }
+      }, 120);
+    }
+
+    // variants (resolved, first frame, remapped)
+    const variants = Object.keys(ART.variants).sort();
+    if (variants.length) {
+      const grid = section(`variants (${variants.length})`);
+      for (const name of variants) {
+        const d = resolveVariant(name);
+        const fr = d && frameAt(d, 0);
+        const sp = fr && ART.sprites[fr.name];
+        const { div, cv } = cell(name + ' ← ' + (ART.variants[name].base || '?'), sp?.w || 16, sp?.h || 16);
+        if (!sp) { div.classList.add('broken'); div.querySelector('.nm').textContent += ' (BROKEN)'; }
+        else drawSprite(cv.getContext('2d'), sp, fr.remap, SCALE);
+        grid.append(div);
+      }
+    }
+
+    // coverage check against game data
+    const monsters = await fetchJson('data/monsters.json');
+    const missing = monsters.filter(m => !resolveVariant(m.id) && !resolveVariant('mon_' + m.portrait)).map(m => m.id);
+    const h = document.createElement('h2');
+    h.textContent = missing.length ? `MISSING MONSTER ART: ${missing.join(', ')}` : 'bestiary coverage: complete';
+    h.style.color = missing.length ? '#ee7a4e' : '#72c04c';
+    out.append(h);
+  </script>
+</body>
+</html>

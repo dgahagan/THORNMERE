@@ -9,16 +9,21 @@
   <div id="game">
     <div id="toprow">
       <div id="viewwrap">
-        <canvas id="view" width="448" height="336"></canvas>
+        <canvas id="view" width="320" height="240"></canvas>
+        <div class="nav" id="nav-up" data-key="ArrowUp">▲</div>
+        <div class="nav" id="nav-left" data-key="ArrowLeft">◀</div>
+        <div class="nav" id="nav-right" data-key="ArrowRight">▶</div>
+        <div class="nav" id="nav-down" data-key="ArrowDown">▼</div>
         <div id="loc"></div>
       </div>
       <div id="right">
-        <div id="status"></div>
-        <div id="menu"></div>
-        <div id="log"></div>
+        <div id="status" class="panel" data-title="THORNMERE"></div>
+        <div id="menu" class="panel" data-title="·"></div>
+        <div id="log" class="panel" data-title="EVENTS"></div>
       </div>
     </div>
-    <div id="roster"></div>
+    <div id="roster" class="panel" data-title="THE COMPANY"></div>
+    <div id="cmdbar"></div>
     <div id="hint"></div>
   </div>
   <script type="module" src="../src/main.js"></script>

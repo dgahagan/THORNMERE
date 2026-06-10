@@ -1,0 +1,243 @@
+{
+  "comment": "Viewport furniture and UI glyph sprites. -1 = transparent.",
+  "sprites": {
+    "fx_stairs_down": {
+      "w": 16, "h": 12,
+      "legend": { ".": -1, "f": 3, "a": 5, "b": 4, "c": 3, "d": 2, "e": 1, "x": 0 },
+      "rows": [
+        "................",
+        ".ffffffffffffff.",
+        ".faaaaaaaaaaaaf.",
+        ".faaaaaaaaaaaaf.",
+        ".fxbbbbbbbbbbxf.",
+        ".fxbbbbbbbbbbxf.",
+        ".fxxccccccccxxf.",
+        ".fxxccccccccxxf.",
+        ".fxxxddddddxxxf.",
+        ".fxxxeeeeeexxxf.",
+        ".fxxxxxxxxxxxxf.",
+        ".ffffffffffffff."
+      ]
+    },
+    "fx_stairs_up": {
+      "w": 16, "h": 12,
+      "legend": { ".": -1, "f": 3, "a": 5, "b": 4, "c": 3, "d": 2, "e": 1 },
+      "rows": [
+        "....ffffffff....",
+        "....faaaaaaf....",
+        "...faaaaaaaaf...",
+        "...fbbbbbbbbf...",
+        "..fbbbbbbbbbbf..",
+        "..fccccccccccf..",
+        ".fccccccccccccf.",
+        ".fddddddddddddf.",
+        "fddddddddddddddf",
+        "feeeeeeeeeeeeeef",
+        "feeeeeeeeeeeeeef",
+        "ffffffffffffffff"
+      ]
+    },
+    "fx_chest": {
+      "w": 16, "h": 12,
+      "legend": { ".": -1, "w": 9, "O": 11, "i": 3, "L": 29 },
+      "rows": [
+        "................",
+        "..wwwwwwwwwwww..",
+        ".wOOOiOOOOiOOOw.",
+        ".wOOOiOOOOiOOOw.",
+        ".wwwwwwwwwwwwww.",
+        ".wOOOiOLLOiOOOw.",
+        ".wOOOiOLLOiOOOw.",
+        ".wOOOiOOOOiOOOw.",
+        ".wOOOiOOOOiOOOw.",
+        ".wwwwwwwwwwwwww.",
+        "................",
+        "................"
+      ]
+    },
+    "fx_mouth": {
+      "w": 16, "h": 16,
+      "legend": { ".": -1, "s": 4, "d": 3, "x": 1, "o": 0 },
+      "rows": [
+        "....ssssssss....",
+        "..ssssssssssss..",
+        ".ssssssssssssss.",
+        ".ssdssssssssdss.",
+        ".sdxxdssssdxxds.",
+        ".sdxxdssssdxxds.",
+        ".ssssssssssssss.",
+        "..ssssddddssss..",
+        "..sssdooooodss..",
+        "..ssdooooooods..",
+        "..ssdooooooods..",
+        "..sssdooooodss..",
+        "..ssssddddssss..",
+        "...ssssssssss...",
+        "....ssssssss....",
+        "................"
+      ]
+    },
+    "fx_mouth_open": {
+      "w": 16, "h": 16,
+      "legend": { ".": -1, "s": 4, "d": 3, "x": 1, "o": 0 },
+      "rows": [
+        "....ssssssss....",
+        "..ssssssssssss..",
+        ".ssssssssssssss.",
+        ".ssdssssssssdss.",
+        ".sdxxdssssdxxds.",
+        ".sdxxdssssdxxds.",
+        ".ssssssssssssss.",
+        "..sssdddddsss...",
+        "..ssdooooooss...",
+        "..sdooooooods...",
+        "..sdooooooods...",
+        "..sdooooooods...",
+        "..ssdooooodss...",
+        "...ssdddddss....",
+        "....ssssssss....",
+        "................"
+      ]
+    },
+    "fx_danger": {
+      "w": 16, "h": 12,
+      "legend": { ".": -1, "b": 6, "d": 5, "x": 0 },
+      "rows": [
+        "....bbbbbbbb....",
+        "...bbbbbbbbbb...",
+        "...bbbbbbbbbb...",
+        "...bxxbbbbxxb...",
+        "...bxxbbbbxxb...",
+        "...bbbbxxbbbb...",
+        "....bbbbbbbb....",
+        "....bxbxxbxb....",
+        "....bbbbbbbb....",
+        "..d..........d..",
+        "...dd......dd...",
+        ".....dddddd....."
+      ]
+    },
+    "fx_seal": {
+      "w": 16, "h": 16,
+      "legend": { ".": -1, "g": 29, "G": 30, "v": 31, "x": 1 },
+      "rows": [
+        ".....gggggg.....",
+        "...gg......gg...",
+        "..g..........g..",
+        ".g....vvvv....g.",
+        ".g...vxxxxv...g.",
+        "g...vx.GG.xv...g",
+        "g...vx.GG.xv...g",
+        "g..vx..GG..xv..g",
+        "g..vx.GGGG.xv..g",
+        "g...vx.GG.xv...g",
+        "g...vx.GG.xv...g",
+        ".g...vxxxxv...g.",
+        ".g....vvvv....g.",
+        "..g..........g..",
+        "...gg......gg...",
+        ".....gggggg....."
+      ]
+    },
+    "fx_gate": {
+      "w": 16, "h": 16,
+      "legend": { ".": -1, "s": 4, "d": 3, "i": 2 },
+      "rows": [
+        "....ssssssss....",
+        "..sss......sss..",
+        ".ss..........ss.",
+        ".sd.i.i..i.i.ds.",
+        "sd..i.i..i.i..ds",
+        "sd..i.i..i.i..ds",
+        "sd.iiiiiiiiii.ds",
+        "sd..i.i..i.i..ds",
+        "sd..i.i..i.i..ds",
+        "sd.iiiiiiiiii.ds",
+        "sd..i.i..i.i..ds",
+        "sd..i.i..i.i..ds",
+        "sd..i.i..i.i..ds",
+        "sd..i.i..i.i..ds",
+        "sd..i.i..i.i..ds",
+        "sd..i.i..i.i..ds"
+      ]
+    },
+    "sign_generic": {
+      "w": 12, "h": 8,
+      "legend": { ".": -1, "t": 2, "b": 9, "p": 13 },
+      "rows": [
+        "tttttttttttt",
+        ".....t......",
+        ".bbbbbbbbbb.",
+        ".bppppppppb.",
+        ".bppppppppb.",
+        ".bppppppppb.",
+        ".bbbbbbbbbb.",
+        "............"
+      ]
+    },
+    "ui_compass": {
+      "w": 16, "h": 16,
+      "legend": { ".": -1, "r": 3, "R": 4, "g": 29, "b": 6 },
+      "rows": [
+        "......gggg......",
+        "....gg....gg....",
+        "...g........g...",
+        "..g..........g..",
+        ".g....RRRR....g.",
+        ".g...R....R...g.",
+        "g...R......R...g",
+        "g...R......R...g",
+        "g...R......R...g",
+        "g...R......R...g",
+        ".g...R....R...g.",
+        ".g....RRRR....g.",
+        "..g..........g..",
+        "...g........g...",
+        "....gg....gg....",
+        "......bbbb......"
+      ]
+    },
+    "ui_note_a": {
+      "w": 8, "h": 8,
+      "legend": { ".": -1, "n": 29 },
+      "rows": [
+        "...nnnn.",
+        "...n....",
+        "...n....",
+        "...n....",
+        "...n....",
+        ".nnn....",
+        "nnnn....",
+        ".nn....."
+      ]
+    },
+    "ui_note_b": {
+      "w": 8, "h": 8,
+      "legend": { ".": -1, "n": 30 },
+      "rows": [
+        "..nnnn..",
+        "..n.....",
+        "..n.....",
+        "..n.....",
+        "..n.....",
+        "nnn.....",
+        "nnn.....",
+        ".n......"
+      ]
+    }
+  },
+  "anims": {
+    "fx_mouth_anim": {
+      "frames": [
+        { "sprite": "fx_mouth", "ms": 320 },
+        { "sprite": "fx_mouth_open", "ms": 320 }
+      ]
+    },
+    "ui_note": {
+      "frames": [
+        { "sprite": "ui_note_a", "ms": 360 },
+        { "sprite": "ui_note_b", "ms": 360 }
+      ]
+    }
+  }
+}

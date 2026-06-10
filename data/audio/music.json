@@ -1,0 +1,204 @@
+{
+  "comment": "All music as note/pattern data. Token = note:sixteenths (c4:2) or r:n for rests. Tracks in one pattern should sum to the same length; the loop repeats. Voices: square, pulse (duty), tri, noise (note = bandpass center).",
+
+  "songs": {
+    "march": {
+      "name": "Wayfarer's March",
+      "loop": {
+        "bpm": 116,
+        "tracks": [
+          { "voice": "pulse", "duty": 0.25, "vol": 0.3, "gate": 0.85, "notes": "c4:2 r:1 c4:1 e4:2 g4:2 c5:4 g4:4  a4:2 r:1 a4:1 c5:2 a4:2 g4:8  f4:2 f4:2 a4:2 f4:2 e4:2 e4:2 g4:2 e4:2  d4:2 e4:2 f4:2 d4:2 c4:8" },
+          { "voice": "square", "vol": 0.22, "gate": 0.7, "notes": "c3:4 g2:4 c3:4 g2:4  a2:4 e2:4 g2:4 g2:4  f2:4 f2:4 c3:4 c3:4  g2:4 g2:4 c3:8" },
+          { "voice": "noise", "vol": 0.1, "gate": 0.3, "notes": "c7:1 r:3 c7:1 r:3 c7:1 r:3 c7:1 r:3  c7:1 r:3 c7:1 r:3 c7:1 r:3 c7:1 r:3  c7:1 r:3 c7:1 r:3 c7:1 r:3 c7:1 r:3  c7:1 r:3 c7:1 r:3 c7:1 r:3 c7:1 r:3" }
+        ]
+      },
+      "flourish": {
+        "bpm": 140,
+        "tracks": [
+          { "voice": "pulse", "duty": 0.25, "vol": 0.32, "notes": "c4:1 e4:1 g4:1 c5:1 g4:1 c5:2 e5:5" },
+          { "voice": "square", "vol": 0.2, "notes": "c3:4 g2:4 c3:4" }
+        ]
+      }
+    },
+    "fireheart": {
+      "name": "Fireheart Air",
+      "loop": {
+        "bpm": 100,
+        "tracks": [
+          { "voice": "square", "vol": 0.28, "gate": 0.95, "notes": "a3:4 c4:4 e4:6 d4:2  c4:4 d4:4 e4:8  f4:4 e4:4 d4:4 c4:4  e4:12 r:4" },
+          { "voice": "tri", "vol": 0.3, "gate": 0.95, "notes": "a2:8 e3:8  a2:8 g2:8  f2:8 g2:8  a2:16" }
+        ]
+      },
+      "flourish": {
+        "bpm": 120,
+        "tracks": [
+          { "voice": "square", "vol": 0.32, "notes": "a3:2 c4:2 e4:2 a4:4 g4:2 a4:4" },
+          { "voice": "tri", "vol": 0.26, "notes": "a2:8 e2:8" }
+        ]
+      }
+    },
+    "lantern": {
+      "name": "Lantern Reel",
+      "loop": {
+        "bpm": 152,
+        "tracks": [
+          { "voice": "pulse", "duty": 0.5, "vol": 0.26, "gate": 0.8, "notes": "g4:2 a4:1 b4:2 g4:1 d5:3 b4:3  c5:2 b4:1 a4:2 g4:1 a4:6  g4:2 a4:1 b4:2 g4:1 e5:3 d5:3  c5:2 a4:1 g4:3 g4:6" },
+          { "voice": "tri", "vol": 0.26, "gate": 0.8, "notes": "g2:6 d3:6  c3:6 d3:6  g2:6 b2:6  c3:6 g2:6" }
+        ]
+      },
+      "flourish": {
+        "bpm": 170,
+        "tracks": [
+          { "voice": "pulse", "duty": 0.5, "vol": 0.3, "notes": "g4:1 b4:1 d5:1 g5:3 d5:1 b4:1 g4:4" },
+          { "voice": "tri", "vol": 0.24, "notes": "g2:6 d3:6" }
+        ]
+      }
+    },
+    "wardknot": {
+      "name": "Wardweaver's Knot",
+      "loop": {
+        "bpm": 108,
+        "tracks": [
+          { "voice": "tri", "vol": 0.32, "gate": 0.98, "notes": "d4:2 e4:2 f4:2 g4:2 a4:2 f4:2 g4:2 e4:2  f4:2 g4:2 a4:2 b4:2 c5:2 a4:2 b4:2 g4:2  a4:2 g4:2 f4:2 e4:2 f4:2 d4:2 e4:2 c4:2  d4:4 a3:4 d4:8" },
+          { "voice": "tri", "vol": 0.2, "gate": 0.98, "notes": "d3:8 a2:8  f3:8 g3:8  d3:8 c3:8  d3:16" }
+        ]
+      },
+      "flourish": {
+        "bpm": 126,
+        "tracks": [
+          { "voice": "tri", "vol": 0.34, "notes": "d4:1 f4:1 a4:1 d5:2 c5:1 a4:1 g4:1 a4:4" },
+          { "voice": "tri", "vol": 0.2, "notes": "d3:6 a2:6" }
+        ]
+      }
+    },
+    "lull": {
+      "name": "Hearthsong Lull",
+      "loop": {
+        "bpm": 76,
+        "tracks": [
+          { "voice": "tri", "vol": 0.28, "gate": 0.98, "a": 0.03, "r": 0.12, "notes": "e4:6 d4:2 c4:4  d4:6 c4:2 a3:4  c4:4 e4:4 g4:4  e4:12" },
+          { "voice": "tri", "vol": 0.18, "gate": 0.98, "a": 0.04, "r": 0.15, "notes": "c3:12  g2:12  a2:12  g2:12" }
+        ]
+      },
+      "flourish": {
+        "bpm": 90,
+        "tracks": [
+          { "voice": "tri", "vol": 0.3, "a": 0.02, "notes": "g4:2 e4:2 c4:4 d4:2 e4:6" },
+          { "voice": "tri", "vol": 0.18, "notes": "c3:8 g2:8" }
+        ]
+      }
+    },
+    "jig": {
+      "name": "Confounding Jig",
+      "loop": {
+        "bpm": 160,
+        "tracks": [
+          { "voice": "pulse", "duty": 0.15, "vol": 0.26, "gate": 0.5, "notes": "e4:2 f4:1 e4:1 d#4:2 e4:2 g4:2 f#4:2 a4:2 g#4:2  b4:2 a#4:1 b4:1 a4:2 g4:2 f#4:2 f4:2 e4:4  e4:1 g4:1 f#4:1 a4:1 g#4:1 b4:1 a#4:1 c5:1 b4:2 e4:2 b3:2 e4:2  f4:2 e4:2 d#4:2 e4:2 c5:4 b4:1 a4:1 g4:1 f#4:1" },
+          { "voice": "square", "vol": 0.18, "gate": 0.4, "notes": "r:2 e2:2 r:2 e2:2 r:2 a2:2 r:2 a2:2  r:2 b2:2 r:2 b2:2 r:2 e2:2 e2:2 r:2  e2:2 r:2 e2:2 r:2 a2:2 r:2 b2:2 r:2  c3:2 r:2 b2:2 r:2 a2:2 r:2 b2:2 e2:2" }
+        ]
+      },
+      "flourish": {
+        "bpm": 180,
+        "tracks": [
+          { "voice": "pulse", "duty": 0.15, "vol": 0.3, "gate": 0.5, "notes": "e4:1 f4:1 f#4:1 g4:1 g#4:1 a4:1 a#4:1 b4:1 e5:4" },
+          { "voice": "square", "vol": 0.18, "notes": "e2:6 b2:6" }
+        ]
+      }
+    },
+    "dirge": {
+      "name": "Graveman's Dirge",
+      "loop": {
+        "bpm": 66,
+        "tracks": [
+          { "voice": "square", "duty": 0.5, "vol": 0.26, "gate": 0.98, "a": 0.02, "r": 0.2, "notes": "a3:8 g3:4 f3:4  e3:12 r:4  f3:8 e3:4 d3:4  a2:16" },
+          { "voice": "tri", "vol": 0.24, "gate": 0.98, "notes": "a2:16  a2:8 e2:8  d2:16  a2:16" },
+          { "voice": "noise", "vol": 0.12, "gate": 0.2, "notes": "c2:2 r:14  c2:2 r:14  c2:2 r:14  c2:2 r:6 c2:2 r:6" }
+        ]
+      },
+      "flourish": {
+        "bpm": 80,
+        "tracks": [
+          { "voice": "square", "duty": 0.5, "vol": 0.3, "notes": "a3:4 f3:4 e3:8" },
+          { "voice": "tri", "vol": 0.24, "notes": "a2:8 e2:8" }
+        ]
+      }
+    }
+  },
+
+  "themes": {
+    "title": {
+      "bpm": 88,
+      "tracks": [
+        { "voice": "tri", "vol": 0.3, "gate": 0.95, "a": 0.02, "notes": "g3:4 a3:4 c4:4 d4:4  e4:8 d4:4 c4:4  a3:4 c4:4 d4:6 c4:2  g3:16  g3:4 a3:4 c4:4 d4:4  e4:8 g4:4 e4:4  d4:4 c4:4 a3:6 g3:2  c4:16" },
+        { "voice": "square", "duty": 0.5, "vol": 0.12, "gate": 0.98, "notes": "c2:16 g2:16 f2:16 c2:16 c2:16 a2:16 f2:16 c2:16" }
+      ]
+    },
+    "town_day": {
+      "bpm": 112,
+      "tracks": [
+        { "voice": "pulse", "duty": 0.3, "vol": 0.22, "gate": 0.85, "notes": "e4:2 g4:2 g4:2 a4:2 g4:4 c4:4  d4:2 e4:2 f4:2 d4:2 e4:8  e4:2 g4:2 a4:2 b4:2 c5:4 g4:4  a4:2 g4:2 f4:2 d4:2 c4:8" },
+        { "voice": "tri", "vol": 0.2, "gate": 0.8, "notes": "c3:4 g2:4 c3:4 g2:4  g2:4 d3:4 c3:4 c3:4  c3:4 e3:4 f3:4 g3:4  f3:4 g3:4 c3:8" }
+      ]
+    },
+    "town_night": {
+      "bpm": 80,
+      "tracks": [
+        { "voice": "tri", "vol": 0.18, "gate": 0.95, "a": 0.03, "notes": "e4:4 r:4 g4:4 r:4  d4:4 r:4 e4:8  r:8 c4:4 g4:4  a4:4 g4:4 c4:8" },
+        { "voice": "tri", "vol": 0.14, "gate": 0.95, "notes": "c3:16  g2:16  a2:16  g2:8 c3:8" }
+      ]
+    },
+    "dungeon_undercroft": {
+      "bpm": 56,
+      "tracks": [
+        { "voice": "tri", "vol": 0.2, "gate": 0.99, "a": 0.05, "r": 0.3, "notes": "c2:16 d#2:16 c2:16 g1:16" },
+        { "voice": "square", "duty": 0.5, "vol": 0.07, "gate": 0.9, "a": 0.05, "notes": "r:12 g3:2 f#3:2  r:16  r:14 c4:2  r:16" },
+        { "voice": "noise", "vol": 0.06, "gate": 0.1, "notes": "r:10 c6:1 r:21  r:5 c6:1 r:26" }
+      ]
+    },
+    "dungeon_barrow": {
+      "bpm": 60,
+      "tracks": [
+        { "voice": "tri", "vol": 0.2, "gate": 0.99, "a": 0.06, "r": 0.3, "notes": "d2:16 a2:16 d2:16 c2:16" },
+        { "voice": "square", "duty": 0.5, "vol": 0.08, "gate": 0.95, "a": 0.08, "notes": "r:8 e3:4 f3:4  r:16  r:8 f3:4 e3:4  r:16" },
+        { "voice": "noise", "vol": 0.05, "gate": 0.6, "a": 0.1, "r": 0.3, "notes": "c3:8 r:24  r:16 c3:8 r:8" }
+      ]
+    },
+    "dungeon_needle": {
+      "bpm": 64,
+      "tracks": [
+        { "voice": "tri", "vol": 0.16, "gate": 0.99, "a": 0.04, "notes": "b1:16 f2:16 b1:16 c2:16" },
+        { "voice": "tri", "vol": 0.1, "gate": 0.9, "a": 0.02, "notes": "r:6 b4:1 r:9  r:12 f4:1 r:3  r:4 e5:1 r:11  r:9 b4:1 r:6" }
+      ]
+    },
+    "combat": {
+      "bpm": 144,
+      "tracks": [
+        { "voice": "square", "vol": 0.22, "gate": 0.6, "notes": "e2:2 e2:2 g2:2 e2:2 a2:2 g2:2 e2:2 d2:2  e2:2 e2:2 g2:2 a2:2 b2:2 a2:2 g2:2 e2:2" },
+        { "voice": "pulse", "duty": 0.25, "vol": 0.2, "gate": 0.5, "notes": "r:8 e4:2 r:2 g4:2 r:2  r:4 b4:2 r:2 a4:2 r:2 e4:2 r:2" },
+        { "voice": "noise", "vol": 0.12, "gate": 0.25, "notes": "c7:1 r:3 c5:1 r:3 c7:1 r:3 c5:1 r:3  c7:1 r:3 c5:1 r:3 c7:1 r:1 c7:1 r:1 c5:1 r:3" }
+      ]
+    },
+    "victory": {
+      "bpm": 120,
+      "tracks": [
+        { "voice": "pulse", "duty": 0.25, "vol": 0.32, "gate": 0.9, "notes": "c4:2 c4:1 c4:1 c4:2 e4:2 g4:4 e4:2 g4:2 c5:12" },
+        { "voice": "square", "vol": 0.2, "gate": 0.9, "notes": "c3:4 c3:4 e3:4 g3:4 g2:2 g2:2 c3:8" },
+        { "voice": "tri", "vol": 0.22, "gate": 0.95, "notes": "r:8 c3:4 e3:4 g3:4 c4:8" }
+      ]
+    },
+    "defeat": {
+      "bpm": 60,
+      "tracks": [
+        { "voice": "square", "duty": 0.5, "vol": 0.26, "gate": 0.95, "a": 0.02, "r": 0.4, "notes": "a2:8 g#2:8 g2:16" },
+        { "voice": "noise", "vol": 0.14, "gate": 0.8, "a": 0.05, "r": 0.5, "notes": "c2:12 r:20" }
+      ]
+    },
+    "tavern": {
+      "bpm": 100,
+      "tracks": [
+        { "voice": "noise", "vol": 0.045, "gate": 0.95, "a": 0.2, "r": 0.4, "notes": "c3:16 c3:16 c3:16 c3:16" },
+        { "voice": "tri", "vol": 0.05, "gate": 0.3, "notes": "r:13 c6:1 r:18  r:7 g5:1 r:24" }
+      ]
+    }
+  }
+}

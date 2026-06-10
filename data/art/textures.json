@@ -1,0 +1,247 @@
+{
+  "comment": "16x16 tiling wall textures. legend maps a character to a palette index; -1 = transparent. Doors are full wall tiles with the door drawn in (secret doors render the plain wall tile until found).",
+  "sprites": {
+    "tex_town_wall": {
+      "w": 16, "h": 16,
+      "legend": { "+": 5, "#": 4, "-": 3, ".": 2 },
+      "rows": [
+        "+++.+++++++.++++",
+        "###.####-##.####",
+        "###.#######.#-##",
+        "................",
+        "+++++++.+++++++.",
+        "##-####.#######.",
+        "#######.##-####.",
+        "................",
+        "+++.+++++++.++++",
+        "###.##-####.####",
+        "###.#######.####",
+        "................",
+        "+++++++.+++++++.",
+        "#######.####-##.",
+        "##-####.#######.",
+        "................"
+      ]
+    },
+    "tex_town_door": {
+      "w": 16, "h": 16,
+      "legend": { "+": 5, "#": 4, "-": 3, ".": 2, "o": 10, "O": 11, "=": 9, "*": 29 },
+      "rows": [
+        "+++.+++++++.++++",
+        "###.####-##.####",
+        "##--------------",
+        "##-oOoOoOoOoOo-#",
+        "##-oOoOoOoOoOo-#",
+        "##-o=========o-#",
+        "##-oOoOoOoOoOo-.",
+        "##-oOoOoOoOoOo-.",
+        "##-oOoOoOoO*Oo-.",
+        "##-oOoOoOoOoOo-#",
+        "##-o=========o-#",
+        "##-oOoOoOoOoOo-#",
+        "+#-oOoOoOoOoOo-+",
+        "##-oOoOoOoOoOo-#",
+        "##-oOoOoOoOoOo-#",
+        "..-oOoOoOoOoOo-."
+      ]
+    },
+    "tex_under_wall": {
+      "w": 16, "h": 16,
+      "legend": { "#": 10, "=": 9, ".": 8, "%": 15, "~": 14, "-": 11 },
+      "rows": [
+        "##=#-##.###=###.",
+        "#####=#.##-####.",
+        "........%.......",
+        "#=##.###-##.###=",
+        "###%.##=####.###",
+        "..%~....%.......",
+        "###-###.#=##.###",
+        "#=#####.####%.##",
+        "....%...~%~.....",
+        "##.###=#-#.####=",
+        "##.####%##.#=###",
+        "..~%~......%....",
+        "=###.###-###.###",
+        "####.#=###%#.##=",
+        "..%.....~%......",
+        "###=###.###.#-##"
+      ]
+    },
+    "tex_under_door": {
+      "w": 16, "h": 16,
+      "legend": { "#": 10, "=": 9, ".": 8, "%": 15, "o": 9, "O": 10, "~": 14, "-": 11 },
+      "rows": [
+        "##=#-##.###=###.",
+        "#####=#.##-####.",
+        "..==========%...",
+        "#=.oOoO=oOoO.##=",
+        "##.oOoO=o%oO.###",
+        "..%oOoO=oOoO~...",
+        "##.oOo%=oOoO.###",
+        "#=.oOoO=oOoO.#-#",
+        "...o~oO=oOoO....",
+        "##.oOoO=oO%O.##=",
+        "##.oOoO=oOoO.###",
+        "..%oOoO=oOoO%...",
+        "=#.oO%o=oOoO.###",
+        "##.oOoO=o~oO.##=",
+        "...oOoO=oOoO....",
+        "##.oOoO=oOoO.#=#"
+      ]
+    },
+    "tex_barrow_wall": {
+      "w": 16, "h": 16,
+      "legend": { "#": 9, ".": 8, "o": 6, "-": 10, "~": 14, "%": 15 },
+      "rows": [
+        "##.###-####.###.",
+        "#.##o###.##-##.#",
+        "##.####.#%##.###",
+        ".###-##.####.##.",
+        "##.###.##o###.##",
+        "#.####-###.####.",
+        "###.##.####~###.",
+        "#o##.######.##-#",
+        "##.###-#.###.###",
+        ".####.###o###.#.",
+        "##-###.#####.###",
+        "#.###%###.###-#.",
+        "###.#####.#o###.",
+        "#-###.###~####.#",
+        "##.##o###.###.##",
+        ".####.##-####.#."
+      ]
+    },
+    "tex_barrow_door": {
+      "w": 16, "h": 16,
+      "legend": { "#": 9, ".": 8, "o": 6, "-": 10, "s": 3, "S": 4, "+": 5 },
+      "rows": [
+        "##.###-####.###.",
+        "#.##o###.##-##.#",
+        "#..ssSSSSSSss..#",
+        ".#sSS+SS+SSSSs#.",
+        "##sS+sssssss+S##",
+        "#.sSs.......sS.#",
+        "##sSs.o...o.sS##",
+        "#osSs.......sS-#",
+        "##sSs..o....sS##",
+        ".#sSs.......sS#.",
+        "##sSs....o..sS##",
+        "#.sSs.......sS#.",
+        "##sSsssssssssS#.",
+        "#-sSSSSSSSSSSs.#",
+        "##.ss.....ss.#.#",
+        ".####.##-####.#."
+      ]
+    },
+    "tex_needle_wall": {
+      "w": 16, "h": 16,
+      "legend": { "#": 4, "+": 5, ".": 3, "-": 2, "v": 31 },
+      "rows": [
+        "++++++++++++++++",
+        "#######.########",
+        "#######.######v#",
+        "#######.########",
+        "----------------",
+        "###.############",
+        "##v.############",
+        "###.############",
+        "----------------",
+        "##########.#####",
+        "##########.#####",
+        "#########v.#####",
+        "----------------",
+        "####.###########",
+        "####.######v####",
+        "####.###########"
+      ]
+    },
+    "tex_needle_door": {
+      "w": 16, "h": 16,
+      "legend": { "#": 4, "+": 5, ".": 3, "-": 2, "g": 20, "G": 21, "w": 23, "v": 31 },
+      "rows": [
+        "++++++++++++++++",
+        "#######.########",
+        "#--------------#",
+        "#-gGggggggggGg-#",
+        "#-GgggwggggggG-#",
+        "#-ggggGwgggggg-#",
+        "#-gggggGwggvgg-#",
+        "#-ggwggggGgggg-#",
+        "#-ggGwggggggwg-#",
+        "#-gggGwgggggGg-#",
+        "#-gvggGggwgggg-#",
+        "#-ggggggggGggg-#",
+        "#-gGggwgggggGg-#",
+        "#-GgggggggggwG-#",
+        "#-gGggggggggGg-#",
+        "#--------------#"
+      ]
+    },
+    "tex_riddle_door": {
+      "w": 16, "h": 16,
+      "legend": { "#": 4, "+": 5, ".": 3, "-": 2, "o": 9, "O": 10, "?": 29, "!": 30 },
+      "rows": [
+        "+++.+++++++.++++",
+        "###.####-##.####",
+        "#--------------#",
+        "#-oOoOoOoOoOoO-#",
+        "#-oOo?!!!?oOoO-#",
+        "#-oO?!oOo!?OoO-#",
+        "#-oOoOoO?!oOoO-#",
+        "#-oOoOo?!OoOoO-#",
+        "#-oOoOo!?oOoOO-#",
+        "#-oOoOoOoOoOoO-#",
+        "#-oOoOo?!oOoOO-#",
+        "#-oOoOo!?OoOoO-#",
+        "#-oOoOoOoOoOoO-#",
+        "#-oOoOoOoOoOoO-#",
+        "#-oOoOoOoOoOoO-#",
+        "#--------------#"
+      ]
+    },
+    "tex_facade": {
+      "w": 16, "h": 16,
+      "legend": { "p": 12, "P": 13, "t": 9, ".": 8, "w": 19, "W": 20 },
+      "rows": [
+        "tttttttttttttttt",
+        "pPpppppptpppppPp",
+        "ppppptpppppppppp",
+        "tttpppppppptpppp",
+        "ppptpppPpppppppp",
+        "pppptttttttttppp",
+        "ppppt.www.tppppp",
+        "tpppt.wWw.tpttpp",
+        "ppppt.www.tppppp",
+        "pppptttttttppppp",
+        "pPpppppppppppptp",
+        "ppppppptpppppppp",
+        "tttppppppppttttt",
+        "ppptpppppPpppppp",
+        "pppppptppppppppt",
+        "tttttttttttttttt"
+      ]
+    },
+    "tex_boards": {
+      "w": 16, "h": 16,
+      "legend": { "p": 12, "t": 9, ".": 8, "o": 10, "O": 11, "x": 2 },
+      "rows": [
+        "tttttttttttttttt",
+        "ppptppppppptpppp",
+        "pp.OOOOOOOOOO.pp",
+        "pp.oxxoooxxoo.pp",
+        "ppOOOOOOOOOOOOpp",
+        "pp.oooxxooooo.tp",
+        "pp.OOOOOOOOOO.pp",
+        "tp.oxoooooxoo.pp",
+        "ppOOOOOOOOOOOOpp",
+        "pp.oooxxoooxo.pp",
+        "pp.OOOOOOOOOO.pp",
+        "pp.ooxoooxooo.pp",
+        "ppOOOOOOOOOOOOpp",
+        "tptpppppptpppppp",
+        "ppppptpppppppppp",
+        "tttttttttttttttt"
+      ]
+    }
+  }
+}

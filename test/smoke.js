@@ -59,6 +59,7 @@ async function createChar(name, raceKey, classKey) {
   press(raceKey); await sleep(60);
   press(classKey); await sleep(60);
   press('a'); await sleep(60); // accept stats
+  press('a'); await sleep(60); // accept the offered face (portrait)
   say('created ' + name);
 }
 
@@ -82,7 +83,7 @@ async function run() {
   press('s'); await sleep(60);             // save
   say('saved at hall: ' + /saved/i.test(logText()));
   press('l'); await sleep(60);             // leave
-  say('left hall, roster=' + document.getElementById('roster').textContent.split('\n')[1]);
+  say('left hall, roster rows=' + document.querySelectorAll('#roster .row:not(.hdr):not(.empty)').length);
 
   if (phase === 'town') { say('DONE town'); return; }
 
@@ -110,15 +111,22 @@ async function run() {
     return;
   }
 
-  // phase 'combat': wander until a battle menu appears, then stop
+  // phase 'combat': wander until a battle menu appears, then stop.
+  // Turn when a step bumps a wall so corners can't trap the walker.
   for (let i = 0; i < 200; i++) {
-    press(['ArrowUp', 'ArrowUp', 'ArrowUp', 'ArrowLeft'][i % 4]);
+    const before = logText().length;
+    press('ArrowUp');
     await sleep(80);
     if (/BATTLE!/.test(menuText()) || /orders for/.test(menuText())) {
       say('DONE combat encountered at step ' + i + ' | ' + menuText().split('\n')[1]);
       return;
     }
-    if (i % 40 === 39) say('wandering… i=' + i + ' loc=' + document.getElementById('loc').textContent + ' log tail=' + logText().slice(-90).replace(/\n/g, '|'));
+    if (/wall wins\.$/.test(logText().slice(before).trim()) || logText().slice(before).includes('wall wins')) {
+      press(i % 3 === 0 ? 'ArrowRight' : 'ArrowLeft');
+      await sleep(60);
+    }
+    if (/Take the stairs/i.test(menuText())) { press('n'); await sleep(60); }
+    if (i % 40 === 39) say('wandering… i=' + i + ' log tail=' + logText().slice(-90).replace(/\n/g, '|'));
   }
   say('no combat found in 200 steps');
 }

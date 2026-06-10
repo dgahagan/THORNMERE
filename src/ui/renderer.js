@@ -1,347 +1,368 @@
-// The wireframe viewport: single-point perspective, ~3 cells of depth plus
-// the cells to each side. Walls are drawn far-to-near as black-filled,
-// stroked polygons, so near geometry occludes far geometry exactly.
+// The solid bitmap viewport: single-point perspective over a 320x240 indexed
+// framebuffer, textured walls drawn far-to-near for exact occlusion, palette
+// distance shading with Bayer dithering — the 1985 Amiga look.
+//
+// Same interface the game loop has always used:
+//   draw(game) · combatPortrait(game, def) · interior(name, id) ·
+//   splash(title, sub) — plus scene helpers for the portrait window.
 
 import { DX, DY, edgeState, cellSpecial, edgeAt } from '../core/maze.js';
-import { currentMap, mapStateFor, isNight, inZone } from '../core/gamestate.js';
-import { lightRadius, hasEffect } from '../core/effects.js';
-import { drawPortrait } from './portraits.js';
+import { currentMap, mapStateFor, isNight, DAY_LEN, NIGHT_AT } from '../core/gamestate.js';
+import { lightRadius } from '../core/effects.js';
+import { ART, sprite, areaStyle, resolveVariant, frameAt } from './art.js';
+import { Fb, FBW, FBH } from './fb.js';
 
-const W = 448, H = 336;
+const W = FBW, H = FBH;
 const CX = W / 2, CY = H / 2;
-const K = 120;                       // focal constant
+const K = 92;                                 // focal constant
 const DEPTHS = [0.45, 1.45, 2.45, 3.45, 4.45]; // far-edge plane of cell k
-const NEAR = 0.16;                   // clamp for the cell you stand in
+const NEAR = 0.16;
 
-export const COLORS = {
-  line: '#8df272',
-  dim: '#3f7a38',
-  glyph: '#c9f7b0',
-  black: '#000000'
+const C = {                                   // palette indices for chrome
+  black: 0, frame: 3, frameLit: 5, gold: 29, candle: 30,
+  bone: 6, chalk: 7, text: 13, dim: 4
 };
 
 function planeDist(k) { return k < 0 ? NEAR : DEPTHS[k]; }
-function py(d, topOrBottom) { const hh = K / d; return topOrBottom === 't' ? CY - hh : CY + hh; }
+function py(d, tb) { const hh = K / d; return tb === 't' ? CY - hh : CY + hh; }
 function px(u, d) { return CX + (u * 2 * K) / d; }
+
+// distance -> fractional shade level (dithered between integer ramp steps)
+function shadeLevel(d, boost) {
+  return Math.max(0, Math.min(4, (d - 1.0) * 0.85 + boost));
+}
 
 export class Renderer {
   constructor(canvas) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    this.fb = new Fb(canvas);
+    this.now = 0;          // animation clock (ms), set by the UI loop
   }
 
-  clear() {
-    const { ctx } = this;
-    ctx.fillStyle = COLORS.black;
-    ctx.fillRect(0, 0, W, H);
-  }
-
-  frame(color) {
-    const { ctx } = this;
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1;
-    ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
-  }
-
-  // ---- main entry ----------------------------------------------------------
+  // ---- main exploration view ----------------------------------------------
   draw(game) {
-    const { ctx } = this;
-    this.clear();
+    const fb = this.fb;
     const map = currentMap(game);
+    const style = areaStyle(map.id);
     const radius = lightRadius(game);
 
-    if (radius < 0) { // magical darkness
-      this.frame(COLORS.dim);
-      ctx.fillStyle = COLORS.dim;
-      ctx.font = '14px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('darkness', CX, CY);
+    if (radius < 0) {                          // magical darkness: one step only
+      fb.clear(0);
+      this.walls(game, map, style, 0, 3.2);
+      fb.textCentered('DARKNESS', CX, H - 24, C.dim);
+      this.frame();
+      fb.flush();
       return;
     }
 
     const noLight = map.kind === 'dungeon' && radius === 0;
     const maxDepth = noLight ? 1 : Math.min(3, Math.max(1, radius));
-    const stroke = noLight ? COLORS.dim : COLORS.line;
+    const boost = map.kind === 'town'
+      ? (isNight(game) ? 0.8 : 0)
+      : Math.max(0, 2.0 - radius * 0.65);
+
+    this.backdrop(game, map, style, maxDepth, boost);
+    this.walls(game, map, style, maxDepth, boost);
+    this.frame();
+    if (game.debugMap) this.automap(game);
+    fb.flush();
+  }
+
+  frame() {
+    const fb = this.fb;
+    fb.rect(0, 0, W, H, C.frame);
+    fb.rect(1, 1, W - 2, H - 2, C.black);
+  }
+
+  // ---- floor / ceiling / sky ------------------------------------------------
+  backdrop(game, map, style, maxDepth, boost) {
+    const fb = this.fb;
+    const dMax = DEPTHS[maxDepth];
+    const town = map.kind === 'town';
+
+    // ceiling (or sky)
+    for (let y = 0; y < CY; y++) {
+      const d = K / (CY - y);                  // plane distance for this row
+      if (town) { this.skyRow(game, y, style); continue; }
+      const ceil = style.ceil;
+      if (d > dMax + 1) { fb.fillRect(0, y, W, 1, 0); continue; }
+      const t = Math.min(1, d / dMax);
+      const lvl = shadeLevel(d, boost);
+      const row = y * W;
+      for (let x = 0; x < W; x++) {
+        fb.px[row + x] = fb.shaded(fb.mix(ceil.near, ceil.far, t, x, y), lvl, x, y);
+      }
+    }
+    // floor
+    const floor = style.floor;
+    for (let y = CY; y < H; y++) {
+      let d = K / Math.max(1, y - CY);
+      const row = y * W;
+      if (!town && d > dMax + 1) { fb.fillRect(0, y, W, 1, 0); continue; }
+      if (town) d = Math.min(d, dMax);         // streets haze out, never go black
+      const t = Math.min(1, d / Math.max(dMax, 3));
+      const lvl = town ? Math.min(shadeLevel(d, boost), 1.0 + boost) : shadeLevel(d, boost);
+      for (let x = 0; x < W; x++) {
+        let base = fb.mix(floor.near, floor.far, t, x, y);
+        // wet sheen / bone flecks, scattered deterministically
+        if (floor.sheen != null && (y % 5 === 2) && ((x * 29 + y * 53) % 23) < 3) base = floor.sheen;
+        if (floor.fleck != null && ((x * 37 + y * 71) % 311) === 0) base = floor.fleck;
+        fb.px[row + x] = fb.shaded(base, lvl, x, y);
+      }
+    }
+  }
+
+  skyRow(game, y, style) {
+    const fb = this.fb;
+    const phase = game.clock % DAY_LEN;
+    const dusk = !isNight(game) && phase > NIGHT_AT - 30;
+    const sky = style.sky[isNight(game) ? 'night' : dusk ? 'dusk' : 'day'];
+    const t = Math.min(1, ((CY - y) / CY) * 1.6); // 1 at top, 0 at horizon
+    const row = y * W;
+    for (let x = 0; x < W; x++) {
+      let c = fb.mix(sky.horizon, sky.top, t, x, y);
+      if (sky.stars != null && ((x * 97 + y * 61 + (x >> 3) * 13) % 331) === 7) c = sky.stars;
+      fb.px[row + x] = c;
+    }
+  }
+
+  // ---- the maze -------------------------------------------------------------
+  walls(game, map, style, maxDepth, boost) {
     const f = game.pos.facing;
     const rf = (f + 1) % 4;
-
     const cellAt = (k, o) => ({
       x: game.pos.x + DX[f] * k + DX[rf] * o,
       y: game.pos.y + DY[f] * k + DY[rf] * o
     });
-    // edge of cell (k,o) in relative direction: 0=front 1=right 2=back 3=left
-    const edge = (k, o, rel) => {
+    // how the edge of cell (k,o) in relative dir renders: null = open
+    const edgeTex = (k, o, rel) => {
       const c = cellAt(k, o);
-      return edgeState(game, map, c.x, c.y, (f + rel) % 4);
+      const dir = (f + rel) % 4;
+      const st = edgeState(game, map, c.x, c.y, dir);
+      const beyond = cellSpecial(map, c.x + DX[dir], c.y + DY[dir]);
+      const bld = beyond?.t === 'building';
+      if (st === 'open') return null;
+      if (bld) {
+        if (st === 'door') {
+          return { tex: beyond.id.startsWith('empty') ? style.boards : style.door, sign: beyond };
+        }
+        return { tex: style.facade || style.wall };
+      }
+      if (st === 'door') return { tex: style.door };
+      if (st === 'riddle') return { tex: style.riddleDoor };
+      return { tex: style.wall };
     };
-
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = stroke;
-    ctx.lineJoin = 'miter';
 
     for (let k = maxDepth; k >= 0; k--) {
       const dFar = planeDist(k);
       const dNear = planeDist(k - 1);
+      const lvlFar = shadeLevel(dFar, boost);
 
-      // --- side columns (left o=-1, right o=+1)
+      // side columns
       for (const o of [-1, 1]) {
-        const between = edge(k, 0, o === -1 ? 3 : 1); // wall between center and side cell
-        if (between !== 'open') continue;             // can't see into the side cell
-        // outer side wall of the side cell
-        const outer = edge(k, o, o === -1 ? 3 : 1);
-        if (outer !== 'open') {
-          this.sideWall(o === -1 ? -1.5 : 1.5, dNear, dFar, outer, stroke, o === -1 ? 1 : -1);
-        }
-        // front wall of the side cell
-        const sideFront = edge(k, o, 0);
-        if (sideFront !== 'open') {
-          this.frontWall(o - 0.5, o + 0.5, dFar, sideFront, stroke);
-        }
-        // floor/ceiling continuation lines of the opening
-        this.openingLines(o === -1 ? -0.5 : 0.5, dNear, dFar, stroke);
+        if (edgeTex(k, 0, o === -1 ? 3 : 1)) continue;     // can't see in
+        const outer = edgeTex(k, o, o === -1 ? 3 : 1);
+        if (outer) this.sideWall(o === -1 ? -1.5 : 1.5, dNear, dFar, outer.tex, boost);
+        const sideFront = edgeTex(k, o, 0);
+        if (sideFront) this.frontWall(o - 0.5, o + 0.5, dFar, sideFront, lvlFar);
       }
 
-      // --- center column side walls
-      const left = edge(k, 0, 3);
-      const right = edge(k, 0, 1);
-      if (left !== 'open') this.sideWall(-0.5, dNear, dFar, left, stroke, 1);
-      if (right !== 'open') this.sideWall(0.5, dNear, dFar, right, stroke, -1);
+      // center column side walls
+      const left = edgeTex(k, 0, 3);
+      const right = edgeTex(k, 0, 1);
+      if (left) this.sideWall(-0.5, dNear, dFar, left.tex, boost);
+      if (right) this.sideWall(0.5, dNear, dFar, right.tex, boost);
 
-      // --- center front wall
-      const front = edge(k, 0, 0);
-      if (front !== 'open') {
-        // widen to cover side gaps if the adjacent cells' front walls continue
-        this.frontWall(-0.5, 0.5, dFar, front, stroke);
-      }
+      // center front wall
+      const front = edgeTex(k, 0, 0);
+      if (front) this.frontWall(-0.5, 0.5, dFar, front, lvlFar);
 
-      // --- special glyph in the center cell at this depth
+      // furniture sprite in the center cell at this depth
       const c = cellAt(k, 0);
       const sp = cellSpecial(map, c.x, c.y);
-      if (sp && k > 0) this.glyph(game, sp, dNear, dFar, stroke);
-    }
-
-    // horizon ticks for the corridor (depth cue)
-    ctx.strokeStyle = stroke;
-    this.frame(stroke);
-
-    if (map.kind === 'town' && isNight(game)) {
-      ctx.fillStyle = COLORS.dim;
-      ctx.font = '11px monospace';
-      ctx.textAlign = 'left';
-      ctx.fillText('night', 8, 16);
-    }
-    if (game.debugMap) this.automap(game);
-  }
-
-  // wall parallel to view at lateral u, spanning dNear..dFar. lean: +1 if its
-  // face looks rightward (left-hand walls), -1 for right-hand walls.
-  sideWall(u, dNear, dFar, state, stroke, lean) {
-    const { ctx } = this;
-    const x1 = px(u, dNear), x2 = px(u, dFar);
-    const t1 = py(dNear, 't'), b1 = py(dNear, 'b');
-    const t2 = py(dFar, 't'), b2 = py(dFar, 'b');
-    ctx.fillStyle = COLORS.black;
-    ctx.beginPath();
-    ctx.moveTo(x1, t1); ctx.lineTo(x2, t2); ctx.lineTo(x2, b2); ctx.lineTo(x1, b1);
-    ctx.closePath();
-    ctx.fill();
-    ctx.strokeStyle = stroke;
-    if (state === 'door' || state === 'riddle') {
-      ctx.stroke();
-      // inset door: interpolate along the wall
-      const di = (t) => dNear + (dFar - dNear) * t;
-      const dx1 = px(u, di(0.3)), dx2 = px(u, di(0.7));
-      const dt1 = CY - (K / di(0.3)) * 0.72, db1 = py(di(0.3), 'b');
-      const dt2 = CY - (K / di(0.7)) * 0.72, db2 = py(di(0.7), 'b');
-      ctx.beginPath();
-      ctx.moveTo(dx1, db1); ctx.lineTo(dx1, dt1); ctx.lineTo(dx2, dt2); ctx.lineTo(dx2, db2);
-      ctx.stroke();
-    } else {
-      ctx.stroke();
+      if (sp && k > 0) this.furniture(game, sp, dNear, dFar, boost);
     }
   }
 
-  frontWall(uL, uR, d, state, stroke) {
-    const { ctx } = this;
-    const x1 = px(uL, d), x2 = px(uR, d);
-    const t = py(d, 't'), b = py(d, 'b');
-    ctx.fillStyle = COLORS.black;
-    ctx.fillRect(x1, t, x2 - x1, b - t);
-    ctx.strokeStyle = stroke;
-    ctx.strokeRect(x1, t, x2 - x1, b - t);
-    if (state === 'door' || state === 'riddle') {
-      const w = x2 - x1, h = b - t;
-      const dx = x1 + w * 0.28, dw = w * 0.44;
-      const dt = t + h * 0.26;
-      ctx.strokeRect(dx, dt, dw, b - dt);
-      if (state === 'riddle') {
-        ctx.fillStyle = stroke;
-        ctx.font = `${Math.max(9, h * 0.2)}px monospace`;
-        ctx.textAlign = 'center';
-        ctx.fillText('?', x1 + w / 2, t + h * 0.6);
+  // wall facing the party at depth d, spanning lateral uL..uR
+  frontWall(uL, uR, d, edge, lvl) {
+    const fb = this.fb;
+    const tex = sprite(edge.tex);
+    const x1 = Math.round(px(uL, d)), x2 = Math.round(px(uR, d));
+    const t = Math.round(py(d, 't')), b = Math.round(py(d, 'b'));
+    const cells = Math.max(1, Math.round(uR - uL));
+    const xs = Math.max(1, x1), xe = Math.min(W - 1, x2);
+    const ys = Math.max(1, t), ye = Math.min(H - 1, b);
+    for (let x = xs; x < xe; x++) {
+      const tu = (((x - x1) * tex.w * cells / (x2 - x1)) | 0) % tex.w;
+      for (let y = ys; y < ye; y++) {
+        const tv = Math.min(tex.h - 1, ((y - t) * tex.h / (b - t)) | 0);
+        const v = tex.data[tv * tex.w + tu];
+        if (v >= 0) fb.px[y * W + x] = fb.shaded(v, lvl, x, y);
+      }
+    }
+    if (edge.sign) this.signboard(edge.sign, x1, x2, t, b, d);
+  }
+
+  // wall parallel to the view at lateral u, spanning depths dNear..dFar
+  sideWall(u, dNear, dFar, texName, boost) {
+    const fb = this.fb;
+    const tex = sprite(texName);
+    const xn = Math.round(px(u, dNear)), xf = Math.round(px(u, dFar));
+    const step = xn < xf ? 1 : -1;
+    for (let x = xn; x !== xf; x += step) {
+      if (x < 1 || x >= W - 1) continue;
+      let d = (u * 2 * K) / (x - CX);
+      if (!Number.isFinite(d)) continue;
+      d = Math.max(dNear, Math.min(dFar, d));
+      const t = Math.round(py(d, 't')), b = Math.round(py(d, 'b'));
+      const tu = Math.min(tex.w - 1, (((d - dNear) / (dFar - dNear)) * tex.w) | 0);
+      const lvl = shadeLevel(d, boost);
+      const ys = Math.max(1, t), ye = Math.min(H - 1, b);
+      for (let y = ys; y < ye; y++) {
+        const tv = Math.min(tex.h - 1, (((y - t) * tex.h) / (b - t)) | 0);
+        const v = tex.data[tv * tex.w + tu];
+        if (v >= 0) fb.px[y * W + x] = fb.shaded(v, lvl, x, y);
       }
     }
   }
 
-  openingLines(u, dNear, dFar, stroke) {
-    const { ctx } = this;
-    ctx.strokeStyle = stroke;
-    ctx.beginPath();
-    // floor and ceiling seams of the corridor continue across the opening
-    ctx.moveTo(px(u, dNear), py(dNear, 'b')); ctx.lineTo(px(u, dFar), py(dFar, 'b'));
-    ctx.moveTo(px(u, dNear), py(dNear, 't')); ctx.lineTo(px(u, dFar), py(dFar, 't'));
-    ctx.stroke();
+  // signboard hung over a building's door, scaled with distance
+  signboard(cell, x1, x2, t, b, d) {
+    const name = 'sign_' + cell.id.replace(/\d+$/, '');
+    const sp = ART.sprites[name] || ART.sprites.sign_generic;
+    if (!sp) return;
+    const wallW = x2 - x1, wallH = b - t;
+    const dw = Math.min(sp.w * 6, Math.max(8, Math.round(wallW * 0.5)));
+    const dh = Math.round(dw * sp.h / sp.w);
+    this.fb.blit(sp, x1 + ((wallW - dw) >> 1), t + Math.round(wallH * 0.12), dw, dh,
+      { shade: shadeLevel(d, 0) });
   }
 
-  // wireframe glyphs for maze furniture, drawn on the floor of cell k
-  glyph(game, sp, dNear, dFar, stroke) {
+  // floor furniture (stairs, chests, mouths, seals, gates, waiting horrors)
+  furniture(game, sp, dNear, dFar, boost) {
     const ms = mapStateFor(game, currentMap(game).id);
     const kind = sp.t;
-    if (['spinner', 'teleport', 'trap', 'building'].includes(kind)) return; // invisible
-    if (kind === 'treasure' && ms.once[sp.id]) return;
-    if (kind === 'encounter' && ms.once[sp.id]) return;
-    const { ctx } = this;
+    if (['spinner', 'teleport', 'trap', 'building'].includes(kind)) return;
+    if ((kind === 'treasure' || kind === 'encounter') && ms.once[sp.id]) return;
+    const name = {
+      stairs: sp.dir === 'down' ? 'fx_stairs_down' : 'fx_stairs_up',
+      mouth: 'fx_mouth', treasure: 'fx_chest', encounter: 'fx_danger',
+      seal: 'fx_seal', gate: 'fx_gate'
+    }[kind];
+    const art = name && ART.sprites[name];
+    if (!art) return;
     const d = (dNear + dFar) / 2;
-    const cx = px(0, d);
-    const floor = py(d, 'b');
-    const s = (2 * K) / d; // pixels per unit at this plane
-    ctx.strokeStyle = COLORS.glyph;
-    ctx.lineWidth = 1.25;
-    ctx.beginPath();
-    if (kind === 'stairs') {
-      const w = s * 0.4, hstep = s * 0.09;
-      if (sp.dir === 'down') {
-        for (let i = 0; i < 4; i++) {
-          ctx.rect(cx - w / 2 + i * (w / 8), floor - hstep * (4 - i) - s * 0.02, w - i * (w / 4), hstep);
-        }
-      } else {
-        for (let i = 0; i < 4; i++) {
-          ctx.rect(cx - w / 2 + i * (w / 8), floor - hstep * (i + 1) - s * 0.02, w - i * (w / 4), hstep);
-        }
+    const s = (2 * K) / d;                     // pixels per cell-unit
+    const dw = Math.round(s * (kind === 'gate' ? 0.9 : 0.5));
+    const dh = Math.round(dw * art.h / art.w);
+    const cx = Math.round(px(0, d));
+    const floor = Math.round(py(d, 'b'));
+    this.fb.blit(art, cx - (dw >> 1), floor - dh - Math.round(s * 0.02), dw, dh,
+      { shade: shadeLevel(d, boost) });
+  }
+
+  // ---- portrait window scenes ------------------------------------------------
+  // carved panel + art box; used by combat, buildings, specials, splash
+  panel(title) {
+    const fb = this.fb;
+    fb.clear(1);
+    // dithered backdrop
+    for (let y = 1; y < H - 1; y++) {
+      for (let x = 1; x < W - 1; x++) {
+        if (((x + y * 2) % 7) === 0) fb.px[y * W + x] = 2;
       }
-    } else if (kind === 'mouth') {
-      const r = s * 0.13;
-      ctx.ellipse(cx, floor - s * 0.45, r, r * 0.55, 0, 0, Math.PI * 2);
-      ctx.moveTo(cx - r, floor - s * 0.45);
-      ctx.lineTo(cx + r, floor - s * 0.45);
-    } else if (kind === 'treasure') {
-      const w = s * 0.3, h = s * 0.16;
-      ctx.rect(cx - w / 2, floor - h, w, h);
-      ctx.moveTo(cx - w / 2, floor - h);
-      ctx.quadraticCurveTo(cx, floor - h - w * 0.3, cx + w / 2, floor - h);
-    } else if (kind === 'encounter') {
-      // a waiting horror: jagged crown sigil
-      const w = s * 0.34;
-      ctx.moveTo(cx - w / 2, floor - s * 0.1);
-      for (let i = 0; i <= 4; i++) {
-        ctx.lineTo(cx - w / 2 + (w / 4) * i, floor - s * (i % 2 ? 0.5 : 0.25));
-      }
-      ctx.lineTo(cx + w / 2, floor - s * 0.1);
-      ctx.closePath();
-    } else if (kind === 'seal') {
-      const r = s * 0.3;
-      ctx.arc(cx, floor - r - s * 0.05, r, 0, Math.PI * 2);
-      ctx.moveTo(cx, floor - 2 * r - s * 0.05); ctx.lineTo(cx, floor - s * 0.05);
-      ctx.moveTo(cx - r, floor - r - s * 0.05); ctx.lineTo(cx + r, floor - r - s * 0.05);
-    } else if (kind === 'gate') {
-      const w = s * 0.5, h = s * 0.7;
-      ctx.moveTo(cx - w / 2, floor); ctx.lineTo(cx - w / 2, floor - h * 0.7);
-      ctx.quadraticCurveTo(cx, floor - h * 1.15, cx + w / 2, floor - h * 0.7);
-      ctx.lineTo(cx + w / 2, floor);
     }
-    ctx.stroke();
-    ctx.lineWidth = 1.5;
+    this.frame();
+    if (title) fb.textCentered(title, CX, 10, C.gold);
   }
 
-  // combat: lead monster portrait over the viewport
+  artBox(drawable, label, sub) {
+    const fb = this.fb;
+    const fr = frameAt(drawable, this.now);
+    const sp = fr && ART.sprites[fr.name];
+    const scale = sp ? Math.max(1, Math.floor(140 / Math.max(sp.w, sp.h))) : 1;
+    const dw = sp ? sp.w * scale : 96, dh = sp ? sp.h * scale : 96;
+    const bw = Math.max(dw + 16, 120), bh = Math.max(dh + 16, 120);
+    const bx = CX - (bw >> 1), by = CY - (bh >> 1) - 12;
+    fb.fillRect(bx - 3, by - 3, bw + 6, bh + 6, C.frameLit);
+    fb.fillRect(bx - 2, by - 2, bw + 4, bh + 4, 2);
+    fb.fillRect(bx, by, bw, bh, 0);
+    if (sp) {
+      const remap = fr.remap ? Object.fromEntries(Object.entries(fr.remap).map(([a, b]) => [+a, +b])) : null;
+      fb.blit(sp, bx + ((bw - dw) >> 1), by + ((bh - dh) >> 1), dw, dh, { remap });
+    } else {
+      fb.textCentered('?', CX, by + (bh >> 1) - 4, C.dim, 2);
+    }
+    if (label) fb.textCentered(label, CX, by + bh + 10, C.text);
+    if (sub) fb.textCentered(sub, CX, by + bh + 22, C.dim);
+  }
+
   combatPortrait(game, monsterDef) {
-    const { ctx } = this;
-    this.clear();
-    this.frame(COLORS.line);
-    const bw = 240, bh = 240;
-    const bx = CX - bw / 2, by = CY - bh / 2 - 14;
-    ctx.strokeStyle = COLORS.line;
-    ctx.strokeRect(bx, by, bw, bh);
-    drawPortrait(ctx, monsterDef.portrait, bx + 12, by + 12, bw - 24, bh - 24, COLORS.glyph);
-    ctx.fillStyle = COLORS.line;
-    ctx.font = '14px monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText(monsterDef.name.toUpperCase(), CX, by + bh + 24);
+    this.panel('BATTLE');
+    const drawable = resolveVariant(monsterDef.id) || resolveVariant('mon_' + monsterDef.portrait);
+    this.artBox(drawable, monsterDef.name.toUpperCase());
+    this.fb.flush();
   }
 
-  // interior of a town building: simple counter-and-keeper vignette
-  interior(name, kind) {
-    const { ctx } = this;
-    this.clear();
-    this.frame(COLORS.line);
-    ctx.strokeStyle = COLORS.line;
-    ctx.lineWidth = 1.5;
-    // room
-    ctx.strokeRect(40, 40, W - 80, H - 110);
-    // counter
-    ctx.strokeRect(120, 190, 210, 46);
-    ctx.beginPath();
-    ctx.moveTo(120, 190); ctx.lineTo(104, 266); ctx.moveTo(330, 190); ctx.lineTo(346, 266);
-    ctx.stroke();
-    // keeper
-    drawPortrait(ctx, kindKeeper(kind), 180, 78, 90, 110, COLORS.glyph);
-    ctx.fillStyle = COLORS.line;
-    ctx.font = '13px monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText(name.toUpperCase(), CX, H - 28);
+  interior(name, id) {
+    this.panel(null);
+    const drawable = resolveVariant('int_' + id) || resolveVariant('per_' + id);
+    this.artBox(drawable, name.toUpperCase());
+    this.fb.flush();
+  }
+
+  // small scene for specials: mouths, stairs, statues, the verses…
+  special(kind, label) {
+    this.panel(null);
+    this.artBox(resolveVariant(kind), label);
+    this.fb.flush();
   }
 
   splash(title, sub) {
-    const { ctx } = this;
-    this.clear();
-    this.frame(COLORS.line);
-    ctx.fillStyle = COLORS.glyph;
-    ctx.textAlign = 'center';
-    ctx.font = 'bold 26px monospace';
-    ctx.fillText(title, CX, CY - 20);
-    ctx.font = '13px monospace';
-    ctx.fillStyle = COLORS.line;
-    if (sub) ctx.fillText(sub, CX, CY + 14);
+    const fb = this.fb;
+    fb.clear(0);
+    // starfield night-sky flourish
+    for (let i = 0; i < 90; i++) {
+      const x = (i * 97 + 31) % W, y = (i * 61 + 7) % H;
+      fb.pset(x, y, (i % 5 === 0) ? C.bone : 2);
+    }
+    fb.rect(6, 6, W - 12, H - 12, C.gold);
+    fb.rect(8, 8, W - 16, H - 16, C.frame);
+    const big = ART.sprites.scene_title;
+    if (big && /THORNMERE/i.test(title)) {
+      fb.blit(big, CX - big.w, CY - big.h - 18, big.w * 2, big.h * 2);
+      fb.textCentered(title, CX, CY + 30, C.gold, 2);
+    } else {
+      fb.textCentered(title, CX, CY - 24, C.gold, 2);
+    }
+    if (sub) fb.textCentered(sub, CX, CY + 52, C.text);
+    fb.flush();
   }
 
+  victory() {
+    this.panel('THE FOUNDING SONG');
+    this.artBox(resolveVariant('scene_victory'), 'THORNMERE IS WHOLE');
+    this.fb.flush();
+  }
+
+  // ---- debug automap ----------------------------------------------------------
   automap(game) {
-    const { ctx } = this;
+    const fb = this.fb;
     const map = currentMap(game);
-    const cs = Math.floor(Math.min(150 / map.w, 150 / map.h) * 2) / 2;
+    const cs = Math.max(2, Math.floor(Math.min(150 / map.w, 150 / map.h)));
     const ox = W - map.w * cs - 10, oy = 10;
-    ctx.save();
-    ctx.fillStyle = 'rgba(0,0,0,0.85)';
-    ctx.fillRect(ox - 4, oy - 4, map.w * cs + 8, map.h * cs + 8);
-    ctx.strokeStyle = COLORS.dim;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
+    fb.fillRect(ox - 4, oy - 4, map.w * cs + 8, map.h * cs + 8, 1);
     for (let y = 0; y < map.h; y++) for (let x = 0; x < map.w; x++) {
       const sx = ox + x * cs, sy = oy + (map.h - 1 - y) * cs;
-      if (edgeAt(map, x, y, 0) !== '0') { ctx.moveTo(sx, sy); ctx.lineTo(sx + cs, sy); }
-      if (edgeAt(map, x, y, 2) !== '0') { ctx.moveTo(sx, sy + cs); ctx.lineTo(sx + cs, sy + cs); }
-      if (edgeAt(map, x, y, 3) !== '0') { ctx.moveTo(sx, sy); ctx.lineTo(sx, sy + cs); }
-      if (edgeAt(map, x, y, 1) !== '0') { ctx.moveTo(sx + cs, sy); ctx.lineTo(sx + cs, sy + cs); }
+      if (edgeAt(map, x, y, 0) !== '0') fb.fillRect(sx, sy, cs + 1, 1, C.dim);
+      if (edgeAt(map, x, y, 2) !== '0') fb.fillRect(sx, sy + cs, cs + 1, 1, C.dim);
+      if (edgeAt(map, x, y, 3) !== '0') fb.fillRect(sx, sy, 1, cs + 1, C.dim);
+      if (edgeAt(map, x, y, 1) !== '0') fb.fillRect(sx + cs, sy, 1, cs + 1, C.dim);
     }
-    ctx.stroke();
-    // party arrow
-    const axc = ox + game.pos.x * cs + cs / 2, ayc = oy + (map.h - 1 - game.pos.y) * cs + cs / 2;
-    ctx.strokeStyle = '#ffd96b';
-    ctx.beginPath();
+    const axc = ox + game.pos.x * cs + (cs >> 1), ayc = oy + (map.h - 1 - game.pos.y) * cs + (cs >> 1);
     const f = game.pos.facing;
-    const vx = [0, 1, 0, -1][f], vy = [-1, 0, 1, 0][f]; // screen-space (y down)
-    ctx.moveTo(axc - vx * cs * 0.3, ayc - vy * cs * 0.3);
-    ctx.lineTo(axc + vx * cs * 0.35, ayc + vy * cs * 0.35);
-    ctx.moveTo(axc + vx * cs * 0.35, ayc + vy * cs * 0.35);
-    ctx.lineTo(axc + vy * cs * 0.2, ayc - vx * cs * 0.2);
-    ctx.stroke();
-    ctx.restore();
+    const vx = [0, 1, 0, -1][f], vy = [-1, 0, 1, 0][f];
+    fb.line(axc - vx * cs * 0.3, ayc - vy * cs * 0.3, axc + vx * cs * 0.4, ayc + vy * cs * 0.4, C.gold);
+    fb.pset(axc + vx, ayc + vy, C.candle);
   }
-}
-
-function kindKeeper(kind) {
-  return {
-    hall: 'knight', greta: 'humanoid', review: 'sorcerer', temple: 'sorcerer',
-    spark: 'hag', goose: 'brute', hart: 'brute', tannery: 'zombie',
-    belltower: 'maldrec', empty: 'humanoid'
-  }[kind] || 'humanoid';
 }

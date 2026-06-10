@@ -15,7 +15,9 @@ import {
   xpForLevel, canLevelUp, levelUp, maxTierAtLevel, tierCost, schoolsAvailable,
   nextTierFor, canBuyTier, buyTier, classChangeOptions, changeClass
 } from './core/leveling.js';
-import { step, turn, searchSecrets, answerRiddle, FACING_NAMES } from './core/maze.js';
+import {
+  step, turn, searchSecrets, answerRiddle, FACING_NAMES, edgeState, cellSpecial, DX, DY
+} from './core/maze.js';
 import { addEffect, hasEffect, lightRadius } from './core/effects.js';
 import { castExplore, canCastNow } from './core/spells.js';
 import { startExploreSong, stopSong, canSing } from './core/songs.js';
@@ -30,7 +32,11 @@ import {
   buyWine, addToParty, removeFromParty, moveInOrder, deleteCharacter
 } from './core/services.js';
 import { Renderer } from './ui/renderer.js';
-import { renderStatus, renderRoster } from './ui/panels.js';
+import { loadArt } from './ui/art.js';
+import { renderStatus, renderRoster, tickNote } from './ui/panels.js';
+import {
+  loadAudio, unlockAudio, updateMusic, sfx, flourish, audioCfg, setAudio
+} from './audio/director.js';
 
 const SAVE_KEY = 'thornmere.save';
 const AUTO_KEY = 'thornmere.autosave';
@@ -41,27 +47,109 @@ let renderer, game = null, rng = new Rng((Date.now() & 0xffffffff) >>> 0);
 let mode = null;
 let highlightId = null;
 let narrating = false;
+let sceneFlash = null;   // transient portrait-window scene: {id, label, until}
+
+// one entry point for keys, shared by keyboard and mouse (full parity)
+function pressKey(key) {
+  unlockAudio();                       // browsers want a gesture first
+  if (musicCtx) updateMusic(game, musicCtx);
+  if (narrating) { if (narrateFlush) narrateFlush(); return; }
+  mode?.onKey?.({ key });
+}
+
+let musicCtx = 'title';
+function setMusic(ctx) { musicCtx = ctx; updateMusic(game, ctx); }
+
+function flashScene(id, label, ms = 2600) {
+  sceneFlash = { id, label, until: Date.now() + ms };
+}
+
+// the viewport drawing for the current state (called on input AND by the
+// animation tick — never blocks input, it only repaints)
+function drawView() {
+  renderer.now = Date.now();
+  if (!game) { renderer.splash('THORNMERE', 'The Founding Song'); return; }
+  if (mode?.draw) { mode.draw(); return; }
+  if (sceneFlash) {
+    if (Date.now() < sceneFlash.until) { renderer.special(sceneFlash.id, sceneFlash.label); return; }
+    sceneFlash = null;
+  }
+  renderer.draw(game);
+}
 
 // ------------------------------------------------------------------ helpers
 function msg(text, cls = '') {
   const p = document.createElement('p');
-  if (cls) p.className = cls;
+  p.className = cls || classify(text);
   p.textContent = text;
   els.log.appendChild(p);
   while (els.log.children.length > 250) els.log.removeChild(els.log.firstChild);
   els.log.scrollTop = els.log.scrollHeight;
 }
+
+// light color coding for the narration: party deeds, wounds, loot
+function classify(text) {
+  if (!game) return '';
+  if (/Victory!|You claim|You pocket|learns|is healed|is cured/.test(text)) return 'loot';
+  if (/falls!|succumbs|dies|drops where|drained|is poisoned|turned to stone|takes \d+/.test(text)) return 'hurt';
+  const names = realParty(game).map(c => c.name);
+  if (names.some(n => text.startsWith(n))) return 'party';
+  return '';
+}
+
 function setMenu(html) { els.menu.innerHTML = html; els.menu.scrollTop = 0; }
 function setHint(t) { els.hint.textContent = t; }
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
 
+// ---- command bar: every keystroke as a clickable button ----------------------
+const KEYCAPS = {
+  ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→',
+  Escape: 'Esc', Enter: '⏎', ' ': 'Space'
+};
+function setBar(bar) {
+  els.cmdbar.innerHTML = '';
+  for (const b of bar || []) {
+    if (b.hidden) continue;
+    const btn = document.createElement('button');
+    btn.dataset.key = b.k;
+    const kbd = document.createElement('kbd');
+    kbd.textContent = KEYCAPS[b.k] || b.k.toUpperCase();
+    btn.append(kbd, document.createTextNode(b.label));
+    els.cmdbar.appendChild(btn);
+  }
+}
+
 function render() {
-  if (!game) { renderer.splash('THORNMERE', 'The Founding Song'); els.status.textContent = ''; els.roster.innerHTML = ''; els.loc.textContent = ''; return; }
-  if (mode?.draw) mode.draw();
-  else renderer.draw(game);
+  drawView();
+  if (!game) { renderStatus(null, els.status); els.roster.innerHTML = ''; els.loc.textContent = ''; return; }
+  if (mode === exploreMode) setMenu(exploreContext());
   renderStatus(game, els.status);
   renderRoster(game, els.roster, highlightId);
   els.loc.textContent = game.debugMap ? `(${game.pos.x},${game.pos.y}) ${FACING_NAMES[game.pos.facing]}` : '';
+}
+
+// never an empty box: describe the square and what the party faces
+function exploreContext() {
+  if (!game) return '';
+  const map = currentMap(game);
+  const f = game.pos.facing;
+  const st = edgeState(game, map, game.pos.x, game.pos.y, f);
+  const ahead = cellSpecial(map, game.pos.x + DX[f], game.pos.y + DY[f]);
+  let what;
+  if (ahead?.t === 'building' && st !== 'wall') what = `Ahead: ${ahead.name}.`;
+  else if (ahead?.t === 'gate') what = 'Ahead: a town gate.';
+  else if (st === 'door') what = 'A door stands ahead.';
+  else if (st === 'riddle') what = 'A graven door bars the way. It will want an answer.';
+  else if (st === 'wall') what = 'A wall blocks the way.';
+  else what = 'The way ahead is open.';
+  const lines = [
+    `<span class="title">${esc(map.name)}</span>`,
+    `<span class="ctx">${esc(`You face ${FACING_NAMES[f].toLowerCase()}. ${what}`)}</span>`
+  ];
+  const here = cellSpecial(map, game.pos.x, game.pos.y);
+  if (here?.t === 'stairs') lines.push(`<span class="ctx">Stairs ${esc(here.dir)} leave this very square — (L)ook to take them.</span>`);
+  if (here?.t === 'mouth') lines.push('<span class="ctx">A carved mouth waits in the stone here.</span>');
+  return lines.join('\n');
 }
 
 function setMode(m) {
@@ -69,17 +157,21 @@ function setMode(m) {
   highlightId = null;
   if (m.menu !== undefined) setMenu(m.menu);
   setHint(m.hint || '');
+  setBar(m.bar || (m.onKey ? [{ k: 'Escape', label: 'Back' }] : []));
   m.enter?.();
   render();
 }
 
-// generic list menu: options = [{k,label,fn,dim?}]
-function menuMode({ title, body = '', options, view, hint, onEsc, draw }) {
-  const lines = options.filter(o => !o.hidden).map(o => ` (${o.k.toUpperCase()}) ${o.label}`).join('\n');
+// generic list menu: options = [{k,label,fn,dim?}] — every line is clickable
+function menuMode({ title, body = '', options, view, hint, onEsc, draw, bar }) {
+  const lines = options.filter(o => !o.hidden).map(o =>
+    `<span class="opt${o.dim ? ' dim' : ''}" data-key="${esc(o.k)}"> (<span class="key">${esc(o.k.toUpperCase())}</span>) ${esc(o.label)}</span>`
+  ).join('\n');
   return {
     menu: `<span class="title">${esc(title)}</span>\n${body ? esc(body) + '\n' : ''}${lines}`,
-    hint: hint ?? 'Choose an option. Esc backs out.',
+    hint: hint ?? 'Choose an option (click or key). Esc backs out.',
     draw,
+    bar: bar ?? (onEsc ? [{ k: 'Escape', label: 'Back' }] : []),
     onKey(e) {
       const k = e.key.toLowerCase();
       if (k === 'escape' && onEsc) { onEsc(); return; }
@@ -115,15 +207,25 @@ function pickFromList(title, items, labelFn, cb, onEsc, page = 0) {
   setMode(menuMode({ title, options: opts, onEsc, draw: mode?.draw }));
 }
 
-function textPrompt(label, cb, onEsc) {
+const FEN_NAMES = ['Hroth', 'Brenna', 'Aldwyn', 'Tamsin', 'Morrigan', 'Elspeth', 'Cadoc', 'Yslin',
+  'Berra', 'Oswic', 'Maeven', 'Durn', 'Ketti', 'Falk', 'Sorrel', 'Wynna'];
+let nameIdx = 0;
+
+function textPrompt(label, cb, onEsc, suggest = null) {
   let buf = '';
   const show = () => setMenu(`<span class="title">${esc(label)}</span>\n&gt; ${esc(buf)}_`);
   setMode({
     hint: 'Type your answer. Enter to speak it, Esc to stay silent.',
+    bar: [
+      { k: 'Enter', label: 'Speak' },
+      ...(suggest ? [{ k: 'Tab', label: 'Suggest a name' }] : []),
+      { k: 'Escape', label: 'Stay silent' }
+    ],
     draw: mode?.draw,
     onKey(e) {
       if (e.key === 'Enter') { cb(buf); return; }
       if (e.key === 'Escape') { onEsc(); return; }
+      if (e.key === 'Tab' && suggest) { buf = suggest(); show(); return; }
       if (e.key === 'Backspace') buf = buf.slice(0, -1);
       else if (e.key.length === 1 && buf.length < 24) buf += e.key;
       show();
@@ -151,6 +253,25 @@ function loadFrom(key) {
 window.addEventListener('beforeunload', () => { if (game) saveTo(AUTO_KEY); });
 
 // ------------------------------------------------------------------ narration
+// each narrated line may carry a sound: hits, misses, spells by school, traps…
+function sfxForLine(e) {
+  const t = e.text || '';
+  if (e.mouth) return 'mouth';
+  if (/casts /.test(t)) {
+    const spell = DB.spells.find(s => t.includes(s.name));
+    return { hexen: 'spell_hexen', lorist: 'spell_lorist', storm: 'spell_storm' }[spell?.school] || 'spell_hexen';
+  }
+  if (/strikes true|drops where it stands/.test(t)) return 'crit';
+  if (/misses|swings wide|splashes off/.test(t)) return 'miss';
+  if (/falls!|succumbs|dies|simply ceases|slaying/.test(t)) return 'fall';
+  if (/spear-trap|vapour floods|floor drops|ceiling lets go|trap springs/i.test(t)) return 'trap';
+  if (/is poisoned/.test(t)) return 'poison';
+  if (/is healed|is cured/.test(t)) return 'heal';
+  if (/gold/.test(t)) return 'gold';
+  if (/ for \d+/.test(t)) return 'hit';
+  return null;
+}
+
 function narrate(lines, then) {
   narrating = true;
   setMenu('');
@@ -158,7 +279,11 @@ function narrate(lines, then) {
   const tick = () => {
     if (i >= lines.length) { narrating = false; then?.(); return; }
     const e = lines[i++];
-    if (e.type === 'msg' || e.text) msg(e.text, e.mouth ? 'mouth' : /falls!|succumbs|dies|drained|poisoned|stone/i.test(e.text || '') ? 'hurt' : '');
+    if (e.type === 'msg' || e.text) {
+      msg(e.text, e.mouth ? 'mouth' : /falls!|succumbs|dies|drained|poisoned|stone/i.test(e.text || '') ? 'hurt' : '');
+      const s = sfxForLine(e);
+      if (s) sfx(s);
+    }
     render();
     timer = setTimeout(tick, 240);
   };
@@ -180,29 +305,72 @@ let narrateFlush = null;
 const exploreMode = {
   menu: '',
   hint: '↑/W forward  ←→/A·D turn  ↓/S about-face  E search  C cast  P song  U use  T torch  L look  1-6 party  Q quit  ? help',
+  bar: [
+    { k: 'ArrowUp', label: 'Forward' }, { k: 'ArrowLeft', label: 'Turn' }, { k: 'ArrowRight', label: 'Turn' },
+    { k: 'ArrowDown', label: 'About-face' }, { k: 'e', label: 'Search' }, { k: 'c', label: 'Cast' },
+    { k: 'p', label: 'Song' }, { k: 'u', label: 'Use' }, { k: 't', label: 'Torch' },
+    { k: 'l', label: 'Look' }, { k: '?', label: 'Help' }, { k: 'q', label: 'Quit' }
+  ],
+  enter() { setMenu(exploreContext()); setMusic('explore'); },
   onKey(e) {
     const k = e.key.toLowerCase();
     if (k === 'arrowup' || k === 'w') return doStep(false);
     if (k === 'arrowdown' || k === 's') { turn(game, 2); return render(); }
     if (k === 'arrowleft' || k === 'a') { turn(game, -1); return render(); }
     if (k === 'arrowright' || k === 'd') { turn(game, 1); return render(); }
-    if (k === 'e') return handleEvents(searchSecrets(game, rng));
+    if (k === 'e') {
+      const evs = searchSecrets(game, rng);
+      if (evs.some(x => /secret door/.test(x.text || ''))) sfx('secret');
+      return handleEvents(evs);
+    }
     if (k === 'c') return castFlow();
     if (k === 'p') return songFlow();
     if (k === 'u') return useFlow();
     if (k === 't') return torchFlow();
     if (k === 'l') return lookHere();
     if (k === 'm') { if (debugAllowed()) { game.debugMap = !game.debugMap; render(); } return; }
+    if (k === 'o') return optionsMode(() => setMode(exploreMode));
     if (k === 'q') return quitFlow();
     if (k === '?') return helpMode();
     if (/^[1-6]$/.test(k)) return sheetFlow(parseInt(k, 10) - 1);
   }
 };
 
+// ---- audio options (volumes persist in localStorage) -------------------------
+function optionsMode(back) {
+  const cfg = audioCfg();
+  const pct = v => `${Math.round(v * 100)}%`;
+  const adj = (key, d) => { setAudio(key, Math.max(0, Math.min(1, cfg[key] + d))); optionsMode(back); };
+  setMode(menuMode({
+    title: 'Options — sound',
+    body: `Master ${pct(cfg.master)}${cfg.mute ? ' (MUTED)' : ''} · Music ${pct(cfg.music)} · Effects ${pct(cfg.sfx)}`,
+    options: [
+      { k: '1', label: 'Master softer', fn: () => adj('master', -0.1) },
+      { k: '2', label: 'Master louder', fn: () => adj('master', 0.1) },
+      { k: '3', label: 'Music softer', fn: () => adj('music', -0.1) },
+      { k: '4', label: 'Music louder', fn: () => adj('music', 0.1) },
+      { k: '5', label: 'Effects softer', fn: () => adj('sfx', -0.1) },
+      { k: '6', label: 'Effects louder', fn: () => adj('sfx', 0.1) },
+      { k: 'm', label: cfg.mute ? 'Unmute everything' : 'Mute everything', fn: () => { setAudio('mute', !cfg.mute); optionsMode(back); } },
+      { k: 'l', label: 'Done', fn: back }
+    ],
+    onEsc: back, draw: mode?.draw
+  }));
+}
+
 function debugAllowed() { return new URLSearchParams(location.search).has('debug'); }
+
+const ARCHETYPES = {
+  blade: 'warrior', warden: 'warrior', fistwright: 'warrior',
+  knave: 'rogue', strider: 'rogue', skald: 'skald'
+};
+function archetypeOf(clsId) { return ARCHETYPES[clsId] || 'caster'; }
+function portraitOf(ch) { return ch.portrait || `pc_${ch.race}_${archetypeOf(ch.cls)}_a`; }
 
 function doStep(backward) {
   const events = step(game, rng, { backward });
+  if (events.some(e => e.type === 'bump')) sfx('bump');
+  else sfx(['undercroft', 'barrow'].some(p => game.pos.map.startsWith(p)) ? 'footstep_dirt' : 'footstep_stone');
   handleEvents(events);
 }
 
@@ -220,6 +388,7 @@ function handleEvents(events) {
   for (const e of events) {
     if (['msg', 'treasure'].includes(e.type) || e.text) {
       if (e.text) msg(e.text, e.mouth ? 'mouth' : '');
+      if (e.mouth) flashScene('fx_mouth_anim', 'A MAGIC MOUTH');
       if (e.type === 'treasure') {
         const extra = [];
         grantTreasure(e, extra);
@@ -263,15 +432,18 @@ function grantTreasure(e, pending) {
 function travel(to, announce = true) {
   game.pos = { map: to.map, x: to.x, y: to.y, facing: to.facing ?? game.pos.facing };
   stopSong(game);
+  sfx('stairs');
   if (announce) msg(`— ${currentMap(game).name} —`, 'mouth');
   setMode(exploreMode);
 }
 
 function riddleFlow() {
   const map = currentMap(game);
+  flashScene('fx_mouth_anim', 'THE RIDDLE DOOR', 6000);
   msg('A voice from the door: ' + map.riddle.question, 'mouth');
   textPrompt(map.riddle.question, (answer) => {
     if (answerRiddle(game, answer)) {
+      sfx('secret');
       msg('A long sigh of hinges — the door swings wide.', 'good');
       setMode(exploreMode);
     } else {
@@ -282,10 +454,19 @@ function riddleFlow() {
 }
 
 function stairsFlow(cell) {
-  confirm(`Take the stairs ${cell.dir}?`, () => {
-    msg(cell.dir === 'down' ? 'You descend into the waiting dark.' : 'You climb toward better air.');
-    travel(cell.to);
-  }, () => setMode(exploreMode));
+  const draw = () => renderer.special(cell.dir === 'down' ? 'fx_stairs_down' : 'fx_stairs_up',
+    cell.dir === 'down' ? 'STAIRS DOWN' : 'STAIRS UP');
+  setMode(menuMode({
+    title: `Take the stairs ${cell.dir}?`,
+    options: [
+      { k: 'y', label: 'Yes', fn: () => {
+          msg(cell.dir === 'down' ? 'You descend into the waiting dark.' : 'You climb toward better air.');
+          travel(cell.to);
+        } },
+      { k: 'n', label: 'No', fn: () => setMode(exploreMode) }
+    ],
+    onEsc: () => setMode(exploreMode), draw
+  }));
 }
 
 function gateFlow(cell) {
@@ -345,6 +526,7 @@ function lightItem(ch, idx) {
   const item = invItem(ch, idx);
   addEffect(game, { kind: 'light', radius: item.radius, until: game.clock + item.burn, fire: true });
   removeFromInventory(ch, idx);
+  sfx('torch');
   msg(`${ch.name} lights a ${item.name.toLowerCase()}. The dark steps back ${item.radius} paces.`, 'good');
   render();
 }
@@ -421,18 +603,20 @@ function sheetFlow(slot) {
   if (tiers) lines.push(`Spell tiers — ${tiers}`);
   if (ch.cls === 'skald') lines.push(`Songs left today: ${ch.songsLeft}`);
   lines.push('');
-  ch.inventory.forEach((en, i) => {
+  const invLines = ch.inventory.map((en, i) => {
     const item = DB.item(en.id);
     const eq = Object.values(ch.equip).includes(i) ? '*' : ' ';
     const ok = classAllowed(ch, item) ? '' : ' (not your trade)';
-    lines.push(` ${i + 1}${eq} ${en.ident ? item.name : item.generic}${ok}`);
+    return `<span class="opt" data-key="${i + 1}"> ${i + 1}${eq} ${esc(en.ident ? item.name : item.generic)}${esc(ok)}</span>`;
   });
-  if (!ch.inventory.length) lines.push(' (empty pack)');
-  lines.push('', '* = equipped.  1-8 equip/unequip, (T)rade, (D)rop, Esc done');
+  if (!ch.inventory.length) invLines.push(' (empty pack)');
 
   setMode({
-    menu: esc(lines.join('\n')),
-    hint: 'Number keys equip/unequip. T trade, D drop, Esc back.',
+    menu: esc(lines.join('\n')) + '\n' + invLines.join('\n') +
+      '\n\n' + esc('* = equipped.  1-8 equip/unequip, (T)rade, (D)rop, Esc done'),
+    bar: [{ k: 't', label: 'Trade' }, { k: 'd', label: 'Drop' }, { k: 'Escape', label: 'Done' }],
+    hint: 'Number keys or clicks equip/unequip. T trade, D drop, Esc back.',
+    draw: () => renderer.special(portraitOf(ch), `${ch.name.toUpperCase()} — ${clsOf(ch).name.toUpperCase()}`),
     onKey(e) {
       const k = e.key.toLowerCase();
       if (k === 'escape') { highlightId = null; return setMode(exploreModeOrCurrent()); }
@@ -483,15 +667,20 @@ function quitFlow() {
 function helpMode() {
   setMode({
     menu: esc([
-      'THORNMERE — keys',
+      'THORNMERE — keys & mouse',
       '  ↑/W forward · ←→/A·D turn · ↓/S about-face',
       '  E search walls · L look (re-read the cell, use stairs)',
       '  C cast · P play/stop song · U use item · T light a torch',
-      '  1-6 character sheet (equip/trade/drop)',
+      '  1-6 character sheet (equip/trade/drop) · O options (audio)',
       '  Q quit+autosave · ?debug=1 in URL, then M = automap',
       '',
       'In combat: A attack · D defend · C cast · S sing · H hide (Knave)',
       '  U use · V party advance · R run. Space hurries the narration.',
+      '',
+      'Every action also answers to the mouse: the button bar below,',
+      'menu lines, roster rows, and the arrows over the viewport all',
+      'click. The wheel scrolls the event log. Clicking the viewport',
+      'hurries narration, like Space.',
       '',
       'Save properly at the Adventurers\' Hall. Heal at the Temple.',
       'SP recharges at the Spark House (or slowly, outdoors by day).',
@@ -507,8 +696,11 @@ function helpMode() {
 function openBuilding(id, name) {
   if (id.startsWith('empty')) {
     msg(`${name}: boarded fast. Dust, rot, and rat-droppings within.`);
+    sfx('bump');
     return setMode(exploreMode);
   }
+  sfx('door');
+  if (['goose', 'hart'].includes(id)) setMusic('tavern');
   const draws = { draw: () => renderer.interior(name, id) };
   switch (id) {
     case 'hall': return hallMode(name, draws);
@@ -533,7 +725,7 @@ function hallMode(name, draws) {
       { k: 'r', label: 'Remove from party', fn: () => removeFlow(name, draws) },
       { k: 'o', label: 'Marching order', fn: () => orderFlow(name, draws) },
       { k: 'x', label: 'Strike a name from the ledger (delete)', fn: () => deleteFlow(name, draws) },
-      { k: 's', label: 'SAVE the game', fn: () => { saveTo(SAVE_KEY); msg('The clerk records everything in a fair hand. Game saved.', 'good'); hallMode(name, draws); } },
+      { k: 's', label: 'SAVE the game', fn: () => { saveTo(SAVE_KEY); sfx('save'); msg('The clerk records everything in a fair hand. Game saved.', 'good'); hallMode(name, draws); } },
       { k: 'l', label: 'Leave', fn: () => leaveBuilding() }
     ],
     onEsc: () => leaveBuilding(),
@@ -548,6 +740,7 @@ function leaveBuilding() {
 
 function createFlow(hall, draws) {
   if (game.roster.length >= 20) { msg('The ledger is full (20 souls).'); return hallMode(hall, draws); }
+  const suggestName = () => FEN_NAMES[(nameIdx++) % FEN_NAMES.length];
   textPrompt('Name the newcomer:', (nm) => {
     const nameTrim = nm.trim();
     if (!nameTrim) return hallMode(hall, draws);
@@ -574,15 +767,30 @@ function createFlow(hall, draws) {
         title: `${nameTrim} — ${race.name} ${cls.name}`,
         body: `${statLine}\n(ST melee · IQ spell points · DX armour & aim · CN health · LK fate)`,
         options: [
-          { k: 'a', label: 'Accept these bones', fn: () => finish(race, cls, stats) },
+          { k: 'a', label: 'Accept these bones', fn: () => faceLoop(race, cls, stats, 'a') },
           { k: 'r', label: 'Roll again', fn: () => rollLoop(race, cls) }
         ],
         onEsc: () => hallMode(hall, draws), ...draws
       }));
     };
 
-    const finish = (race, cls, stats) => {
+    const faceLoop = (race, cls, stats, face) => {
+      const pid = `pc_${race.id}_${archetypeOf(cls.id)}_${face}`;
+      setMode(menuMode({
+        title: `${nameTrim} — choose a face`,
+        options: [
+          { k: '1', label: 'The first face', fn: () => faceLoop(race, cls, stats, 'a') },
+          { k: '2', label: 'The second face', fn: () => faceLoop(race, cls, stats, 'b') },
+          { k: 'a', label: 'This one will do', fn: () => finish(race, cls, stats, pid) }
+        ],
+        onEsc: () => rollLoop(race, cls),
+        draw: () => renderer.special(pid, nameTrim.toUpperCase())
+      }));
+    };
+
+    const finish = (race, cls, stats, portrait) => {
       const ch = createCharacter(rng, { name: nameTrim, raceId: race.id, classId: cls.id, stats });
+      ch.portrait = portrait;
       addToInventory(ch, 'torch');
       game.roster.push(ch);
       const purse = 90 + rng.range(0, 60);
@@ -591,7 +799,7 @@ function createFlow(hall, draws) {
       if (game.partyIds.length < 6) addToParty(game, ch.id);
       hallMode(hall, draws);
     };
-  }, () => hallMode(hall, draws));
+  }, () => hallMode(hall, draws), suggestName);
 }
 
 function addFlow(hall, draws) {
@@ -657,14 +865,14 @@ function shopMode(name, draws) {
 function buyFlow(ch, name, draws) {
   pickFromList(`Greta's stock — gold ${game.gold} — buying for ${ch.name}`, shopStock(),
     it => `${it.name.padEnd(20)} ${String(it.price).padStart(5)}g${classAllowed(ch, it) ? '' : '  (not their trade)'}`,
-    (it) => { const r = buyItem(game, ch, it.id); msg(r.msg, r.ok ? 'good' : ''); buyFlow(ch, name, draws); },
+    (it) => { const r = buyItem(game, ch, it.id); if (r.ok) sfx('gold'); msg(r.msg, r.ok ? 'good' : ''); buyFlow(ch, name, draws); },
     () => shopMode(name, draws));
 }
 function sellFlow(ch, name, draws) {
   if (!ch.inventory.length) return shopMode(name, draws);
   pickFromList(`${ch.name} sells — Greta squints.`, ch.inventory.map((en, i) => ({ en, i })),
     ({ en }) => `${(en.ident ? DB.item(en.id).name : DB.item(en.id).generic).padEnd(20)} ${String(sellPrice(en)).padStart(4)}g`,
-    ({ i }) => { const r = sellItem(game, ch, i); msg(r.msg, r.ok ? 'good' : ''); sellFlow(ch, name, draws); },
+    ({ i }) => { const r = sellItem(game, ch, i); if (r.ok) sfx('gold'); msg(r.msg, r.ok ? 'good' : ''); sellFlow(ch, name, draws); },
     () => shopMode(name, draws));
 }
 function identFlow(ch, name, draws) {
@@ -689,6 +897,7 @@ function reviewChar(ch, name, draws) {
       { k: 't', label: 'Train a level', fn: () => {
           if (!canLevelUp(ch)) { msg(`The Board is unmoved. ${need} more experience.`); return reviewChar(ch, name, draws); }
           const g = levelUp(rng, ch);
+          sfx('levelup');
           msg(`${ch.name} is now level ${ch.level}! (+${g.hpGain} HP${g.spGain ? `, +${g.spGain} SP` : ''})`, 'good');
           reviewChar(ch, name, draws);
         } },
@@ -769,6 +978,7 @@ function templeMode(name, draws) {
 }
 function doTemple(ch, what, name, draws) {
   const r = templeService(game, ch, what);
+  if (r.ok) sfx('heal');
   msg(r.msg, r.ok ? 'good' : '');
   templeMode(name, draws);
 }
@@ -879,10 +1089,12 @@ function combatDraw(combat) {
 }
 
 function combatIntro(combat) {
+  setMusic('combat');
   const lines = livingGroups(combat).map((g, i) => ` ${i + 1}) ${groupLabel(combat, combat.groups.indexOf(g))}`);
   setMode({
     menu: `<span class="title">BATTLE!</span>\n${esc(lines.join('\n'))}\n\n(any key — to orders)`,
     hint: 'Any key continues.',
+    bar: [{ k: ' ', label: 'To orders' }],
     draw: combatDraw(combat),
     onKey() { ordersFlow(combat, 0); }
   });
@@ -899,6 +1111,12 @@ function ordersFlow(combat, idx) {
   setMode({
     menu: `<span class="title">Round ${combat.round + 1} — orders for ${esc(ch.name)}</span>\n${esc(gl)}\n${esc(opts)}`,
     hint: 'Esc restarts this round’s orders.',
+    bar: [
+      { k: 'a', label: 'Attack' }, { k: 'd', label: 'Defend' }, { k: 'c', label: 'Cast' },
+      { k: 's', label: 'Sing', hidden: ch.cls !== 'skald' }, { k: 'h', label: 'Hide', hidden: !isKnave },
+      { k: 'u', label: 'Use' }, { k: 'v', label: 'Advance' }, { k: 'r', label: 'Run' },
+      { k: 'Escape', label: 'Redo orders' }
+    ],
     draw: combatDraw(combat),
     onKey(e) {
       const k = e.key.toLowerCase();
@@ -978,11 +1196,16 @@ function combatUseFlow(combat, ch, idx) {
 
 function resolveFlow(combat) {
   highlightId = null;
+  // a Skald's combat song gets its one-round flourish over the battle theme
+  for (const o of Object.values(combat.orders || {})) {
+    if (o?.type === 'sing') { flourish(o.songId); break; }
+  }
   const events = resolveRound(combat);
   narrate(events, () => {
     render();
     if (combat.state === 'orders') return ordersFlow(combat, 0);
     if (combat.state === 'victory') {
+      sfx('gold');
       if (combat.result?.chest) return chestFlow(combat);
       return combat.onEnd('victory');
     }
@@ -995,9 +1218,11 @@ function resolveFlow(combat) {
 function chestFlow(combat) {
   const chest = makeChest(rng, currentMap(game));
   msg('Among the fallen: a banded chest, locked and waiting.', 'mouth');
+  const chestDraw = () => renderer.special('fx_chest', 'A BANDED CHEST');
   const menu = () => {
     if (!aliveParty(game).filter(c => !c.summon).length) return gameOverMode();
     setMode(menuMode({
+      draw: chestDraw,
       title: `A banded chest.${chest.revealed ? ` (trap: ${chest.revealed})` : chest.inspected ? ' (inspected: unsure)' : ''}`,
       options: [
         { k: 'i', label: 'Inspect the lock', fn: () => pickChar('Whose eyes?', null, (ch) => { msg(inspectChest(rng, chest, ch)); menu(); }, menu) },
@@ -1008,6 +1233,7 @@ function chestFlow(combat) {
             menu();
           }, menu) },
         { k: 'o', label: 'Open it', fn: () => pickChar('Who lifts the lid?', null, (ch) => {
+            sfx('chest');
             narrate(openChest(rng, game, chest, ch), () => {
               if (!aliveParty(game).length) return gameOverMode();
               combat.onEnd('victory');
@@ -1023,10 +1249,12 @@ function chestFlow(combat) {
 
 // ================================================================== META MODES
 function mainMenu() {
+  setMusic('title');
   const hasSave = !!localStorage.getItem(SAVE_KEY);
   const hasAuto = !!localStorage.getItem(AUTO_KEY);
   const options = [
     { k: 'n', label: 'New game', fn: newGameFlow },
+    { k: 'o', label: 'Options (sound)', fn: () => optionsMode(() => setMode(mainMenu())) },
     ...(hasSave ? [{ k: 'c', label: 'Continue (Hall save)', fn: () => { if (loadFrom(SAVE_KEY)) { msg('The clerk finds your page. Welcome back.'); setMode(exploreMode); } } }] : []),
     ...(hasAuto ? [{ k: 'a', label: 'Continue (autosave — modern mercy)', fn: () => { if (loadFrom(AUTO_KEY)) { msg('You wake where you fell asleep.'); setMode(exploreMode); } } }] : [])
   ];
@@ -1034,7 +1262,7 @@ function mainMenu() {
     title: 'THORNMERE — The Founding Song',
     body: 'A walled town on a cold fen. Three Verses stolen. One hedge-wizard, unsung.\n',
     options,
-    hint: 'A 1985-style dungeon crawl. Keyboard only.',
+    hint: 'A 1985-style dungeon crawl. Keyboard or mouse.',
     draw: () => renderer.splash('THORNMERE', 'The Founding Song')
   });
 }
@@ -1052,6 +1280,7 @@ function newGameFlow() {
 
 function gameOverMode() {
   highlightId = null;
+  setMusic('defeat');
   setMode(menuMode({
     title: 'THE FEN HAS WON.',
     body: 'The party is lost. Somewhere, a bell does not ring.',
@@ -1068,6 +1297,7 @@ function gameOverMode() {
 function victoryMode() {
   game.flags.won = true;
   saveTo(SAVE_KEY);
+  setMusic('victory');
   const lines = realParty(game).map(ch =>
     ` ${ch.name.padEnd(14)} ${DB.race(ch.race).name.padEnd(9)} ${clsOf(ch).name.padEnd(12)} lvl ${String(ch.level).padStart(2)}  ${ch.xp} xp`);
   setMode({
@@ -1092,7 +1322,8 @@ function victoryMode() {
       '(M) main menu · (E) keep walking the streets of a town that owes you everything'
     ].join('\n')),
     hint: 'Victory. Saved.',
-    draw: () => renderer.splash('✦ THE FOUNDING SONG ✦', 'Thornmere is whole'),
+    bar: [{ k: 'm', label: 'Main menu' }, { k: 'e', label: 'Keep walking' }],
+    draw: () => renderer.victory(),
     onKey(e) {
       const k = e.key.toLowerCase();
       if (k === 'm') { game = null; setMode(mainMenu()); }
@@ -1103,20 +1334,33 @@ function victoryMode() {
 
 // ================================================================== BOOT
 async function boot() {
-  for (const id of ['view', 'status', 'menu', 'log', 'roster', 'hint', 'loc']) els[id] = $(id);
+  for (const id of ['view', 'status', 'menu', 'log', 'roster', 'hint', 'loc', 'cmdbar']) els[id] = $(id);
+  // mouse: anything carrying data-key acts exactly like that keystroke
+  document.addEventListener('click', (e) => {
+    if (narrating) { if (narrateFlush) narrateFlush(); return; }
+    const t = e.target.closest('[data-key]');
+    if (!t || t.classList.contains('dim')) return;
+    pressKey(t.dataset.key);
+  });
+  // clicking the viewport hurries narration / continues, like Space
+  $('view').addEventListener('click', () => pressKey(' '));
+  const fetchJson = async p => (await fetch(new URL('../' + p, import.meta.url))).json();
+  await loadArt(fetchJson);
   renderer = new Renderer(els.view);
   renderer.splash('THORNMERE', 'loading the fen…');
-  await loadAll(async p => (await fetch(new URL('../' + p, import.meta.url))).json());
+  await Promise.all([loadAll(fetchJson), loadAudio(fetchJson)]);
   window.addEventListener('keydown', (e) => {
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
-    if (narrating) { if (narrateFlush) narrateFlush(); return; }
-    mode?.onKey?.(e);
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Tab'].includes(e.key)) e.preventDefault();
+    pressKey(e.key);
   });
+  // animation tick: repaint the viewport at idle-loop speed (input never waits)
+  setInterval(() => { drawView(); tickNote(); }, 130);
   setMode(mainMenu());
 
   // dev/test hook (used by tools/drive.js; harmless in normal play)
   window.__thorn = {
     get game() { return game; },
+    get renderer() { return renderer; },
     travel: (to) => travel(to),
     startCombat: (spec) => startCombat(spec),
     render

@@ -45,7 +45,9 @@ async function main() {
     await key('ArrowUp');
     await waitMenu(/Adventurers' Hall/);
     const create = async (name, race, cls) => {
-      await key('c'); await type(name); await key(race); await key(cls); await key('a');
+      await key('c'); await type(name); await key(race); await key(cls);
+      await key('a');   // accept stats
+      await key('a');   // accept the offered face (portrait)
     };
     await create('Hroth', '2', '1');
     await create('Brenna', '1', '1');

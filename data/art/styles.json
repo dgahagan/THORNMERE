@@ -1,0 +1,30 @@
+{
+  "comment": "Per-area viewport styles. Keyed by map id prefix. Colors are palette indices. floor/ceil: near/far band colors (dithered toward 'far' with distance). sheen: optional accent color flecked into far floor rows (wet stone). sky: town only — ceiling becomes open sky by time of day.",
+  "areas": {
+    "town": {
+      "wall": "tex_town_wall", "door": "tex_town_door", "riddleDoor": "tex_riddle_door",
+      "facade": "tex_facade", "boards": "tex_boards",
+      "floor": { "near": 4, "far": 2, "sheen": null },
+      "sky": {
+        "day":   { "top": 22, "horizon": 23, "stars": null },
+        "dusk":  { "top": 20, "horizon": 27, "stars": null },
+        "night": { "top": 1,  "horizon": 19, "stars": 6 }
+      }
+    },
+    "undercroft": {
+      "wall": "tex_under_wall", "door": "tex_under_door", "riddleDoor": "tex_riddle_door",
+      "floor": { "near": 3, "far": 1, "sheen": 21 },
+      "ceil":  { "near": 9, "far": 8 }
+    },
+    "barrow": {
+      "wall": "tex_barrow_wall", "door": "tex_barrow_door", "riddleDoor": "tex_riddle_door",
+      "floor": { "near": 9, "far": 8, "sheen": null, "fleck": 6 },
+      "ceil":  { "near": 8, "far": 0 }
+    },
+    "needle": {
+      "wall": "tex_needle_wall", "door": "tex_needle_door", "riddleDoor": "tex_riddle_door",
+      "floor": { "near": 3, "far": 1, "sheen": 31 },
+      "ceil":  { "near": 2, "far": 1 }
+    }
+  }
+}

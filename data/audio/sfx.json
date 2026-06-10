@@ -1,0 +1,98 @@
+{
+  "comment": "SFX recipes: arrays of synth notes. freq in Hz (noise = bandpass center), dur seconds, vol 0..1, optional slide (Hz at end), delay (s offset), duty for pulse, a/r envelope seconds.",
+  "sfx": {
+    "footstep_stone": [
+      { "voice": "noise", "freq": 900, "dur": 0.045, "vol": 0.1 },
+      { "voice": "square", "freq": 75, "dur": 0.05, "vol": 0.12, "slide": 55 }
+    ],
+    "footstep_dirt": [
+      { "voice": "noise", "freq": 400, "dur": 0.06, "vol": 0.1 },
+      { "voice": "square", "freq": 60, "dur": 0.05, "vol": 0.1, "slide": 45 }
+    ],
+    "bump": [
+      { "voice": "square", "freq": 90, "dur": 0.12, "vol": 0.28, "slide": 55 },
+      { "voice": "noise", "freq": 250, "dur": 0.08, "vol": 0.12 }
+    ],
+    "door": [
+      { "voice": "square", "freq": 65, "dur": 0.28, "vol": 0.16, "slide": 95, "duty": 0.5 },
+      { "voice": "noise", "freq": 350, "dur": 0.22, "vol": 0.1, "delay": 0.04 }
+    ],
+    "secret": [
+      { "voice": "noise", "freq": 120, "dur": 0.55, "vol": 0.22, "a": 0.08, "r": 0.3 },
+      { "voice": "square", "freq": 48, "dur": 0.5, "vol": 0.2, "slide": 80 }
+    ],
+    "stairs": [
+      { "voice": "square", "freq": 130, "dur": 0.07, "vol": 0.18 },
+      { "voice": "square", "freq": 105, "dur": 0.07, "vol": 0.18, "delay": 0.12 },
+      { "voice": "square", "freq": 85, "dur": 0.09, "vol": 0.18, "delay": 0.24 },
+      { "voice": "square", "freq": 70, "dur": 0.1, "vol": 0.16, "delay": 0.36 }
+    ],
+    "hit": [
+      { "voice": "noise", "freq": 1800, "dur": 0.06, "vol": 0.22 },
+      { "voice": "square", "freq": 220, "dur": 0.07, "vol": 0.22, "slide": 90 }
+    ],
+    "miss": [
+      { "voice": "noise", "freq": 2600, "dur": 0.07, "vol": 0.1, "slide": 900 }
+    ],
+    "crit": [
+      { "voice": "square", "freq": 330, "dur": 0.16, "vol": 0.3, "slide": 60 },
+      { "voice": "noise", "freq": 1200, "dur": 0.14, "vol": 0.22, "delay": 0.02 }
+    ],
+    "fall": [
+      { "voice": "square", "freq": 220, "dur": 0.35, "vol": 0.24, "slide": 35, "duty": 0.5 }
+    ],
+    "spell_hexen": [
+      { "voice": "square", "freq": 420, "dur": 0.3, "vol": 0.2, "slide": 95, "duty": 0.15 },
+      { "voice": "noise", "freq": 2200, "dur": 0.12, "vol": 0.1, "delay": 0.05 }
+    ],
+    "spell_lorist": [
+      { "voice": "tri", "freq": 620, "dur": 0.22, "vol": 0.22, "slide": 930 },
+      { "voice": "tri", "freq": 930, "dur": 0.18, "vol": 0.18, "delay": 0.1, "slide": 1240 }
+    ],
+    "spell_storm": [
+      { "voice": "noise", "freq": 180, "dur": 0.45, "vol": 0.3, "a": 0.01, "r": 0.25 },
+      { "voice": "square", "freq": 75, "dur": 0.4, "vol": 0.22, "slide": 38 }
+    ],
+    "trap": [
+      { "voice": "square", "freq": 1300, "dur": 0.12, "vol": 0.22, "slide": 240 },
+      { "voice": "noise", "freq": 1500, "dur": 0.18, "vol": 0.18, "delay": 0.03 }
+    ],
+    "chest": [
+      { "voice": "square", "freq": 170, "dur": 0.05, "vol": 0.2 },
+      { "voice": "square", "freq": 255, "dur": 0.06, "vol": 0.2, "delay": 0.08 },
+      { "voice": "noise", "freq": 700, "dur": 0.1, "vol": 0.08, "delay": 0.14 }
+    ],
+    "gold": [
+      { "voice": "tri", "freq": 1320, "dur": 0.05, "vol": 0.18 },
+      { "voice": "tri", "freq": 1720, "dur": 0.05, "vol": 0.18, "delay": 0.06 },
+      { "voice": "tri", "freq": 2090, "dur": 0.09, "vol": 0.18, "delay": 0.12 }
+    ],
+    "levelup": [
+      { "voice": "tri", "freq": 523, "dur": 0.09, "vol": 0.24 },
+      { "voice": "tri", "freq": 659, "dur": 0.09, "vol": 0.24, "delay": 0.09 },
+      { "voice": "tri", "freq": 784, "dur": 0.09, "vol": 0.24, "delay": 0.18 },
+      { "voice": "tri", "freq": 1046, "dur": 0.22, "vol": 0.26, "delay": 0.27 }
+    ],
+    "heal": [
+      { "voice": "tri", "freq": 880, "dur": 0.3, "vol": 0.18, "a": 0.08 },
+      { "voice": "tri", "freq": 1320, "dur": 0.26, "vol": 0.14, "delay": 0.12, "a": 0.08 }
+    ],
+    "mouth": [
+      { "voice": "square", "freq": 110, "dur": 0.4, "vol": 0.14, "duty": 0.5, "slide": 95, "a": 0.05 },
+      { "voice": "square", "freq": 140, "dur": 0.3, "vol": 0.1, "delay": 0.18, "duty": 0.5, "slide": 120 }
+    ],
+    "save": [
+      { "voice": "tri", "freq": 700, "dur": 0.08, "vol": 0.2 },
+      { "voice": "tri", "freq": 1050, "dur": 0.12, "vol": 0.2, "delay": 0.09 }
+    ],
+    "torch": [
+      { "voice": "noise", "freq": 1900, "dur": 0.25, "vol": 0.16, "a": 0.02, "r": 0.15 }
+    ],
+    "poison": [
+      { "voice": "noise", "freq": 600, "dur": 0.4, "vol": 0.14, "a": 0.05, "slide": 200 }
+    ],
+    "teleport": [
+      { "voice": "tri", "freq": 300, "dur": 0.25, "vol": 0.2, "slide": 1500 }
+    ]
+  }
+}
