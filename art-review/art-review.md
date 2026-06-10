@@ -55,7 +55,30 @@ Rendered at 6× via `node tools/artrender.js --sheet tex 6`.
 
 ## Step 3 — town facades, signboards, interiors
 
-<!-- verdicts logged as each sprite is drawn -->
+Signboards rendered at 8× via `--sheet sign 8`; interiors at 3× via `--sheet int 3`.
+sign_greta and sign_spark required one revision each (boot silhouette, bold bolt shape).
+
+### Signboards (36×28)
+- sign_hall [36×28] — PASS: crossed swords X, gold crossguards, clear silhouette
+- sign_greta [36×28] — PASS (rev 2): boot shaft + foot + heel profile clearly readable, lace eyelets visible
+- sign_review [36×28] — PASS: balance scales, post, beam, two hanging pans
+- sign_temple [36×28] — PASS: caged lantern, hanger, red flame inside glass
+- sign_spark [36×28] — PASS (rev 2): bold two-block yellow zigzag bolt with gold-dark shadow edge
+- sign_goose [36×28] — PASS: white bird silhouette, gold beak, eye, standing pose
+- sign_hart [36×28] — PASS: antler beams with tines, deer face with eyes and nostrils
+- sign_tannery [36×28] — PASS (rev 2): stretched hide on wooden frame, corner tie cords, texture marks
+- sign_belltower [36×28] — PASS: gold bell on grey arch frame, clearly suspended
+
+### Interior scenes (96×72)
+- int_hall [96×72] — PASS: red banner, NPC in blood robe, notice board, candles, stone brickwork
+- int_greta [96×72] — PASS: NPC in green robe, shoe shelves both sides, work lamp, leather piece on counter
+- int_review [96×72] — PASS: NPC in blue robe, blue-curtained back wall, hanging scales on wall, candles
+- int_temple [96×72] — PASS: NPC in gold robe, prominent flame altar on pedestal at centre, candelabra
+- int_spark [96×72] — PASS: NPC in violet robe, abyss-blue walls, coloured vial shelves, rune circle
+- int_goose [96×72] — PASS: NPC visible, large barrel left, fireplace right with fire, mugs on counter
+- int_hart [96×72] — PASS: fireplace left, 3 leather pelts hung on wall, antlers, NPC visible
+- int_tannery [96×72] — PASS: leather roll shelves, measuring cord across wall, pouches, bone needle on counter
+- int_belltower [96×72] — PASS: giant gold bell on stone arch dominates scene, NPC in dark robe, rope visible
 
 ---
 
