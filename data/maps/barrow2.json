@@ -1,0 +1,220 @@
+{
+ "id": "barrow2",
+ "name": "The Howling Barrow — The Wind Galleries",
+ "kind": "dungeon",
+ "dungeon": "The Howling Barrow",
+ "depth": 2,
+ "w": 22,
+ "h": 22,
+ "dark": true,
+ "seed": 404,
+ "hw": [
+  "1111111111111111111111",
+  "01d1101010001101010100",
+  "1000010001011110100011",
+  "001010d000101101000100",
+  "01110000111011110s1010",
+  "111011100101s110011100",
+  "0111101001011111001010",
+  "110010d10001110011d001",
+  "d111001000100011010110",
+  "011d010d001101011d1010",
+  "0s001011d1100100001001",
+  "10d111000d00101d011010",
+  "00000000001s1100d01100",
+  "010001d101011010010100",
+  "0010011000101101000010",
+  "110000000d0101100111d0",
+  "0001000010111001s11111",
+  "000010s001d0111100000d",
+  "1011d10001111001110010",
+  "0111101001d01010000d10",
+  "0111001001d101010d0001",
+  "10100101101010011d0000",
+  "1111111111111111111111"
+ ],
+ "vw": [
+  "110d0d00101d100001d0001",
+  "101101d1101100011011001",
+  "1111001111010010d10d011",
+  "1100101110dd00001101101",
+  "10000001100000010000011",
+  "1000d001110000001100111",
+  "1001011010100d010101101",
+  "100101101d1001010d11011",
+  "100010011100d01001d1001",
+  "1101110011001s010110011",
+  "10110d10110110111100101",
+  "111010111110010011001d1",
+  "10101101r01000110101011",
+  "1101100011010010110s011",
+  "10111100111010010010111",
+  "10101000111001001100d01",
+  "11110011101100101010011",
+  "11100101110000d010101d1",
+  "1d000010100d10010000011",
+  "10000101110101101001101",
+  "10101s10101010110011101",
+  "10001000100001000011d01"
+ ],
+ "cells": {
+  "16,16": {
+   "t": "treasure",
+   "id": "barrow2_secret",
+   "once": true,
+   "items": [
+    "thunder_flask",
+    "thunder_flask",
+    "strong_draught"
+   ],
+   "gold": 350,
+   "text": "A priest-hole from the wight-wars: bottled thunder and a strong draught, still corked."
+  },
+  "19,3": {
+   "t": "stairs",
+   "dir": "up",
+   "to": {
+    "map": "barrow1",
+    "x": 19,
+    "y": 3,
+    "facing": 1
+   }
+  },
+  "3,19": {
+   "t": "stairs",
+   "dir": "down",
+   "to": {
+    "map": "barrow3",
+    "x": 3,
+    "y": 19,
+    "facing": 1
+   }
+  },
+  "7,12": {
+   "t": "mouth",
+   "text": "The gallery itself speaks with a hundred small holes: \"What sings without a mouth opens doors without a key.\""
+  },
+  "18,12": {
+   "t": "mouth",
+   "text": "A mouth full of dust: \"The sorcerers were buried with their books. The books did the digging out.\""
+  },
+  "13,5": {
+   "t": "trap",
+   "trap": "gas",
+   "dc": 14
+  },
+  "11,6": {
+   "t": "trap",
+   "trap": "spikes",
+   "dc": 14
+  },
+  "12,15": {
+   "t": "trap",
+   "trap": "crumble",
+   "dc": 14
+  },
+  "11,17": {
+   "t": "trap",
+   "trap": "pit",
+   "dc": 14
+  },
+  "3,6": {
+   "t": "trap",
+   "trap": "spikes",
+   "dc": 14
+  },
+  "9,16": {
+   "t": "spinner"
+  },
+  "13,13": {
+   "t": "spinner"
+  },
+  "3,13": {
+   "t": "spinner"
+  },
+  "1,3": {
+   "t": "teleport",
+   "to": {
+    "x": 7,
+    "y": 9
+   }
+  },
+  "5,2": {
+   "t": "teleport",
+   "to": {
+    "x": 2,
+    "y": 3
+   }
+  }
+ },
+ "zones": {
+  "dark": [
+   {
+    "x": 2,
+    "y": 2,
+    "w": 5,
+    "h": 4
+   },
+   {
+    "x": 10,
+    "y": 14,
+    "w": 4,
+    "h": 4
+   }
+  ],
+  "antimagic": [
+   {
+    "x": 12,
+    "y": 5,
+    "w": 3,
+    "h": 3
+   }
+  ]
+ },
+ "riddle": {
+  "question": "I sing through every mound yet own no mouth; I touch all faces and hold no shape. What am I?",
+  "answers": [
+   "wind",
+   "the wind",
+   "a wind",
+   "air",
+   "the air"
+  ],
+  "hint": "It is howling at you now."
+ },
+ "entry": {
+  "x": 19,
+  "y": 3,
+  "facing": 3
+ },
+ "encounters": {
+  "rate": 9,
+  "groups": "1d3",
+  "table": [
+   {
+    "monster": "barrow_wight",
+    "weight": 3
+   },
+   {
+    "monster": "hollow_man",
+    "weight": 3
+   },
+   {
+    "monster": "wind_shrieker",
+    "weight": 2
+   },
+   {
+    "monster": "grave_worm",
+    "weight": 2
+   },
+   {
+    "monster": "fen_hag",
+    "weight": 2
+   },
+   {
+    "monster": "tomb_spider",
+    "weight": 2
+   }
+  ]
+ }
+}

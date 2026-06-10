@@ -1,0 +1,237 @@
+{
+ "id": "barrow3",
+ "name": "The Howling Barrow — Hall of the Choir",
+ "kind": "dungeon",
+ "dungeon": "The Howling Barrow",
+ "depth": 3,
+ "w": 22,
+ "h": 22,
+ "dark": true,
+ "seed": 505,
+ "hw": [
+  "1111111111111111111111",
+  "0110101000001010010000",
+  "1100010001101101101100",
+  "001110d100010000111010",
+  "0100110110101011010001",
+  "d011001101010010000110",
+  "001d0110s1111d0s111010",
+  "010000011000d111100001",
+  "111000110000100001d110",
+  "0110000010001100110011",
+  "0100100100001010011001",
+  "000011101001000s00d100",
+  "0001000110001010100000",
+  "001001110101101111000d",
+  "0000000101100101111110",
+  "001000101011100d111100",
+  "0001010101100001011100",
+  "1001011100110010111110",
+  "010010d011001011000110",
+  "00000111d0111001011100",
+  "1001sd011110101d110010",
+  "01010111000000d0001100",
+  "1111111111111111111111"
+ ],
+ "vw": [
+  "110000001010001000010s1",
+  "100110111101100110101d1",
+  "11011010110101110d10101",
+  "11010011d01101101000101",
+  "10100010011d1d001111101",
+  "11001100100101d10010011",
+  "1d1111100d1010100010101",
+  "10010010d100010110111d1",
+  "100000001000001110010d1",
+  "11010011d10000101001101",
+  "1d1ds0d11011011d1110101",
+  "11110010001101110111111",
+  "111d1100011101000001111",
+  "11100d01000101100d00011",
+  "11110d10110010110000011",
+  "11001101000101101d00111",
+  "110000s001001001d0s0011",
+  "1000110000d100d01s01001",
+  "10111d00101000101101011",
+  "11010101010000101001011",
+  "10110010010111101101001",
+  "10000100001d10010100001"
+ ],
+ "cells": {
+  "17,17": {
+   "t": "treasure",
+   "id": "barrow3_secret",
+   "once": true,
+   "items": [
+    "cantors_fork"
+   ],
+   "gold": 400,
+   "text": "A rehearsal cell, soundproofed with grave-wool. On a velvet rag: THE CANTOR'S FORK, black bone, still humming."
+  },
+  "3,19": {
+   "t": "stairs",
+   "dir": "up",
+   "to": {
+    "map": "barrow2",
+    "x": 3,
+    "y": 19,
+    "facing": 0
+   }
+  },
+  "18,4": {
+   "t": "encounter",
+   "id": "choir_fight",
+   "once": true,
+   "text": "A round hall of standing stones, each carved with an open mouth. The CHOIR OF HOLLOW MEN stands in ranks, and at the centre, vast and patient, THE CHOIR'S ELDEST raises one hand. The grave-silk cord of the Second Verse hangs at its throat.",
+   "groups": [
+    {
+     "monster": "choir_eldest",
+     "count": "1"
+    },
+    {
+     "monster": "hollow_cantor",
+     "count": "1d2+1"
+    },
+    {
+     "monster": "hollow_man",
+     "count": "2d3"
+    },
+    {
+     "monster": "hollow_man",
+     "count": "2d3"
+    }
+   ],
+   "reward": {
+    "items": [
+     "verse_second"
+    ],
+    "gold": 1200
+   },
+   "victoryText": "The Eldest folds like an emptied robe. The knotted cord slides free: THE SECOND VERSE. In the silence, every stone mouth says together: \"The third is in the Needle. The Needle's door is your own bell tower, and it will not open to the unriddled.\""
+  },
+  "19,5": {
+   "t": "mouth",
+   "text": "A stone mouth sings one pure note, then: \"Stand not in the front rank when the Eldest draws breath.\""
+  },
+  "10,8": {
+   "t": "mouth",
+   "text": "The mouth murmurs: \"A black fork tunes the dead. Whoever holds it tunes the living too.\""
+  },
+  "0,20": {
+   "t": "trap",
+   "trap": "pit",
+   "dc": 14
+  },
+  "1,5": {
+   "t": "trap",
+   "trap": "gas",
+   "dc": 14
+  },
+  "6,8": {
+   "t": "trap",
+   "trap": "crumble",
+   "dc": 14
+  },
+  "21,6": {
+   "t": "trap",
+   "trap": "crumble",
+   "dc": 14
+  },
+  "7,19": {
+   "t": "trap",
+   "trap": "pit",
+   "dc": 14
+  },
+  "20,21": {
+   "t": "spinner"
+  },
+  "18,0": {
+   "t": "spinner"
+  },
+  "21,17": {
+   "t": "spinner"
+  },
+  "18,6": {
+   "t": "spinner"
+  },
+  "13,19": {
+   "t": "teleport",
+   "to": {
+    "x": 5,
+    "y": 20
+   }
+  },
+  "13,17": {
+   "t": "teleport",
+   "to": {
+    "x": 4,
+    "y": 4
+   }
+  },
+  "3,2": {
+   "t": "teleport",
+   "to": {
+    "x": 7,
+    "y": 2
+   }
+  }
+ },
+ "zones": {
+  "dark": [
+   {
+    "x": 8,
+    "y": 2,
+    "w": 4,
+    "h": 5
+   }
+  ],
+  "antimagic": [
+   {
+    "x": 4,
+    "y": 8,
+    "w": 3,
+    "h": 3
+   }
+  ]
+ },
+ "riddle": null,
+ "entry": {
+  "x": 3,
+  "y": 19,
+  "facing": 1
+ },
+ "encounters": {
+  "rate": 9,
+  "groups": "1d3",
+  "table": [
+   {
+    "monster": "barrow_wight",
+    "weight": 2
+   },
+   {
+    "monster": "wight_lord",
+    "weight": 1
+   },
+   {
+    "monster": "barrow_sorcerer",
+    "weight": 2
+   },
+   {
+    "monster": "mistcaller",
+    "weight": 2
+   },
+   {
+    "monster": "peat_troll",
+    "weight": 2
+   },
+   {
+    "monster": "grave_worm",
+    "weight": 2
+   },
+   {
+    "monster": "hollow_cantor",
+    "weight": 1
+   }
+  ]
+ }
+}

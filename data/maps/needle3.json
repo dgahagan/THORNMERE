@@ -1,0 +1,246 @@
+{
+ "id": "needle3",
+ "name": "Maldrec's Needle — The Gauntlet",
+ "kind": "dungeon",
+ "dungeon": "Maldrec's Needle",
+ "depth": 3,
+ "w": 22,
+ "h": 22,
+ "dark": true,
+ "seed": 808,
+ "hw": [
+  "1111111111111111111111",
+  "1110101101001s10100000",
+  "001001001d0101s1001110",
+  "0100001001100010d000s1",
+  "001010d01110d10111000d",
+  "0100010100000010d00000",
+  "000d0000110000001d00d0",
+  "00s1d00001100110010010",
+  "100100111100010000110d",
+  "d100111100101000010d10",
+  "000111001d010111001110",
+  "011000010110011001d100",
+  "0001000000110110111001",
+  "001110000d100100010110",
+  "0000000011000000000011",
+  "010001d110100000d10110",
+  "001001d001101000011110",
+  "01011d0111110100111001",
+  "0101d1101110d01001s110",
+  "d11000d101000101100000",
+  "00110000100010011111s0",
+  "01100d0111100010000d01",
+  "1111111111111111111111"
+ ],
+ "vw": [
+  "10001000010010001001011",
+  "10011010101110010110101",
+  "110110111d10110001d0001",
+  "110111101dd0110101s1101",
+  "11000011010111011000111",
+  "1110d101d010111001d0011",
+  "111000110101101d1000111",
+  "101d0010100111011100011",
+  "1d1010000101r011110d101",
+  "11d10001011010101011001",
+  "11001011101010001010011",
+  "11d11111010010011000111",
+  "11100111111010011001101",
+  "110101111101111111000d1",
+  "11111d110000111111d0001",
+  "1sd1010000d0101111ddd01",
+  "1011d010100010111000011",
+  "10001010000010011000101",
+  "101d110101ds11010110111",
+  "1100111101011d100010101",
+  "110d11110011111d1000101",
+  "100100100d0010010100101"
+ ],
+ "cells": {
+  "18,18": {
+   "t": "treasure",
+   "id": "needle3_secret",
+   "once": true,
+   "items": [
+    "stormpike"
+   ],
+   "gold": 700,
+   "text": "A lightning-scarred vault. Bolted to the floor, still humming: THE STORMPIKE."
+  },
+  "3,3": {
+   "t": "stairs",
+   "dir": "up",
+   "to": {
+    "map": "needle2",
+    "x": 3,
+    "y": 3,
+    "facing": 2
+   }
+  },
+  "19,3": {
+   "t": "stairs",
+   "dir": "down",
+   "to": {
+    "map": "needle4",
+    "x": 11,
+    "y": 2,
+    "facing": 0
+   }
+  },
+  "11,8": {
+   "t": "mouth",
+   "text": "A mouth with too many teeth: \"Ask the stairwell what it says when you say nothing.\""
+  },
+  "8,20": {
+   "t": "mouth",
+   "text": "It recites: \"Above this floor, only one door, and the door is a question, and the question has eaten every answer but one.\""
+  },
+  "1,17": {
+   "t": "trap",
+   "trap": "crumble",
+   "dc": 16
+  },
+  "6,20": {
+   "t": "trap",
+   "trap": "gas",
+   "dc": 16
+  },
+  "7,8": {
+   "t": "trap",
+   "trap": "pit",
+   "dc": 16
+  },
+  "15,0": {
+   "t": "trap",
+   "trap": "pit",
+   "dc": 16
+  },
+  "15,2": {
+   "t": "trap",
+   "trap": "spikes",
+   "dc": 16
+  },
+  "8,8": {
+   "t": "trap",
+   "trap": "crumble",
+   "dc": 16
+  },
+  "17,0": {
+   "t": "spinner"
+  },
+  "14,17": {
+   "t": "spinner"
+  },
+  "4,18": {
+   "t": "spinner"
+  },
+  "0,19": {
+   "t": "spinner"
+  },
+  "15,7": {
+   "t": "teleport",
+   "to": {
+    "x": 14,
+    "y": 21
+   }
+  },
+  "13,10": {
+   "t": "teleport",
+   "to": {
+    "x": 17,
+    "y": 2
+   }
+  },
+  "18,13": {
+   "t": "teleport",
+   "to": {
+    "x": 13,
+    "y": 17
+   }
+  },
+  "8,7": {
+   "t": "teleport",
+   "to": {
+    "x": 5,
+    "y": 10
+   }
+  },
+  "3,6": {
+   "t": "teleport",
+   "to": {
+    "x": 9,
+    "y": 18
+   }
+  }
+ },
+ "zones": {
+  "antimagic": [
+   {
+    "x": 13,
+    "y": 13,
+    "w": 4,
+    "h": 4
+   },
+   {
+    "x": 5,
+    "y": 15,
+    "w": 3,
+    "h": 3
+   }
+  ],
+  "dark": [
+   {
+    "x": 8,
+    "y": 17,
+    "w": 4,
+    "h": 3
+   }
+  ]
+ },
+ "riddle": {
+  "question": "I answer in your own voice, yet I never speak first. What am I?",
+  "answers": [
+   "echo",
+   "an echo",
+   "the echo",
+   "echoes"
+  ],
+  "hint": "Shout into the stairwell and listen."
+ },
+ "entry": {
+  "x": 3,
+  "y": 3,
+  "facing": 0
+ },
+ "encounters": {
+  "rate": 10,
+  "groups": "1d3",
+  "table": [
+   {
+    "monster": "rune_golem",
+    "weight": 2
+   },
+   {
+    "monster": "illusion_weaver",
+    "weight": 2
+   },
+   {
+    "monster": "pit_horror",
+    "weight": 2
+   },
+   {
+    "monster": "fell_chorister",
+    "weight": 2
+   },
+   {
+    "monster": "maldrec_hand",
+    "weight": 2
+   },
+   {
+    "monster": "glass_revenant",
+    "weight": 1
+   }
+  ]
+ }
+}

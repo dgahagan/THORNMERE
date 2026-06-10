@@ -1,0 +1,58 @@
+[
+  {
+    "id": "march",
+    "key": 1,
+    "name": "Wayfarer's March",
+    "explore": { "kind": "ac", "amount": 1 },
+    "combat": { "kind": "ac", "amount": 2 },
+    "flavor": "Left foot, right foot, live to count them. The party walks taller."
+  },
+  {
+    "id": "fireheart",
+    "key": 2,
+    "name": "Fireheart Air",
+    "explore": { "kind": "dmg", "amount": 1 },
+    "combat": { "kind": "dmg", "amount": 2 },
+    "flavor": "An old burning tune. Blades land heavier while it plays."
+  },
+  {
+    "id": "lantern",
+    "key": 3,
+    "name": "Lantern Reel",
+    "explore": { "kind": "light", "radius": 2 },
+    "combat": { "kind": "light", "radius": 2 },
+    "flavor": "A bright quick reel that the dark dislikes. Light without flame."
+  },
+  {
+    "id": "wardknot",
+    "key": 4,
+    "name": "Wardweaver's Knot",
+    "explore": { "kind": "trapward", "amount": 4 },
+    "combat": { "kind": "saves", "amount": 2 },
+    "flavor": "A knotted rhythm that catches trap-springs and curses alike."
+  },
+  {
+    "id": "lull",
+    "key": 5,
+    "name": "Hearthsong Lull",
+    "explore": { "kind": "regen", "every": 6, "amount": 1 },
+    "combat": { "kind": "regen", "amount": 1 },
+    "flavor": "A slow, warm air from before the gates were built. Wounds knit as you walk."
+  },
+  {
+    "id": "jig",
+    "key": 6,
+    "name": "Confounding Jig",
+    "explore": { "kind": "evade", "amount": 30 },
+    "combat": { "kind": "foehit", "amount": 3 },
+    "flavor": "A tune with one beat too many. Enemies swing where you were."
+  },
+  {
+    "id": "dirge",
+    "key": 7,
+    "name": "Graveman's Dirge",
+    "explore": { "kind": "repel_undead", "amount": 30 },
+    "combat": { "kind": "undead_dmg", "dice": "1d6" },
+    "flavor": "The burying-song. The dead remember their graves and ache to return."
+  }
+]

@@ -1,0 +1,201 @@
+{
+ "id": "undercroft1",
+ "name": "The Sunken Undercroft — Drowned Cellars",
+ "kind": "dungeon",
+ "dungeon": "The Sunken Undercroft",
+ "depth": 1,
+ "w": 22,
+ "h": 22,
+ "dark": true,
+ "seed": 101,
+ "hw": [
+  "1111111111111111111111",
+  "0111001000110000011110",
+  "1111111101000001101010",
+  "00011000100110d0100011",
+  "000d00d01010100d011000",
+  "0000100001dd0011010000",
+  "000011000100d000000100",
+  "00011000101100000011s0",
+  "0100010101d01010010000",
+  "0110101110110001101000",
+  "010001000000010011010d",
+  "10011110d01100d11d0000",
+  "001d110011101001011010",
+  "0110111101100000d11100",
+  "001101101011101010d100",
+  "01000010110001d0011010",
+  "0000010111s11001100110",
+  "0110s01101000001d00111",
+  "0011101011001000111d10",
+  "0111000110100001011100",
+  "11101001d1000d10110110",
+  "00111110101100d1d01011",
+  "1111111111111111111111"
+ ],
+ "vw": [
+  "11000d10010010101000001",
+  "1d00010011001111d1d1001",
+  "10100000101101110s01101",
+  "111101110110011111011d1",
+  "11111d11101000101100111",
+  "1111101111d001100100111",
+  "111100101d10011111d0011",
+  "10110001000101101101d11",
+  "100110001010111d1011111",
+  "11010110010110110010111",
+  "10100001111011r10011011",
+  "1111000111d0101d0101101",
+  "1100100d10d001111000011",
+  "110d1000101001101010111",
+  "1s000100d01010111010011",
+  "10100110d001d1101dd1011",
+  "11000d010d1001110d10001",
+  "1100000010011d1101d1001",
+  "1100011100111s110000101",
+  "10001110010s11101d10011",
+  "1001d01d1010101101d1001",
+  "1100000001d000100010001"
+ ],
+ "cells": {
+  "17,2": {
+   "t": "treasure",
+   "id": "undercroft1_secret",
+   "once": true,
+   "items": [
+    "greatcandle",
+    "healing_draught",
+    "healing_draught"
+   ],
+   "gold": 120,
+   "text": "A smuggler's nook behind the wall: candles, draughts, and a purse of old coin."
+  },
+  "2,2": {
+   "t": "stairs",
+   "dir": "up",
+   "to": {
+    "map": "town",
+    "x": 11,
+    "y": 8,
+    "facing": 2
+   }
+  },
+  "19,19": {
+   "t": "stairs",
+   "dir": "down",
+   "to": {
+    "map": "undercroft2",
+    "x": 19,
+    "y": 19,
+    "facing": 2
+   }
+  },
+  "14,8": {
+   "t": "mouth",
+   "text": "A mouth of cracked plaster grinds: \"The wax remembers what the river forgot. Below, the King of Candles holds the First Verse in molten hands.\""
+  },
+  "13,10": {
+   "t": "mouth",
+   "text": "The stone mouth whispers: \"The split door asks what the King wears for a crown. Answer as a chandler would.\""
+  },
+  "2,21": {
+   "t": "mouth",
+   "text": "A drowned voice gurgles from the wall: \"The tanners sealed the cellar. The cellar did not agree to stay sealed.\""
+  },
+  "14,2": {
+   "t": "trap",
+   "trap": "crumble",
+   "dc": 11
+  },
+  "19,13": {
+   "t": "trap",
+   "trap": "gas",
+   "dc": 11
+  },
+  "16,18": {
+   "t": "trap",
+   "trap": "gas",
+   "dc": 11
+  },
+  "6,18": {
+   "t": "trap",
+   "trap": "crumble",
+   "dc": 11
+  },
+  "16,10": {
+   "t": "spinner"
+  },
+  "16,15": {
+   "t": "teleport",
+   "to": {
+    "x": 19,
+    "y": 9
+   }
+  }
+ },
+ "zones": {
+  "dark": [
+   {
+    "x": 16,
+    "y": 14,
+    "w": 4,
+    "h": 4
+   }
+  ]
+ },
+ "riddle": {
+  "question": "Each night I die to light the hall, and my king wears seven of me for a crown. Name me.",
+  "answers": [
+   "candle",
+   "a candle",
+   "the candle",
+   "candles",
+   "flame",
+   "a flame"
+  ],
+  "hint": "Answer as a chandler would."
+ },
+ "entry": {
+  "x": 2,
+  "y": 2,
+  "facing": 0
+ },
+ "encounters": {
+  "rate": 7,
+  "groups": "1d2",
+  "table": [
+   {
+    "monster": "fen_rat",
+    "weight": 3
+   },
+   {
+    "monster": "grave_mite",
+    "weight": 2
+   },
+   {
+    "monster": "mirefang",
+    "weight": 3
+   },
+   {
+    "monster": "cellar_creep",
+    "weight": 2
+   },
+   {
+    "monster": "fen_adder",
+    "weight": 1
+   },
+   {
+    "monster": "rust_grub",
+    "weight": 2
+   },
+   {
+    "monster": "crypt_thief",
+    "weight": 2
+   },
+   {
+    "monster": "sodden_dead",
+    "weight": 1
+   }
+  ]
+ }
+}

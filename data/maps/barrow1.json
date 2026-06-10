@@ -1,0 +1,192 @@
+{
+ "id": "barrow1",
+ "name": "The Howling Barrow — Outer Mounds",
+ "kind": "dungeon",
+ "dungeon": "The Howling Barrow",
+ "depth": 1,
+ "w": 22,
+ "h": 22,
+ "dark": true,
+ "seed": 303,
+ "hw": [
+  "1111111111111111111111",
+  "11011101001d111100111d",
+  "10111d1d01011100001010",
+  "0sd000011111011001010d",
+  "0011000111100000111000",
+  "0100001000011101101100",
+  "0010d1111111111d011110",
+  "110s11d1111d1010110d11",
+  "0000001101001101dd0110",
+  "01100100101110011d1111",
+  "1110100011010000100001",
+  "1110010111001000011010",
+  "01011d10000111110d01s0",
+  "00110001s11001000d111d",
+  "00d10110110110d0d11111",
+  "d11111010d111001100010",
+  "011110111001d11s110100",
+  "1010110111101101101110",
+  "0101101100110100010010",
+  "00111001100010011d1100",
+  "010011110000001d111110",
+  "001100101110100111s011",
+  "1111111111111111111111"
+ ],
+ "vw": [
+  "1001dd00010000000100001",
+  "1010001010110dd11100101",
+  "10100dd1d00010011101011",
+  "11010000000d1101d100111",
+  "10101d0d001d1d1d0d00111",
+  "11011100101000010100011",
+  "10101000000000011001001",
+  "10111010010110001011d01",
+  "11011101100100110110dd1",
+  "10001011001000110010001",
+  "1000101000001011s100101",
+  "10011011010000101001001",
+  "11100100101010000110011",
+  "11001101000101000100001",
+  "111000010100001001d10d1",
+  "10000010d11001100001011",
+  "101001010010100000d1011",
+  "11010d100100101110s0101",
+  "10100010011000110010101",
+  "110100100111d01d1001001",
+  "11101010101110110000001",
+  "1d00010000001d000000001"
+ ],
+ "cells": {
+  "18,17": {
+   "t": "treasure",
+   "id": "barrow1_secret",
+   "once": true,
+   "items": [
+    "wardshield"
+   ],
+   "gold": 300,
+   "text": "A war-grave unrobbed: upon the bier rests THE WARDSHIELD, its rim ringed with a verse of the Founding Song."
+  },
+  "2,11": {
+   "t": "stairs",
+   "dir": "up",
+   "to": {
+    "map": "town",
+    "x": 21,
+    "y": 9,
+    "facing": 3
+   }
+  },
+  "19,3": {
+   "t": "stairs",
+   "dir": "down",
+   "to": {
+    "map": "barrow2",
+    "x": 19,
+    "y": 3,
+    "facing": 3
+   }
+  },
+  "5,5": {
+   "t": "mouth",
+   "text": "Wind hisses through a stone flute: \"The mounds sing in rounds. The deepest verse is hollow, and the hollow verse is deep.\""
+  },
+  "15,5": {
+   "t": "mouth",
+   "text": "A mouth of knotted roots: \"Walk widdershins where the wind turns you, or be turned for good.\""
+  },
+  "2,9": {
+   "t": "mouth",
+   "text": "The flute-stone sighs: \"The Choir keeps what it stole. The Eldest keeps the Choir.\""
+  },
+  "15,17": {
+   "t": "trap",
+   "trap": "gas",
+   "dc": 13
+  },
+  "19,7": {
+   "t": "trap",
+   "trap": "gas",
+   "dc": 13
+  },
+  "19,9": {
+   "t": "trap",
+   "trap": "gas",
+   "dc": 13
+  },
+  "7,7": {
+   "t": "trap",
+   "trap": "gas",
+   "dc": 13
+  },
+  "20,8": {
+   "t": "spinner"
+  },
+  "5,3": {
+   "t": "spinner"
+  },
+  "12,14": {
+   "t": "spinner"
+  },
+  "8,2": {
+   "t": "teleport",
+   "to": {
+    "x": 14,
+    "y": 0
+   }
+  }
+ },
+ "zones": {
+  "dark": [
+   {
+    "x": 6,
+    "y": 16,
+    "w": 4,
+    "h": 3
+   },
+   {
+    "x": 14,
+    "y": 8,
+    "w": 3,
+    "h": 3
+   }
+  ]
+ },
+ "riddle": null,
+ "entry": {
+  "x": 2,
+  "y": 11,
+  "facing": 1
+ },
+ "encounters": {
+  "rate": 8,
+  "groups": "1d3",
+  "table": [
+   {
+    "monster": "moor_hound",
+    "weight": 3
+   },
+   {
+    "monster": "fen_lurker",
+    "weight": 3
+   },
+   {
+    "monster": "hollow_man",
+    "weight": 2
+   },
+   {
+    "monster": "tomb_spider",
+    "weight": 2
+   },
+   {
+    "monster": "wind_shrieker",
+    "weight": 2
+   },
+   {
+    "monster": "barrow_wight",
+    "weight": 1
+   }
+  ]
+ }
+}

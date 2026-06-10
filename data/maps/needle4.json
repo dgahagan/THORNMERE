@@ -1,0 +1,254 @@
+{
+ "id": "needle4",
+ "name": "Maldrec's Needle — The Unsung Sanctum",
+ "kind": "dungeon",
+ "dungeon": "Maldrec's Needle",
+ "depth": 4,
+ "w": 22,
+ "h": 22,
+ "dark": true,
+ "seed": 909,
+ "hw": [
+  "1111111111111111111111",
+  "1100101111111001001000",
+  "0110000100100110110111",
+  "0111000011010011d01010",
+  "1100100011010100d11100",
+  "0001011100s00011100110",
+  "1010101010100101110100",
+  "011101010001001110100d",
+  "010101110d00101d011100",
+  "0010100000001100011100",
+  "10010001100001010d1001",
+  "010100000000111111d010",
+  "1d10000000001011001100",
+  "0001011110100d10110110",
+  "0010001000010d01010011",
+  "0100010101101000100100",
+  "010d1111101011101d0010",
+  "100s100111011000d11110",
+  "00s1000011101111011011",
+  "0100011110010000010110",
+  "0011101011001100111110",
+  "00d0011100011011111110",
+  "1111111111111111111111"
+ ],
+ "vw": [
+  "10010000000000001000011",
+  "1001101001d010110010101",
+  "1100111110101000110s0d1",
+  "1d010111001100101100101",
+  "1011010100101d01d100011",
+  "1110s00011011010d010011",
+  "10010101011d1110d010111",
+  "10001100111s10100100111",
+  "111d1010111101011000111",
+  "1011011101110011110d111",
+  "101011s0011110000101101",
+  "10010d10011101000100011",
+  "1010d000010101001010101",
+  "11101010011011110101001",
+  "10110101110101101011011",
+  "110110000dd010010111001",
+  "10110000d010001110100d1",
+  "101d0100d00100101000101",
+  "1110110000110100110s001",
+  "101010s00d1101011000011",
+  "111111001010100100dd001",
+  "110010000100001000000d1"
+ ],
+ "cells": {
+  "2,18": {
+   "t": "treasure",
+   "id": "needle4_secret",
+   "once": true,
+   "items": [
+    "needle_shard",
+    "strong_draught",
+    "strong_draught"
+   ],
+   "gold": 800,
+   "text": "Maldrec's first workshop, walled over in shame. Among the failures: a NEEDLE SHARD, sharper than his grudge."
+  },
+  "11,2": {
+   "t": "stairs",
+   "dir": "up",
+   "to": {
+    "map": "needle3",
+    "x": 19,
+    "y": 3,
+    "facing": 2
+   }
+  },
+  "11,19": {
+   "t": "encounter",
+   "id": "maldrec_fight",
+   "once": true,
+   "text": "The top of the Needle is open to a sky that is wrong. At a lectern of black glass stands MALDREC THE UNSUNG, three hundred years of rejection in his eyes, the Third Verse chained to his wrist. \"At last,\" he says. \"An audience.\"",
+   "groups": [
+    {
+     "monster": "maldrec",
+     "count": "1"
+    }
+   ],
+   "reward": {
+    "items": [
+     "verse_third"
+    ],
+    "gold": 2000
+   },
+   "victoryText": "Maldrec falls, and for one moment his Unsinging inverts: every stone in the Needle sounds a true note. The bronze sliver unchains itself and settles in your hand: THE THIRD VERSE. Take the three Verses to the bell tower of Thornmere, and sing the gates whole."
+  },
+  "11,17": {
+   "t": "seal",
+   "text": "A door of grey glass, graven with seven interlocking riddles. It does not ask them aloud; it asks them all at once, in the bone. Only a RIDDLEMASTER could hold seven answers in one breath.",
+   "passText": "Your Riddlemaster lays a hand on the glass and answers all seven riddles in a single exhaled word. The seal unwinds like thread."
+  },
+  "3,12": {
+   "t": "mouth",
+   "text": "A mouth like a keyhole: \"He will greet you in his numbers. Trust only what survives being seen.\""
+  },
+  "16,17": {
+   "t": "mouth",
+   "text": "It says, very quietly: \"When he begins to unsing, stop being polite.\""
+  },
+  "7,12": {
+   "t": "trap",
+   "trap": "pit",
+   "dc": 16
+  },
+  "0,16": {
+   "t": "trap",
+   "trap": "gas",
+   "dc": 16
+  },
+  "13,12": {
+   "t": "trap",
+   "trap": "spikes",
+   "dc": 16
+  },
+  "20,17": {
+   "t": "trap",
+   "trap": "pit",
+   "dc": 16
+  },
+  "2,17": {
+   "t": "trap",
+   "trap": "crumble",
+   "dc": 16
+  },
+  "18,1": {
+   "t": "trap",
+   "trap": "spikes",
+   "dc": 16
+  },
+  "18,4": {
+   "t": "spinner"
+  },
+  "10,8": {
+   "t": "spinner"
+  },
+  "14,14": {
+   "t": "spinner"
+  },
+  "13,3": {
+   "t": "spinner"
+  },
+  "18,14": {
+   "t": "teleport",
+   "to": {
+    "x": 9,
+    "y": 5
+   }
+  },
+  "17,9": {
+   "t": "teleport",
+   "to": {
+    "x": 6,
+    "y": 15
+   }
+  },
+  "3,6": {
+   "t": "teleport",
+   "to": {
+    "x": 2,
+    "y": 12
+   }
+  },
+  "19,7": {
+   "t": "teleport",
+   "to": {
+    "x": 11,
+    "y": 0
+   }
+  },
+  "6,18": {
+   "t": "teleport",
+   "to": {
+    "x": 14,
+    "y": 10
+   }
+  },
+  "1,9": {
+   "t": "teleport",
+   "to": {
+    "x": 11,
+    "y": 0
+   }
+  }
+ },
+ "zones": {
+  "antimagic": [
+   {
+    "x": 2,
+    "y": 8,
+    "w": 4,
+    "h": 4
+   },
+   {
+    "x": 16,
+    "y": 8,
+    "w": 4,
+    "h": 4
+   },
+   {
+    "x": 9,
+    "y": 12,
+    "w": 5,
+    "h": 3
+   }
+  ]
+ },
+ "riddle": null,
+ "entry": {
+  "x": 11,
+  "y": 2,
+  "facing": 0
+ },
+ "encounters": {
+  "rate": 10,
+  "groups": "1d4",
+  "table": [
+   {
+    "monster": "maldrec_hand",
+    "weight": 3
+   },
+   {
+    "monster": "fell_chorister",
+    "weight": 2
+   },
+   {
+    "monster": "illusion_weaver",
+    "weight": 2
+   },
+   {
+    "monster": "rune_golem",
+    "weight": 2
+   },
+   {
+    "monster": "pit_horror",
+    "weight": 2
+   }
+  ]
+ }
+}

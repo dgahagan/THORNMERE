@@ -1,0 +1,212 @@
+{
+ "id": "undercroft2",
+ "name": "The Sunken Undercroft — The Old Crypts",
+ "kind": "dungeon",
+ "dungeon": "The Sunken Undercroft",
+ "depth": 2,
+ "w": 22,
+ "h": 22,
+ "dark": true,
+ "seed": 202,
+ "hw": [
+  "1111111111111111111111",
+  "0101011100010101011011",
+  "101100111000101010101d",
+  "0110100111110101111100",
+  "0101100000001100000100",
+  "0101100011011001111010",
+  "0010000010001000011001",
+  "00d1110001100000100110",
+  "d100101110100101101dd0",
+  "100100s00101111110010d",
+  "011001011011111111d111",
+  "11d0011011100110101000",
+  "0010dd0100010d0101d11d",
+  "0d0000s1000d1111110010",
+  "0000110111100111101100",
+  "0111000011010000010110",
+  "0100011001101000001d10",
+  "01000001010010ds110001",
+  "10101d0110110000001010",
+  "00011110d1001011111s10",
+  "011100111d1d0101001110",
+  "11001d010110010d100101",
+  "1111111111111111111111"
+ ],
+ "vw": [
+  "110d0d0010010d01d000001",
+  "1d101100011101101001001",
+  "11001d1d00101d010001011",
+  "10010011011001010s01011",
+  "11000111101100101101001",
+  "1d1101110011d0011001101",
+  "11101011110111110110101",
+  "11000d0100011d11001d111",
+  "10101110101d10100010011",
+  "10001101d010000d0011001",
+  "10000010100000000100101",
+  "1010d101011011010101011",
+  "111001100111000010d1001",
+  "11100010000110000011011",
+  "11101011d000111010s0011",
+  "100011010001011s0101001",
+  "10111110100110110101101",
+  "11d1011101d1011110d1s01",
+  "10001d00101001000100d11",
+  "1d01001dd101d0000000001",
+  "1d010110010d11010110101",
+  "10001001000010010010001"
+ ],
+ "cells": {
+  "17,3": {
+   "t": "treasure",
+   "id": "undercroft2_secret",
+   "once": true,
+   "items": [
+    "tallowbrand"
+   ],
+   "gold": 200,
+   "text": "Behind the false wall, a blade quenched in royal wax: TALLOWBRAND, burning without heat."
+  },
+  "19,19": {
+   "t": "stairs",
+   "dir": "up",
+   "to": {
+    "map": "undercroft1",
+    "x": 19,
+    "y": 19,
+    "facing": 0
+   }
+  },
+  "3,17": {
+   "t": "encounter",
+   "id": "tallow_king",
+   "once": true,
+   "text": "A vaulted hall ankle-deep in warm wax. Ten thousand candle-stubs burn blue. On a throne of wicks sits the TALLOW KING, and the First Verse hums in his molten fist.",
+   "groups": [
+    {
+     "monster": "tallow_king",
+     "count": "1"
+    },
+    {
+     "monster": "tallow_acolyte",
+     "count": "1d2"
+    },
+    {
+     "monster": "tallow_crawler",
+     "count": "1d3"
+    }
+   ],
+   "reward": {
+    "items": [
+     "verse_first"
+    ],
+    "gold": 500
+   },
+   "victoryText": "The Tallow King slumps into a spreading pool of wax. From the ruin you lift a sheet of hammered tin, pierced with note-holes: THE FIRST VERSE. As it cools, a whisper: \"The second sleeps east, under the singing mounds.\""
+  },
+  "0,12": {
+   "t": "mouth",
+   "text": "A wax-clogged mouth hums: \"He renders all his subjects in the end. Bring a light he cannot eat.\""
+  },
+  "17,15": {
+   "t": "mouth",
+   "text": "The mouth recites, bored: \"Crypt seven, row two. Reserved. Do not tarry.\""
+  },
+  "1,1": {
+   "t": "trap",
+   "trap": "crumble",
+   "dc": 12
+  },
+  "2,0": {
+   "t": "trap",
+   "trap": "crumble",
+   "dc": 12
+  },
+  "0,8": {
+   "t": "trap",
+   "trap": "crumble",
+   "dc": 12
+  },
+  "6,11": {
+   "t": "trap",
+   "trap": "spikes",
+   "dc": 12
+  },
+  "15,16": {
+   "t": "trap",
+   "trap": "spikes",
+   "dc": 12
+  },
+  "3,3": {
+   "t": "spinner"
+  },
+  "2,21": {
+   "t": "spinner"
+  },
+  "2,8": {
+   "t": "teleport",
+   "to": {
+    "x": 18,
+    "y": 10
+   }
+  },
+  "5,17": {
+   "t": "teleport",
+   "to": {
+    "x": 3,
+    "y": 6
+   }
+  }
+ },
+ "zones": {
+  "dark": [
+   {
+    "x": 8,
+    "y": 8,
+    "w": 4,
+    "h": 4
+   }
+  ]
+ },
+ "riddle": null,
+ "entry": {
+  "x": 19,
+  "y": 19,
+  "facing": 2
+ },
+ "encounters": {
+  "rate": 8,
+  "groups": "1d2",
+  "table": [
+   {
+    "monster": "sodden_dead",
+    "weight": 3
+   },
+   {
+    "monster": "bonechatter",
+    "weight": 3
+   },
+   {
+    "monster": "tallow_crawler",
+    "weight": 2
+   },
+   {
+    "monster": "wisplight",
+    "weight": 2
+   },
+   {
+    "monster": "mire_spawn",
+    "weight": 2
+   },
+   {
+    "monster": "tallow_acolyte",
+    "weight": 2
+   },
+   {
+    "monster": "fen_adder",
+    "weight": 1
+   }
+  ]
+ }
+}

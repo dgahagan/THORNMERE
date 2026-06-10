@@ -1,0 +1,1010 @@
+{
+ "id": "town",
+ "name": "Thornmere",
+ "kind": "town",
+ "w": 24,
+ "h": 24,
+ "dark": false,
+ "seed": 0,
+ "hw": [
+  "111111111111111111111111",
+  "000000000000000000000000",
+  "000000000000000000000000",
+  "000000000000000000000000",
+  "001111100111110011111000",
+  "000000000000000000000000",
+  "000000000000000000000000",
+  "000000000000000000000000",
+  "0011d110011d110011d11000",
+  "00000000d00000d000000000",
+  "000000001000001000000000",
+  "0011d110001d100011d11000",
+  "000000000000000000000000",
+  "00000000d00000d000000000",
+  "000000001011101000000000",
+  "001111100000000011111000",
+  "000000000000000000000000",
+  "0011d110011d110011d11100",
+  "000000000000000000000000",
+  "000000000000000000000000",
+  "000000000000000000000000",
+  "001111100111110011111100",
+  "000000000000000000000000",
+  "000000000000000000000000",
+  "111111111111111111111111"
+ ],
+ "vw": [
+  "1000000000000000000000001",
+  "1000000000000000000000001",
+  "1000000000000000000000001",
+  "1000000000000000000000001",
+  "1010000101000010100001001",
+  "1010000101000010100001001",
+  "1010000101000010100001001",
+  "1010000101000010100001001",
+  "1000000000000000000000001",
+  "1000000011000011000000001",
+  "1000000000000000000000001",
+  "1010000100100100100001001",
+  "1010000100100100100001001",
+  "1010000111100111100001001",
+  "1010000100000000100001001",
+  "1000000000000000000000001",
+  "1000000000000000000000001",
+  "1010000101000010100000101",
+  "1010000101000010100000101",
+  "1010000101000010100000101",
+  "1010000101000010100000101",
+  "1000000000000000000000001",
+  "1000000000000000000000001",
+  "1000000000000000000000001"
+ ],
+ "cells": {
+  "2,17": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "3,17": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "4,17": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "5,17": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "6,17": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "2,18": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "3,18": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "4,18": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "5,18": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "6,18": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "2,19": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "3,19": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "4,19": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "5,19": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "6,19": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "2,20": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "3,20": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "4,20": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "5,20": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "6,20": {
+   "t": "building",
+   "id": "hall",
+   "name": "Adventurers' Hall"
+  },
+  "9,17": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "10,17": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "11,17": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "12,17": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "13,17": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "9,18": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "10,18": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "11,18": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "12,18": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "13,18": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "9,19": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "10,19": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "11,19": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "12,19": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "13,19": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "9,20": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "10,20": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "11,20": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "12,20": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "13,20": {
+   "t": "building",
+   "id": "greta",
+   "name": "Greta's Provisioner"
+  },
+  "16,17": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "17,17": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "18,17": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "19,17": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "20,17": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "21,17": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "16,18": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "17,18": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "18,18": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "19,18": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "20,18": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "21,18": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "16,19": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "17,19": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "18,19": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "19,19": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "20,19": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "21,19": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "16,20": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "17,20": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "18,20": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "19,20": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "20,20": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "21,20": {
+   "t": "building",
+   "id": "review",
+   "name": "The Magistrate's Court"
+  },
+  "2,11": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "3,11": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "4,11": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "5,11": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "6,11": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "2,12": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "3,12": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "4,12": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "5,12": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "6,12": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "2,13": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "3,13": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "4,13": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "5,13": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "6,13": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "2,14": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "3,14": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "4,14": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "5,14": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "6,14": {
+   "t": "building",
+   "id": "temple",
+   "name": "Temple of the Quiet Flame"
+  },
+  "10,11": {
+   "t": "building",
+   "id": "belltower",
+   "name": "The Bell Tower"
+  },
+  "11,11": {
+   "t": "building",
+   "id": "belltower",
+   "name": "The Bell Tower"
+  },
+  "12,11": {
+   "t": "building",
+   "id": "belltower",
+   "name": "The Bell Tower"
+  },
+  "10,12": {
+   "t": "building",
+   "id": "belltower",
+   "name": "The Bell Tower"
+  },
+  "11,12": {
+   "t": "building",
+   "id": "belltower",
+   "name": "The Bell Tower"
+  },
+  "12,12": {
+   "t": "building",
+   "id": "belltower",
+   "name": "The Bell Tower"
+  },
+  "10,13": {
+   "t": "building",
+   "id": "belltower",
+   "name": "The Bell Tower"
+  },
+  "11,13": {
+   "t": "building",
+   "id": "belltower",
+   "name": "The Bell Tower"
+  },
+  "12,13": {
+   "t": "building",
+   "id": "belltower",
+   "name": "The Bell Tower"
+  },
+  "16,11": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "17,11": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "18,11": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "19,11": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "20,11": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "16,12": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "17,12": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "18,12": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "19,12": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "20,12": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "16,13": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "17,13": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "18,13": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "19,13": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "20,13": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "16,14": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "17,14": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "18,14": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "19,14": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "20,14": {
+   "t": "building",
+   "id": "spark",
+   "name": "Roskva's Spark House"
+  },
+  "2,4": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "3,4": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "4,4": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "5,4": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "6,4": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "2,5": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "3,5": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "4,5": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "5,5": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "6,5": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "2,6": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "3,6": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "4,6": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "5,6": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "6,6": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "2,7": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "3,7": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "4,7": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "5,7": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "6,7": {
+   "t": "building",
+   "id": "goose",
+   "name": "The Drowned Goose"
+  },
+  "9,4": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "10,4": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "11,4": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "12,4": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "13,4": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "9,5": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "10,5": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "11,5": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "12,5": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "13,5": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "9,6": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "10,6": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "11,6": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "12,6": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "13,6": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "9,7": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "10,7": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "11,7": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "12,7": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "13,7": {
+   "t": "building",
+   "id": "tannery",
+   "name": "The Boarded Tannery"
+  },
+  "16,4": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "17,4": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "18,4": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "19,4": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "20,4": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "16,5": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "17,5": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "18,5": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "19,5": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "20,5": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "16,6": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "17,6": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "18,6": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "19,6": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "20,6": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "16,7": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "17,7": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "18,7": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "19,7": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "20,7": {
+   "t": "building",
+   "id": "hart",
+   "name": "The Hart & Hollow"
+  },
+  "8,13": {
+   "t": "building",
+   "id": "empty1",
+   "name": "A Boarded House"
+  },
+  "14,13": {
+   "t": "building",
+   "id": "empty2",
+   "name": "A Boarded House"
+  },
+  "8,9": {
+   "t": "building",
+   "id": "empty3",
+   "name": "A Shuttered Stall"
+  },
+  "14,9": {
+   "t": "building",
+   "id": "empty4",
+   "name": "A Collapsed Granary"
+  },
+  "22,9": {
+   "t": "gate",
+   "id": "east_gate",
+   "name": "The East Gate",
+   "to": {
+    "map": "barrow1",
+    "x": 2,
+    "y": 11,
+    "facing": 1
+   }
+  },
+  "11,22": {
+   "t": "gate",
+   "id": "north_gate",
+   "name": "The North Gate"
+  }
+ },
+ "zones": {},
+ "riddle": null,
+ "entry": {
+  "x": 4,
+  "y": 16,
+  "facing": 0
+ },
+ "encounters": {
+  "day": {
+   "rate": 1,
+   "groups": "1",
+   "table": [
+    {
+     "monster": "fen_stray",
+     "weight": 2
+    },
+    {
+     "monster": "footpad",
+     "weight": 1
+    }
+   ]
+  },
+  "night": {
+   "rate": 6,
+   "groups": "1d2",
+   "table": [
+    {
+     "monster": "footpad",
+     "weight": 3
+    },
+    {
+     "monster": "fen_stray",
+     "weight": 2
+    },
+    {
+     "monster": "tavern_tough",
+     "weight": 2
+    },
+    {
+     "monster": "gate_wight",
+     "weight": 1
+    }
+   ]
+  }
+ }
+}

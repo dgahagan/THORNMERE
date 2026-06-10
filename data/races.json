@@ -1,0 +1,32 @@
+[
+  {
+    "id": "vael",
+    "name": "Vael",
+    "desc": "Tall river-folk of the slow brown waters. Patient, fair-spoken, and luckier than they deserve.",
+    "mods": { "ST": 0, "IQ": 0, "DX": 0, "CN": 0, "LK": 1 }
+  },
+  {
+    "id": "korrun",
+    "name": "Korrun",
+    "desc": "Stone-blooded mountain clans. They count their dead in granite and forget nothing but their manners.",
+    "mods": { "ST": 2, "IQ": -1, "DX": 0, "CN": 2, "LK": 0 }
+  },
+  {
+    "id": "fennick",
+    "name": "Fennick",
+    "desc": "Small, quick hedge-people. A Fennick can steal the rain off your hood and sell it back as weather.",
+    "mods": { "ST": -1, "IQ": 0, "DX": 2, "CN": 0, "LK": 0 }
+  },
+  {
+    "id": "aldari",
+    "name": "Aldari",
+    "desc": "Long-lived starlight lineage, pale as frost on iron. They remember the fen before the town.",
+    "mods": { "ST": 0, "IQ": 2, "DX": 0, "CN": -1, "LK": 0 }
+  },
+  {
+    "id": "halfwyld",
+    "name": "Half-Wyld",
+    "desc": "Touched by the old forest. Green-eyed, restless, and ill-favoured by tame gods.",
+    "mods": { "ST": 1, "IQ": 0, "DX": 1, "CN": 0, "LK": -1 }
+  }
+]
