@@ -196,6 +196,28 @@ Showpiece procedural art was generated with gen_showpieces.js and passed Step 4 
 
 ---
 
+### PC Portraits — people.json (4 entries, previously OLD 24×24 placeholder art)
+
+Existing portraits: all four (warrior, rogue, caster, skald) use an identical 24×24 face template
+with only hat/hood color changed. Zero character differentiation. Replaced by 32×40 AI portraits.
+
+| id | chosen_seed | crush_tag | verdict | notes |
+|---|---|---|---|---|
+| pc_warrior | 42 | sub16 | replace | Stern shaved-head plate-armored warrior. s7 near-identical; s42 slightly grittier. |
+| pc_rogue | 42 | sub12 | replace | Dark-hooded figure, shadowed face. Clean archetype read. |
+| pc_caster | 42 | sub14 | replace | Dark hair, blue gem amulet, dark robe. s7 was blonde/blue-eyes; s42 more dungeon-appropriate. |
+| pc_skald | 42 | sub15 | replace | Bearded, leather/chain, warm gold tones. Strong Norse-bard silhouette. |
+
+### Scenes — scenes.json (2 entries, previously OLD geometry art)
+
+| id | chosen_seed | crush_tag | verdict | notes |
+|---|---|---|---|---|
+| scene_title | 42 | sub20 | replace | Dark mist-draped town silhouette panorama. s7 showed more detail; s42 atmospheric opener wins. |
+| scene_victory | 7 | sub22 | replace | Church spire over golden river reflection, sunset. s7 > s42 (s42 had clocktower, less triumphant). |
+
+---
+
 ## Step 6 — characters, icons, FX, scenes
 
-DEFERRED — will be replaced by AI-generation pipeline. No programmatic work done.
+PC portraits (32×40) and scenes (160×64 / 160×120) completed via AI pipeline above.
+Icons, FX sprites, and NPC faces remain procedural — not in AI pipeline scope for this pass.
