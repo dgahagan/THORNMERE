@@ -82,9 +82,14 @@ sign_greta and sign_spark required one revision each (boot silhouette, bold bolt
 
 ---
 
-## Step 4 — showpieces
+## Step 4 — showpieces (48×48 → 96×80, 3 frames each)
 
-<!-- verdicts logged as each sprite is drawn -->
+Rendered at 3× via `--sheet mon_<boss> 3`. All 4 bosses generated from `tools/gen_showpieces.js`.
+
+- mon_candleking_a/b/c [96×80] — PASS: wax figure centred in candle forest (8 flanking pillars), blue-flame crown row, large red ember eye sockets, gaping mouth with teeth, wax throne base; frame b left arm raised with fireball, frame c eyes brighter
+- mon_choir_eldest_a/b/c [96×80] — PASS: dark triangle robe fills full frame, giant concentric-ring eye (void → blue iris → bright core → black pupil) dominates hood, rows of tiny trapped faces as dash-pair marks across robe, green pendant gem, left clawed hand emerging; frame c full-blaze eye with all face-eyes lit green
+- mon_mock_king_a/b/c [96×80] — PASS: blue tile golem with gold grout grid, 3 gold crown prongs, wide rectangular eyes glowing sky-blue, gold belly emblem, mist-blue branch arms; arm pose distinct across 3 frames
+- mon_maldrec_a/b/c [96×80] — PASS: dark grey robe triangle, boxy face with violet glowing eyes and upturned grin, staff with bright blue orb; frame b diagonal staff + violet/blue casting tendrils; right hand honey-toned but identity unambiguous
 
 ---
 
