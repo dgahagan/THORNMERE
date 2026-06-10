@@ -2149,5 +2149,139 @@
         ".............AABBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCBBAA.............."
       ]
     }
+  },
+  "anims": {
+    "mon_rat": {
+      "frames": [
+        {
+          "sprite": "mon_rat_a",
+          "ms": 400
+        },
+        {
+          "sprite": "mon_rat_b",
+          "ms": 400
+        }
+      ]
+    },
+    "mon_beetle": {
+      "frames": [
+        {
+          "sprite": "mon_beetle_a",
+          "ms": 400
+        },
+        {
+          "sprite": "mon_beetle_b",
+          "ms": 400
+        }
+      ]
+    },
+    "mon_hound": {
+      "frames": [
+        {
+          "sprite": "mon_hound_a",
+          "ms": 400
+        },
+        {
+          "sprite": "mon_hound_b",
+          "ms": 400
+        }
+      ]
+    },
+    "mon_spider": {
+      "frames": [
+        {
+          "sprite": "mon_spider_a",
+          "ms": 400
+        },
+        {
+          "sprite": "mon_spider_b",
+          "ms": 400
+        }
+      ]
+    },
+    "mon_snake": {
+      "frames": [
+        {
+          "sprite": "mon_snake_a",
+          "ms": 400
+        },
+        {
+          "sprite": "mon_snake_b",
+          "ms": 400
+        }
+      ]
+    },
+    "mon_zombie": {
+      "frames": [
+        {
+          "sprite": "mon_zombie_a",
+          "ms": 400
+        },
+        {
+          "sprite": "mon_zombie_b",
+          "ms": 400
+        }
+      ]
+    },
+    "mon_skeleton": {
+      "frames": [
+        {
+          "sprite": "mon_skeleton_a",
+          "ms": 400
+        },
+        {
+          "sprite": "mon_skeleton_b",
+          "ms": 400
+        }
+      ]
+    },
+    "mon_blob": {
+      "frames": [
+        {
+          "sprite": "mon_blob_a",
+          "ms": 400
+        },
+        {
+          "sprite": "mon_blob_b",
+          "ms": 400
+        }
+      ]
+    },
+    "mon_wisp": {
+      "frames": [
+        {
+          "sprite": "mon_wisp_a",
+          "ms": 400
+        },
+        {
+          "sprite": "mon_wisp_b",
+          "ms": 400
+        }
+      ]
+    },
+    "mon_brute": {
+      "frames": [
+        {
+          "sprite": "mon_brute_a",
+          "ms": 400
+        },
+        {
+          "sprite": "mon_brute_b",
+          "ms": 400
+        }
+      ]
+    },
+    "mon_humanoid": {
+      "frames": [
+        {
+          "sprite": "mon_humanoid_a",
+          "ms": 400
+        },
+        {
+          "sprite": "mon_humanoid_b",
+          "ms": 400
+        }
+      ]
+    }
   }
 }
