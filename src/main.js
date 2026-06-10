@@ -178,6 +178,7 @@ let narrateFlush = null;
 
 // ================================================================== EXPLORE
 const exploreMode = {
+  menu: '',
   hint: '↑/W forward  ←→/A·D turn  ↓/S about-face  E search  C cast  P song  U use  T torch  L look  1-6 party  Q quit  ? help',
   onKey(e) {
     const k = e.key.toLowerCase();

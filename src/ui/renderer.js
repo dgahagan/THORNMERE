@@ -60,7 +60,7 @@ export class Renderer {
     }
 
     const noLight = map.kind === 'dungeon' && radius === 0;
-    const maxDepth = noLight ? 1 : Math.min(3, Math.max(1, radius + 1));
+    const maxDepth = noLight ? 1 : Math.min(3, Math.max(1, radius));
     const stroke = noLight ? COLORS.dim : COLORS.line;
     const f = game.pos.facing;
     const rf = (f + 1) % 4;

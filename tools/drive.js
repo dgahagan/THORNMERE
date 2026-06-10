@@ -61,9 +61,10 @@ async function main() {
   const autoCombat = async (maxIters = 400) => {
     for (let i = 0; i < maxIters; i++) {
       const m = await menu();
+      if (i % 60 === 59) console.log(`  …iter ${i}: menu="${m.slice(0, 90).replace(/\n/g, '|')}" log="${(await logTail(90)).replace(/\n/g, '|')}"`);
       if (/BATTLE!/.test(m)) { await key(' '); continue; }
       if (/orders for/.test(m)) { await key('a'); continue; }
-      if (/which group/i.test(m)) { await key('1'); continue; }
+      if (/which group/i.test(m)) { await key((m.match(/\((\d)\)/) || [, '1'])[1]); continue; }
       if (/banded chest/i.test(m)) { await key('o'); await sleep(80); await key('1'); continue; }
       if (/Who lifts the lid/i.test(m)) { await key('1'); continue; }
       if (/THE FEN HAS WON/.test(m)) return 'defeat';
@@ -159,6 +160,40 @@ async function main() {
     const st = await gameState();
     console.log('has verse_first:', st.party.some(p => p.inv.includes('verse_first')), 'gold:', st.gold);
     await shot('boss_after');
+  }
+
+  if (scenario === 'review') {
+    await page.evaluate(() => {
+      const g = window.__thorn.game;
+      for (const id of g.partyIds) { const c = g.roster.find(r => r.id === id); c.xp = 500; }
+      g.gold = 2000;
+    });
+    await teleport({ map: 'town', x: 18, y: 16, facing: 0 });
+    await key('ArrowUp');
+    await waitMenu(/Review Board sees whom/);
+    await key('5'); // Morrigan the hexen
+    await waitMenu(/Magistrate/);
+    await shot('review');
+    await key('t'); await key('t'); // train twice
+    console.log('train log:', (await logTail(160)).replace(/\n+/g, ' | '));
+    await key('s'); // buy spells
+    await waitMenu(/Spell archive/);
+    await key('1'); // hexen tier 1
+    console.log('spells log:', (await logTail(220)).replace(/\n+/g, ' | '));
+    await key('Escape'); await key('l');
+    const st = await gameState();
+    console.log('morrigan:', JSON.stringify(st.party[4]));
+    // save at hall then continue from main menu
+    await teleport({ map: 'town', x: 4, y: 16, facing: 0 });
+    await key('ArrowUp');
+    await waitMenu(/Adventurers' Hall/);
+    await key('s'); await key('l');
+    await key('q'); await key('y'); // quit with autosave
+    await waitMenu(/New game/);
+    await key('c'); // continue hall save
+    await sleep(300);
+    const st2 = await gameState();
+    console.log('continued: gold', st2.gold, 'party size', st2.party.length, 'pos', JSON.stringify(st2.pos));
   }
 
   if (scenario === 'victory') {
