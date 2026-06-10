@@ -1792,7 +1792,7 @@
         23,
         42
       ],
-      "chosen_seed": null,
+      "chosen_seed": 42,
       "frame_effects": {
         "b": [
           "breathe",
@@ -1817,8 +1817,8 @@
         "a": 600,
         "b": 600
       },
-      "status": "candidates",
-      "verdict": null,
+      "status": "imported",
+      "verdict": "replace",
       "notes": "Face must survive crush at 1x. Plate mail grey; face warm tones. No magic colour."
     },
     {
@@ -1865,7 +1865,7 @@
         23,
         42
       ],
-      "chosen_seed": null,
+      "chosen_seed": 42,
       "frame_effects": {
         "b": [
           "breathe",
@@ -1890,8 +1890,8 @@
         "a": 600,
         "b": 600
       },
-      "status": "candidates",
-      "verdict": null,
+      "status": "imported",
+      "verdict": "replace",
       "notes": "Reject any candidate whose face doesn't survive crush at 1x."
     },
     {
@@ -1940,7 +1940,7 @@
         23,
         42
       ],
-      "chosen_seed": null,
+      "chosen_seed": 42,
       "frame_effects": {
         "b": [
           "breathe",
@@ -1965,8 +1965,8 @@
         "a": 600,
         "b": 600
       },
-      "status": "candidates",
-      "verdict": null,
+      "status": "imported",
+      "verdict": "replace",
       "notes": "Blue arcane eyes are the distinguishing mark. Warm skin tones."
     },
     {
@@ -2016,7 +2016,7 @@
         23,
         42
       ],
-      "chosen_seed": null,
+      "chosen_seed": 42,
       "frame_effects": {
         "b": [
           "breathe",
@@ -2041,8 +2041,8 @@
         "a": 600,
         "b": 600
       },
-      "status": "candidates",
-      "verdict": null,
+      "status": "imported",
+      "verdict": "replace",
       "notes": "Green accent in garb to distinguish from warrior. Warm expressive face."
     },
     {
@@ -2100,12 +2100,12 @@
         53,
         67
       ],
-      "chosen_seed": null,
+      "chosen_seed": 42,
       "frame_effects": {},
       "frame_regions": {},
       "frame_ms": {},
-      "status": "candidates",
-      "verdict": null,
+      "status": "imported",
+      "verdict": "replace",
       "notes": "Wide 160x64 title bar. Dark atmospheric. Bell tower silhouette must read clearly. gen_dims key: scene (640x256)."
     },
     {
@@ -2165,12 +2165,12 @@
         53,
         67
       ],
-      "chosen_seed": null,
+      "chosen_seed": 7,
       "frame_effects": {},
       "frame_regions": {},
       "frame_ms": {},
-      "status": "candidates",
-      "verdict": null,
+      "status": "imported",
+      "verdict": "replace",
       "notes": "Taller 160x120. Warm golden dawn. Bell tower lit against sunrise. gen_dims key: scene_wide (640x480)."
     }
   ]

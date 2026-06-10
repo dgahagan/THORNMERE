@@ -2,248 +2,486 @@
   "comment": "Player-character portraits (24x24, head and shoulders) and 8x8 class icons. Material conventions: skin 13 base / 12 shadow, hair 9, garment primary 15, garment secondary 10, outline 1, eyes 2 or 20. Race variants remap those indices.",
   "sprites": {
     "pc_warrior_a": {
-      "w": 24, "h": 24,
-      "legend": { ".": -1, "x": 1, "h": 9, "s": 13, "d": 12, "e": 2, "g": 15, "m": 5, "M": 4, "n": 6 },
+      "w": 32,
+      "h": 40,
+      "legend": {
+        ".": -1,
+        "A": 2,
+        "B": 3,
+        "C": 4,
+        "D": 5,
+        "E": 6,
+        "F": 7,
+        "G": 8,
+        "H": 9,
+        "I": 10,
+        "J": 11,
+        "K": 12,
+        "L": 13
+      },
       "rows": [
-        "........................",
-        ".......xxxxxxxxxx.......",
-        "......xhhhhhhhhhhx......",
-        ".....xhhhhhhhhhhhhx.....",
-        ".....xhhhhhhhhhhhhx.....",
-        ".....xhsssssssssdhx.....",
-        ".....xssssssssssddx.....",
-        ".....xssxxssssxxsdx.....",
-        ".....xsseesssseesdx.....",
-        ".....xssssssdsssddx.....",
-        ".....xsssssddsssddx.....",
-        ".....xsssxxxxsssddx.....",
-        ".....xsssssssssdddx.....",
-        "......xssssssssddx......",
-        "........xssssddx........",
-        "........xssssddx........",
-        "....xxxxxssssddxxxxx....",
-        "...xnmmmxssssddxmmmmx...",
-        "..xmmmmmmxssddxmmmmmMx..",
-        ".xmmmmmmmMxggxMmmmmmMMx.",
-        ".xmmmmmmMMxggggxMmmmMMx.",
-        "xmmmmmmmMMxggggxMmmmMMMx",
-        "xmmmmmmMMMxgggggxMmmMMMx",
-        "xmmmmmMMMMxgggggxMMMMMMx"
+        "................................",
+        "...............HH...............",
+        "............HHIIIIII............",
+        "...........HHIIIIIIIII..........",
+        "..........HHIIIIIIIIIII.........",
+        ".........HHHHIIIIIIIIIIH........",
+        ".........HHHIIIIIIIIIIII........",
+        "........HHIHIIIIIIIJIKIH........",
+        "........HHJJJIIIIHHJKKII........",
+        "........HHJJKKKHHLLLKKII........",
+        "........HHJJKKKLLLLLKKII........",
+        "........HIJJJKKLLLKKKKKI........",
+        ".......JHCCJKKKKKKLKKKKIH.......",
+        ".......HHC..JKKKKKKKK..JKG......",
+        ".......JICII.IKIKKK.GJJKKG......",
+        ".......JIJI.CF.IJ..BFIKKI.......",
+        ".......CIDKKJKHIKJJKJKKJJ.......",
+        "........CDJKKJJIKKKKKKKJK.......",
+        "........BCJKJJJIKKKKKKJK........",
+        ".........DIJJJHJKKJKKKK.........",
+        ".........DIBJJGJLJKKKJK.........",
+        ".........DICJJIIIKKKKKK.........",
+        "....BA...CCCJJJJKJKJKKJ....B....",
+        "....A....CBIJJJKKKKKKJK...GGB...",
+        "...AB...ADHBIJJIIIKKJIKJ.G.BB...",
+        "...GC..HICIHIJJKKKKJGJKIKG.DCB..",
+        ".DDBD.GHHCIHGIJKKJKIJKKHJI.CBCC.",
+        "CCCBCDHHHHIIH.IIIIIJKKJJJHLCBCCC",
+        "CCCBGCGIHHHIJHHIIIIJKKJJJBCBCDCC",
+        "CCCBBCKIIIIIJIIJJJJKKJJJ.ECCDDDD",
+        "CCCDBAC.IIJIJKJKKKJKJJJ.LBCDDDDD",
+        "DDDCCBCKIIGIJKJKKJKJJGHLCDLLDDDD",
+        "CDCCCBALHHIII.KJJHHIIH.LDLLLLDDD",
+        "BBBCABGFCCIHHIIIIIII.IAEDADLEDDD",
+        "BBBBBBBDA.BCDDBBALLFCA.DCDDDLDDD",
+        "BBBBBBE.BBCCCC...CDDDDBAE.DDDDD.",
+        "BBBCDB.BBBCCCCCLDDDDLDDAGALADDDG",
+        "BBCB.ABBBBCCCCCLDDDLLDDDC..DLCDD",
+        "CA.AABBBBCCCCCCLDDDLLDEDDCCB.ELC",
+        "..AAABBBCCCCCCCLDDLLLELLDLLLBH.D"
       ]
     },
     "pc_warrior_b": {
-      "w": 24, "h": 24,
-      "legend": { ".": -1, "x": 1, "h": 9, "s": 13, "d": 12, "e": 2, "g": 15, "m": 5, "M": 4 },
+      "w": 32,
+      "h": 40,
+      "legend": {
+        ".": -1,
+        "A": 2,
+        "B": 3,
+        "C": 4,
+        "D": 5,
+        "E": 6,
+        "F": 7,
+        "G": 8,
+        "H": 9,
+        "I": 10,
+        "J": 11,
+        "K": 12,
+        "L": 13
+      },
       "rows": [
-        "........................",
-        ".......xxxxxxxxxx.......",
-        "......xhhhhhhhhhhx......",
-        ".....xhhhhhhhhhhhhx.....",
-        ".....xhhsssssssshhx.....",
-        ".....xhsssssssssdhx.....",
-        ".....xhsssssssssdhx.....",
-        ".....xhsxxssssxxshx.....",
-        ".....xhseesssseedhx.....",
-        ".....xhsssssdssddhx.....",
-        ".....xhssssddssddhx.....",
-        "......xssxxxxssddx......",
-        "..xhhxxssssssssddx......",
-        "..xhhx..xssssddx........",
-        "..xhhx..xssssddx........",
-        "..xhhx..xssssddx........",
-        "..xhhxxxxssssddxxxxx....",
-        "..xhhxmmxssssddxmmmmx...",
-        ".xmxhhxmmxssddxmmmmMMx..",
-        ".xmmxhhxmxggxMmmmmmMMx..",
-        "xmmmxhhxxggggxMmmmmMMMx.",
-        "xmmmmxhhxggggxMmmmMMMMx.",
-        "xmmmmmxxxgggggxMmmMMMMx.",
-        "xmmmmmmxgggggggxMMMMMMx."
+        "................................",
+        "...............HH...............",
+        "............HHIIIIII............",
+        "...........HHIIIIIIIII..........",
+        "..........HHIIIIIIIIIII.........",
+        ".........HHHHIIIIIIIIIIH........",
+        ".........HHHIIIIIIIIIIII........",
+        "........HHIHIIIIIIIJIKIH........",
+        "........IIKKKJJJJIIKLLJJ........",
+        "........IIKKLLLIILLLLLJJ........",
+        "........IIKKLLLLLLLLLLJJ........",
+        "........IJKKKLLLLLLLLLLJ........",
+        ".......JIDDKLLLLLLLLLLLJH.......",
+        ".......HID..KLLLLLLLL..KKG......",
+        ".......JICII.IKIKKK.GJJKKG......",
+        ".......JIJI.CF.IJ..BFIKKI.......",
+        ".......CIDKKJKHIKJJKJKKJJ.......",
+        "........CDJKKJJIKKKKKKKJK.......",
+        "........BCJKJJJIKKKKKKJK........",
+        ".........DIJJJHJKKJKKKK.........",
+        ".........DIBJJGJLJKKKJK.........",
+        ".........DICJJIIIKKKKKK.........",
+        "....BA...CCCJJJJKJKJKKJ....B....",
+        "....A....CBIJJJKKKKKKJK...GGB...",
+        "...A........................B...",
+        "...GB...ADHBIJJIIIKKJIKJ.G.BCB..",
+        ".DDBC..HICIHIJJKKKKJGJKIKG.DBCC.",
+        "CCCBD.GHHCIHGIJKKJKIJKKHJI.CBCCC",
+        "CCCBCDHHHHIIH.IIIIIJKKJJJHLCCDCC",
+        "CCCBGCGIHHHIJHHIIIIJKKJJJBCBDDDD",
+        "CCCDBCKIIIIIJIIJJJJKKJJJ.ECCDDDD",
+        "DDDCBAC.IIJIJKJKKKJKJJJ.LBCDDDDD",
+        "CDCCCBCKIIGIJKJKKJKJJGHLCDLLLDDD",
+        "BBBCCBALHHIII.KJJHHIIH.LDLLLEDDD",
+        "BBBBABGFCCIHHIIIIIII.IAEDADLLDDD",
+        "BBBBBBBDA.BCDDBBALLFCA.DCDDDDDD.",
+        "BBBCBBE.BBCCCC...CDDDDBAE.DDDDDG",
+        "BBCBDB.BBBCCCCCLDDDDLDDAGALALCDD",
+        "CA.AABBBBCCCCCCLDDDLLDEDDCCB.ELC",
+        "..AAABBBCCCCCCCLDDLLLELLDLLLBH.D"
       ]
     },
     "pc_rogue_a": {
-      "w": 24, "h": 24,
-      "legend": { ".": -1, "x": 1, "h": 9, "s": 13, "d": 12, "e": 2, "g": 15, "k": 14, "t": 16, "l": 10 },
+      "w": 32,
+      "h": 40,
+      "legend": {
+        ".": -1,
+        "A": 2,
+        "B": 3,
+        "C": 8,
+        "D": 9,
+        "E": 10,
+        "F": 11,
+        "G": 12
+      },
       "rows": [
-        "........................",
-        "........xxxxxxxx........",
-        "......xxggggggggxx......",
-        ".....xggggggggggggx.....",
-        ".....xgggggggggggkx.....",
-        ".....xgkxxxxxxxxkgx.....",
-        ".....xgkhssssssdkgx.....",
-        ".....xgkxxxsxxxdkgx.....",
-        ".....xgkseesseedkgx.....",
-        ".....xgksssdssddkgx.....",
-        ".....xgksssddssdkgx.....",
-        "......xkssxxxsddkx......",
-        "......xkssssssddkx......",
-        ".......xkssssddkx.......",
-        "........xssssddx........",
-        "....xxxxxssssddxxxxx....",
-        "...xggggxssssddxggggx...",
-        "..xggggggxssddxggggkx...",
-        ".xgggggggxllxkgggggkkx..",
-        ".xtggggggxllllxkggggkkx.",
-        "xtggggggkxllllxkgggkkkx.",
-        "xtgggggkkxllllxkggkkkkx.",
-        "xtggggkkkxllllxkgkkkkkx.",
-        "xggggkkkkxllllxkkkkkkkx."
+        "................A...............",
+        "................AA..............",
+        "...............AAAAA............",
+        "...............ABAAAA...........",
+        "...............ABBAAAA..........",
+        ".............AAABBAAAAA.........",
+        "............AAAABBBAAAA.........",
+        "...........AAAAABBBBAAA.........",
+        "............AA.ABBBAAAA.........",
+        "..............A..BBAAAA.........",
+        "............AA....ABAAA.........",
+        "...................ABAA.........",
+        ".....................BAA........",
+        ".........A...........ABA........",
+        ".......................AA.......",
+        "........A..DDED..DDDD..AA.......",
+        ".......A..C..FFFEEFC.C..A.......",
+        ".......A.C.BA.CEFD..B.C.AA......",
+        "......A..CDCCCCEGDDDCEC..B......",
+        ".........CFFFEEEGFGFFFC...A.....",
+        ".....A....EFFFDEGFGGFFA.........",
+        "..........CEFFDDGFGGFDA....A....",
+        "....A.....DDFFCEGFGGFEA.........",
+        "....A.....DCFED.EFFGED..........",
+        "..........D.EEEEEFFFED..........",
+        "...........CDEEFFGFED...........",
+        "....A.......DEDCCEFEA...........",
+        ".....A.......DEFFFEDC......A.C.B",
+        ".A...B......CDDEEFDDD........C.B",
+        ".A....BA....C.CADA.DD....A...CBB",
+        ".......AB...DCCDDDDDC...A...CCBB",
+        "D........B..CDCCEDDC..A....CC.BB",
+        "DDBCC.....AA.DDDDDEA.A.....CC.DB",
+        "DDA.CC......ADEDDED......ACCCBBB",
+        "DD..CCC......AEEEE....AADDDC.BDD",
+        "GD.BCCCCCCA...AEE....AADDCDD.ABF",
+        "ABA.CA.CCCCCAAAAABB.BDBBB.BD.ABD",
+        "B.CCAADCCCAAAAD.AEBEBBBBBEEED..B",
+        ".CCCCAAACAAACDB.ABEEEBEBEBEBDDC.",
+        ".CCCCAAAAAAAAAA..EEEEEEEEEEEDDD."
       ]
     },
     "pc_rogue_b": {
-      "w": 24, "h": 24,
-      "legend": { ".": -1, "x": 1, "h": 9, "s": 13, "d": 12, "e": 2, "g": 15, "k": 14, "t": 16, "l": 10 },
+      "w": 32,
+      "h": 40,
+      "legend": {
+        ".": -1,
+        "A": 2,
+        "B": 3,
+        "C": 8,
+        "D": 9,
+        "E": 10,
+        "F": 11,
+        "G": 12,
+        "H": 4
+      },
       "rows": [
-        "........................",
-        "........xxxxxxxx........",
-        "......xxggggggggxx......",
-        ".....xggggggggggggx.....",
-        ".....xgggggggggggkx.....",
-        ".....xggxhhhhhhxkgx.....",
-        ".....xgkhssssssdkgx.....",
-        ".....xgksxxssxxdkgx.....",
-        ".....xgkseesseedkgx.....",
-        ".....xgksssdssddkgx.....",
-        ".....xgkssssdssdkgx.....",
-        "......xkssxxxssdkx......",
-        "......xksssssssdkx......",
-        ".......xkssssddkx.......",
-        "........xssssddx........",
-        "....xxxxxssssddxxxxx....",
-        "...xggggxssssddxggggx...",
-        "..xggggggxssddxggggkx...",
-        ".xgggggggxsdxkgggggkkx..",
-        ".xtggggggxllllxkggggkkx.",
-        "xtggggggkxllllxkgggkkkx.",
-        "xtgggggkkxllllxkggkkkkx.",
-        "xtggggkkkxllllxkgkkkkkx.",
-        "xggggkkkkxllllxkkkkkkkx."
+        "................A...............",
+        "................AA..............",
+        "...............AAAAA............",
+        "...............ABAAAA...........",
+        "...............ABBAAAA..........",
+        ".............AAABBAAAAA.........",
+        "............AAAABBBAAAA.........",
+        "...........AAAAABBBBAAA.........",
+        "............AA.ABBBAAAA.........",
+        "..............A..BBAAAA.........",
+        "............BB....BHBBB.........",
+        "...................BHBB.........",
+        ".....................HBB........",
+        ".........B...........BHB........",
+        ".......................BA.......",
+        "........A..DDED..DDDD..AA.......",
+        ".......A..C..FFFEEFC.C..A.......",
+        ".......A.C.BA.CEFD..B.C.AA......",
+        "......A..CDCCCCEGDDDCEC..B......",
+        ".........CFFFEEEGFGFFFC...A.....",
+        ".....A....EFFFDEGFGGFFA.........",
+        "..........CEFFDDGFGGFDA....A....",
+        "....A.....DDFFCEGFGGFEA.........",
+        "....A.....DCFED.EFFGED..........",
+        "................................",
+        "..........D.EEEEEFFFED..........",
+        "...........CDEEFFGFED...........",
+        "....A.......DEDCCEFEA........C.B",
+        ".A...A.......DEFFFEDC......A.C.B",
+        ".A...B......CDDEEFDDD........CBB",
+        "......BA....C.CADA.DD....A..CCBB",
+        "D......AB...DCCDDDDDC...A...C.BB",
+        "DDBC.....B..CDCCEDDC..A....CC.DB",
+        "DDA.C.....AA.DDDDDEA.A.....CCBBB",
+        "DD..CC......ADEDDED......ACC.BDD",
+        "GD.BCCC......AEEEE....AADDDC.ABF",
+        "ABA.CCCCCCA...AEE....AADDCDD.ABD",
+        "B.CCCA.CCCCCAAAAABB.BDBBB.BDD..B",
+        ".CCCCAAACAAACDB.ABEEEBEBEBEBDDC.",
+        ".CCCCAAAAAAAAAA..EEEEEEEEEEEDDD."
       ]
     },
     "pc_caster_a": {
-      "w": 24, "h": 24,
-      "legend": { ".": -1, "x": 1, "h": 9, "s": 13, "d": 12, "E": 20, "g": 15, "k": 14, "t": 16, "l": 10 },
+      "w": 32,
+      "h": 40,
+      "legend": {
+        ".": -1,
+        "A": 2,
+        "B": 3,
+        "C": 8,
+        "D": 9,
+        "E": 10,
+        "F": 11,
+        "G": 12,
+        "H": 13,
+        "I": 19,
+        "J": 20,
+        "K": 21,
+        "L": 22
+      },
       "rows": [
-        "........................",
-        ".......xxxxxxxxxx.......",
-        "......xhhhhhhhhhhx......",
-        ".....xhhhhhhhhhhhhx.....",
-        ".....xhsssshhssssdx.....",
-        ".....xhssssshssssdx.....",
-        ".....xssssssssssddx.....",
-        ".....xssxxssssxxsdx.....",
-        ".....xsEEssssEEsddx.....",
-        ".....xssssssdsssddx.....",
-        ".....xsdssssddssddx.....",
-        ".....xssssxxxsssddx.....",
-        "......xssssssssddx......",
-        "........xsssssdx........",
-        "......xggssssddggx......",
-        ".....xgggssssddgggx.....",
-        "....xgggggkkkkgggggx....",
-        "...xggggggkkkkggggggx...",
-        "..xggggggggllgggggkkx...",
-        ".xtggggggggllgggggkkkx..",
-        ".xtggggggggllggggkkkkx..",
-        "xtgggggggggllggggkkkkkx.",
-        "xtgggggggggllgggkkkkkkx.",
-        "xggggggggggllgggkkkkkkx."
+        "................................",
+        "................................",
+        "..............ACCAD.............",
+        "............AABACBBBB...........",
+        "...........ABBABCBBBBB..........",
+        "..........AACABBCBBBBBA.........",
+        ".........AAABEBBCBAFBBB.........",
+        ".........AADB..CCC.FBBBB........",
+        "........AAABEFHHHHF.BBBB........",
+        "........AACDFGHHHHHBBBBB........",
+        "........AAAABHHHHHHFBBABB.......",
+        ".......AACABGHHHHHHG.BBAB.......",
+        ".......ACAABCCHHHHH..BABBB......",
+        ".....AACABB.JIEFHEDK.CBAACB.....",
+        ".......AACBF.KFEHGHJGEDBBA.CC...",
+        "......AACB.GHHGEHHHHHE.BAA......",
+        "......ABABEFHHFFHHHHHFEBDBA..D..",
+        "......ACB..FFGGFHFHHHE.BCBB.....",
+        "...B..DCB..FFGGEEHHHFC.ACCBB....",
+        ".....CCCEC.EEGFHHHHHG..ACCABB...",
+        "..C..AC.BC..EFFGGHHGF..BCBCBB...",
+        ".....CC.BC..CFFFGHGFE..BCBC.DA..",
+        "....AC..CC..E.FHHHFFF..ACDD..A..",
+        "...ACCC.C...EECFFFFGF.AACCAA.B..",
+        "....CC.ACB.EEEEEFFFGFEBB.ACA.B..",
+        "....C.AAABBEEFEFFGGFEEBBBAAB.B..",
+        "...AAAAAA.BEEEGFGGGFFBBABBBB.B..",
+        ".BAAAAAAAABAFEGGGFGFFBABBBBBBBBB",
+        "AAAAAAAACACBEFFHGGGFBBBBB.BBBBBB",
+        "AABBBBAAA.ABAFGHFGFDBBBB.BBBBBBB",
+        "ABBBBBBABA.AGEGGFFHFBB.BBBBBBBBB",
+        "BBABBBBBABB.CCFLLFEE.ABBBBBBBBBB",
+        "BBABBBBBBABBBELLHLGABBBBBBBBBBBB",
+        "ABABBBBBBABBBDKLLKGBABBBBBBBBBBB",
+        "BBABBBBBBBBBBELLLLGBBBBBBBBBBBBB",
+        "BBABBBBBBBBBBAFJKG.ABBBBBBBBBABB",
+        ".BCBBBBBBBBBBB.CFFBBBBBBBBBBBABB",
+        "BA.ABBBBBBBBBABGG.BBBBBBBBBBBBB.",
+        "B..ABBBBBBBBBBBGGBBBBBBBBBBBBB.B",
+        "BB.AABBBBBBBBBA.EBBBBBBBBBBBBBCB"
       ]
     },
     "pc_caster_b": {
-      "w": 24, "h": 24,
-      "legend": { ".": -1, "x": 1, "h": 9, "s": 13, "d": 12, "E": 20, "g": 15, "k": 14, "o": 29, "O": 30 },
+      "w": 32,
+      "h": 40,
+      "legend": {
+        ".": -1,
+        "A": 2,
+        "B": 3,
+        "C": 8,
+        "D": 9,
+        "E": 10,
+        "F": 11,
+        "G": 12,
+        "H": 13,
+        "I": 19,
+        "J": 20,
+        "K": 21,
+        "L": 22,
+        "M": 4
+      },
       "rows": [
-        "........................",
-        ".......xxxxxxxxxx.......",
-        "......xhhhhhhhhhhx......",
-        ".....xhhhhhhhhhhhhx.....",
-        ".....xhooooOOoooohx.....",
-        ".....xhsssssssssdhx.....",
-        ".....xhsssssssssdhx.....",
-        ".....xhsxxssssxxdhx.....",
-        ".....xhsEEssssEEdhx.....",
-        ".....xhssssdsssddhx.....",
-        ".....xhsssddsssddhx.....",
-        ".....xhssxxxxssddhx.....",
-        ".....xhhssssssddhhx.....",
-        ".....xhhxssssddxhhx.....",
-        "....xhhhxssssddxhhhx....",
-        "...xhhhhxssssddxhhhhx...",
-        "...xhhhhxssssddxhhhhx...",
-        "..xhhhhhgxssddxghhhhhx..",
-        ".xhhhhhggxssddxgghhhhhx.",
-        ".xhhhhggggxggxgggghhhhx.",
-        "xhhhhgggggxggxggggghhhhx",
-        "xhhhggggggxggxgggggkhhhx",
-        "xhhggggggggxxgggggkkhhx.",
-        "xhhgggggggggggggggkkhhx."
+        "................................",
+        "................................",
+        "..............ACCAD.............",
+        "............AABACBBBB...........",
+        "...........ABBABCBBBBB..........",
+        "..........AACABBCBBBBBA.........",
+        ".........AAABEBBCBAFBBB.........",
+        ".........AADB..CCC.FBBBB........",
+        "........AAABEFHHHHF.BBBB........",
+        "........BBDEGHHHHHHMMMMM........",
+        "........BBBBMHHHHHHGMMBMB.......",
+        ".......ABDBMHHHHHHHH.MMBB.......",
+        ".......ADBBMDDHHHHH..MBMBB......",
+        ".....AACBMM.KJFGHFEL.DMBACB.....",
+        ".......AACBF.KFEHGHJGEDBBA.CC...",
+        "......AACB.GHHGEHHHHHE.BAA......",
+        "......ABABEFHHFFHHHHHFEBDBA..D..",
+        "......ACB..FFGGFHFHHHE.BCBB.....",
+        "...B..DCB..FFGGEEHHHFC.ACCBB....",
+        ".....CCCEC.EEGFHHHHHG..ACCABB...",
+        "..C..AC.BC..EFFGGHHGF..BCBCBB...",
+        ".....CC.BC..CFFFGHGFE..BCBC.DA..",
+        "....AC..CC..E.FHHHFFF..ACDD..A..",
+        "...ACCC.C...EECFFFFGF.AACCAA.B..",
+        ".............................B..",
+        "....CC.ACB.EEEEEFFFGFEBB.ACA.B..",
+        "...AC.AAABBEEFEFFGGFEEBBBAAB.B..",
+        ".BAAAAAAA.BEEEGFGGGFFBBABBBBBBBB",
+        "AAAAAAAAAABAFEGGGFGFFBABBBBBBBBB",
+        "AABBAAAACACBEFFHGGGFBBBBB.BBBBBB",
+        "ABBBBBAAA.ABAFGHFGFDBBBB.BBBBBBB",
+        "BBABBBBABA.AGEGGFFHFBB.BBBBBBBBB",
+        "BBABBBBBABB.CCFLLFEE.ABBBBBBBBBB",
+        "ABABBBBBBABBBELLHLGABBBBBBBBBBBB",
+        "BBABBBBBBABBBDKLLKGBABBBBBBBBBBB",
+        "BBABBBBBBBBBBELLLLGBBBBBBBBBBABB",
+        ".BCBBBBBBBBBBAFJKG.ABBBBBBBBBABB",
+        "BA.ABBBBBBBBBB.CFFBBBBBBBBBBBBB.",
+        "B..ABBBBBBBBBBBGGBBBBBBBBBBBBB.B",
+        "BB.AABBBBBBBBBA.EBBBBBBBBBBBBBCB"
       ]
     },
     "pc_skald_a": {
-      "w": 24, "h": 24,
-      "legend": { ".": -1, "x": 1, "h": 9, "s": 13, "d": 12, "e": 2, "g": 15, "k": 14, "t": 16, "l": 10, "f": 26 },
+      "w": 32,
+      "h": 40,
+      "legend": {
+        ".": -1,
+        "A": 2,
+        "B": 3,
+        "C": 8,
+        "D": 9,
+        "E": 10,
+        "F": 11,
+        "G": 12,
+        "H": 13
+      },
       "rows": [
-        ".................xf.....",
-        ".......xxxxxxxxxxff.....",
-        "......xlllllllllxfx.....",
-        ".....xlllllllllllfx.....",
-        ".....xllllllllllllx.....",
-        ".....xhsssssssssdhx.....",
-        ".....xssssssssssddx.....",
-        ".....xssxxssssxxsdx.....",
-        ".....xsseesssseesdx.....",
-        ".....xssssssdsssddx.....",
-        ".....xsssssddsssddx.....",
-        ".....xssxxxxxxssddx.....",
-        ".....xsssssssssdddx.....",
-        "......xssssssssddx......",
-        "........xssssddx........",
-        "....xxxxxssssddxxxxx....",
-        "...xggggxssssddxggggx...",
-        "..xgggggxssssddxgggggx..",
-        ".xggggggxssssddxggggggx.",
-        ".xtgggggkxssddxkgggggkx.",
-        "xtggggggkxssddxkggggkkx.",
-        "xtgggggggxsddxkggggkkkx.",
-        "xtgggggggkxddxkgggkkkkx.",
-        "xggggggggkxxxxkggkkkkkx."
+        "................................",
+        "................................",
+        "................................",
+        ".............DDDEE..............",
+        "............EEEDDEDC............",
+        "...........DDDFDFEED............",
+        "...........CEFFEGEEE............",
+        "..........CDCEGE.EDED...........",
+        "..........DDGHHHHFGDD...........",
+        "...........CEGCHEDGD............",
+        "...........CGGGHHGH.D...........",
+        "...........CGHHHHHHE............",
+        "...........EFGFGFHGC............",
+        "..........FCFGEEDGFD.FA.........",
+        ".........EDCDGFGGEEDGCB.........",
+        "........BDBD.EGCGEGCGGAG........",
+        "........FAED.EEGEDGBHFGFG....DC.",
+        ".......FEFFBDFEEFGGGGBGGFC..F.F.",
+        "......BEBGFFEEGGGHGFEHGFFFF..EE.",
+        ".....EFDEGGGAGHHHDGGGGEGHFEEE...",
+        ".....FGED.GGFFHHFGGGGCEHHFEF....",
+        ".....FGEDDC.GBFEFBGEEEEHGFEF....",
+        "....BBBEEEEEE.AAFH.DEECHFGFF....",
+        "....EEAEFDEBGEEGFEECEECFFEGG....",
+        "....EFFEEEEFCEEFEGE.BEEG.FGGE...",
+        "...FEGADEEDEFEE.GGEEEEFEEGFGF...",
+        "..FFEBEDEEDAGFEEGEEEEFDAFGGGF...",
+        "..EFGEEDEE.GAGDEEFEFFDDBGGGFFF..",
+        "..F..EBDDC..GE.DEH.FDEDDEFAGFG..",
+        ".FGDGEA.DD.GHHHHAEHHDEE..FBEGAE.",
+        ".FGHECC.DECHHHHHGGHHF.DCCFCHHG..",
+        ".FFDHHGDCHHHHHHH.HHGGFECHHHEGG..",
+        "..EEGHHEFH.HHHHHHEFGGDEFHHHHGF..",
+        "..EEFFFEFEDHHHHHHBDFFEDEGGFFFB..",
+        "...EEEECEFF.HHHH.EFD.CCEFEE.BA..",
+        "....DC.C.EF.DGGGD.CDDCCCEF.FB...",
+        ".......CCDC.EDDED.DDEDDDD.......",
+        "......CDCCDCC.D.A.DDDEDDD.......",
+        "......CDC.D..D.DD.EEDEE.D.......",
+        "......DDEBBBAD.CEDEEEEEED......."
       ]
     },
     "pc_skald_b": {
-      "w": 24, "h": 24,
-      "legend": { ".": -1, "x": 1, "h": 9, "s": 13, "d": 12, "e": 2, "g": 15, "k": 14, "t": 16, "l": 10, "f": 26 },
+      "w": 32,
+      "h": 40,
+      "legend": {
+        ".": -1,
+        "A": 2,
+        "B": 3,
+        "C": 8,
+        "D": 9,
+        "E": 10,
+        "F": 11,
+        "G": 12,
+        "H": 13
+      },
       "rows": [
-        ".....fx.................",
-        ".....ffxxxxxxxxxx.......",
-        "......xfllllllllllx.....",
-        ".....xlllllllllllhx.....",
-        ".....xllllllllllhhx.....",
-        ".....xhsssssssshhhx.....",
-        ".....xssssssssdhhhx.....",
-        ".....xsxxssssxxdhhx.....",
-        ".....xseessseesdhhx.....",
-        ".....xsssssdssddhhx.....",
-        ".....xssssddssddhhx.....",
-        ".....xssxxxxsddhhhx.....",
-        "......xsssssddhhhx......",
-        ".......xssssddhhx.......",
-        "........xssddxhhhx......",
-        "....xxxxxssddxxhhhx.....",
-        "...xggggxssddxghhhhx....",
-        "..xgggggxssddxgghhhhx...",
-        ".xggggggxssddxgggxhhhx..",
-        ".xtgggggxssddxggggxhhx..",
-        "xtggggggxssddxgggggxhhx.",
-        "xtggggggkxddxkggggkxhhx.",
-        "xtgggggggxxxxkgggkkxhhx.",
-        "xggggggggggggkggkkkxhhx."
+        "................................",
+        "................................",
+        "................................",
+        ".............DDDEE..............",
+        "............EEEDDEDC............",
+        "...........DDDFDFEED............",
+        "...........CEFFEGEEE............",
+        "..........CDCEGE.EDED...........",
+        "..........DDGHHHHFGDD...........",
+        "...........DFHDHFEHE............",
+        "...........DHHHHHHH.E...........",
+        "...........DHHHHHHHF............",
+        "...........FGHGHGHHD............",
+        "..........GDGHFFEHGE.GB.........",
+        ".........EDCDGFGGEEDGCB.........",
+        "........BDBD.EGCGEGCGGAG........",
+        "........FAED.EEGEDGBHFGFG....DC.",
+        ".......FEFFBDFEEFGGGGBGGFC..F.F.",
+        "......BEBGFFEEGGGHGFEHGFFFF..EE.",
+        ".....EFDEGGGAGHHHDGGGGEGHFEEE...",
+        ".....FGED.GGFFHHFGGGGCEHHFEF....",
+        ".....FGEDDC.GBFEFBGEEEEHGFEF....",
+        "....BBBEEEEEE.AAFH.DEECHFGFF....",
+        "....EEAEFDEBGEEGFEECEECFFEGG....",
+        "............................E...",
+        "...FEFFEEEEFCEEFEGE.BEEG.FGGF...",
+        "..FFEGADEEDEFEE.GGEEEEFEEGFGF...",
+        "..EFEBEDEEDAGFEEGEEEEFDAFGGGFF..",
+        "..F.GEEDEE.GAGDEEFEFFDDBGGGFFG..",
+        ".FGD.EBDDC..GE.DEH.FDEDDEFAGGAE.",
+        ".FGHGEA.DD.GHHHHAEHHDEE..FBEHG..",
+        ".FFDECC.DECHHHHHGGHHF.DCCFCHGG..",
+        "..EEHHGDCHHHHHHH.HHGGFECHHHEGF..",
+        "..EEGHHEFH.HHHHHHEFGGDEFHHHHFB..",
+        "...EFFFEFEDHHHHHHBDFFEDEGGFFBA..",
+        "....EEECEFF.HHHH.EFD.CCEFEE.B...",
+        "....DC.C.EF.DGGGD.CDDCCCEF.F....",
+        ".......CCDC.EDDED.DDEDDDD.......",
+        "......CDC.D..D.DD.EEDEE.D.......",
+        "......DDEBBBAD.CEDEEEEEED......."
       ]
     },
     "icon_blade": {
-      "w": 8, "h": 8,
-      "legend": { ".": -1, "b": 6, "B": 5, "o": 29 },
+      "w": 8,
+      "h": 8,
+      "legend": {
+        ".": -1,
+        "b": 6,
+        "B": 5,
+        "o": 29
+      },
       "rows": [
         "...bb...",
         "...bB...",
@@ -256,8 +494,14 @@
       ]
     },
     "icon_warden": {
-      "w": 8, "h": 8,
-      "legend": { ".": -1, "r": 6, "f": 21, "F": 20 },
+      "w": 8,
+      "h": 8,
+      "legend": {
+        ".": -1,
+        "r": 6,
+        "f": 21,
+        "F": 20
+      },
       "rows": [
         ".rrrrrr.",
         "rffffFFr",
@@ -270,8 +514,14 @@
       ]
     },
     "icon_knave": {
-      "w": 8, "h": 8,
-      "legend": { ".": -1, "b": 6, "o": 29, "l": 10 },
+      "w": 8,
+      "h": 8,
+      "legend": {
+        ".": -1,
+        "b": 6,
+        "o": 29,
+        "l": 10
+      },
       "rows": [
         "......b.",
         ".....bb.",
@@ -284,8 +534,14 @@
       ]
     },
     "icon_strider": {
-      "w": 8, "h": 8,
-      "legend": { ".": -1, "w": 11, "s": 6, "a": 7 },
+      "w": 8,
+      "h": 8,
+      "legend": {
+        ".": -1,
+        "w": 11,
+        "s": 6,
+        "a": 7
+      },
       "rows": [
         "..sw....",
         ".s..w...",
@@ -298,8 +554,14 @@
       ]
     },
     "icon_fistwright": {
-      "w": 8, "h": 8,
-      "legend": { ".": -1, "f": 13, "d": 12, "p": 8 },
+      "w": 8,
+      "h": 8,
+      "legend": {
+        ".": -1,
+        "f": 13,
+        "d": 12,
+        "p": 8
+      },
       "rows": [
         "........",
         ".ppppp..",
@@ -312,8 +574,13 @@
       ]
     },
     "icon_skald": {
-      "w": 8, "h": 8,
-      "legend": { ".": -1, "o": 29, "O": 30 },
+      "w": 8,
+      "h": 8,
+      "legend": {
+        ".": -1,
+        "o": 29,
+        "O": 30
+      },
       "rows": [
         "...ooo..",
         "...o.oo.",
@@ -326,8 +593,13 @@
       ]
     },
     "icon_hexen": {
-      "w": 8, "h": 8,
-      "legend": { ".": -1, "v": 31, "V": 2 },
+      "w": 8,
+      "h": 8,
+      "legend": {
+        ".": -1,
+        "v": 31,
+        "V": 2
+      },
       "rows": [
         "v...v..v",
         ".v..v.v.",
@@ -340,8 +612,14 @@
       ]
     },
     "icon_lorist": {
-      "w": 8, "h": 8,
-      "legend": { ".": -1, "c": 10, "p": 7, "s": 5 },
+      "w": 8,
+      "h": 8,
+      "legend": {
+        ".": -1,
+        "c": 10,
+        "p": 7,
+        "s": 5
+      },
       "rows": [
         "........",
         ".pp..pp.",
@@ -354,8 +632,13 @@
       ]
     },
     "icon_stormcaller": {
-      "w": 8, "h": 8,
-      "legend": { ".": -1, "b": 22, "B": 21 },
+      "w": 8,
+      "h": 8,
+      "legend": {
+        ".": -1,
+        "b": 22,
+        "B": 21
+      },
       "rows": [
         "....bbb.",
         "...bbB..",
@@ -368,8 +651,13 @@
       ]
     },
     "icon_riddlemaster": {
-      "w": 8, "h": 8,
-      "legend": { ".": -1, "o": 29, "O": 30 },
+      "w": 8,
+      "h": 8,
+      "legend": {
+        ".": -1,
+        "o": 29,
+        "O": 30
+      },
       "rows": [
         ".oOoo...",
         "oo..oo..",
@@ -383,45 +671,327 @@
     }
   },
   "variants": {
-    "pc_vael_warrior_a": { "base": "pc_warrior_a", "remap": {} },
-    "pc_vael_warrior_b": { "base": "pc_warrior_b", "remap": {} },
-    "pc_vael_rogue_a": { "base": "pc_rogue_a", "remap": {} },
-    "pc_vael_rogue_b": { "base": "pc_rogue_b", "remap": {} },
-    "pc_vael_caster_a": { "base": "pc_caster_a", "remap": {} },
-    "pc_vael_caster_b": { "base": "pc_caster_b", "remap": {} },
-    "pc_vael_skald_a": { "base": "pc_skald_a", "remap": {} },
-    "pc_vael_skald_b": { "base": "pc_skald_b", "remap": {} },
-    "pc_korrun_warrior_a": { "base": "pc_warrior_a", "remap": { "13": 12, "12": 11, "9": 8 } },
-    "pc_korrun_warrior_b": { "base": "pc_warrior_b", "remap": { "13": 12, "12": 11, "9": 8 } },
-    "pc_korrun_rogue_a": { "base": "pc_rogue_a", "remap": { "13": 12, "12": 11, "9": 8 } },
-    "pc_korrun_rogue_b": { "base": "pc_rogue_b", "remap": { "13": 12, "12": 11, "9": 8 } },
-    "pc_korrun_caster_a": { "base": "pc_caster_a", "remap": { "13": 12, "12": 11, "9": 8 } },
-    "pc_korrun_caster_b": { "base": "pc_caster_b", "remap": { "13": 12, "12": 11, "9": 8 } },
-    "pc_korrun_skald_a": { "base": "pc_skald_a", "remap": { "13": 12, "12": 11, "9": 8 } },
-    "pc_korrun_skald_b": { "base": "pc_skald_b", "remap": { "13": 12, "12": 11, "9": 8 } },
-    "pc_fennick_warrior_a": { "base": "pc_warrior_a", "remap": { "9": 10 } },
-    "pc_fennick_warrior_b": { "base": "pc_warrior_b", "remap": { "9": 10 } },
-    "pc_fennick_rogue_a": { "base": "pc_rogue_a", "remap": { "9": 10 } },
-    "pc_fennick_rogue_b": { "base": "pc_rogue_b", "remap": { "9": 10 } },
-    "pc_fennick_caster_a": { "base": "pc_caster_a", "remap": { "9": 10 } },
-    "pc_fennick_caster_b": { "base": "pc_caster_b", "remap": { "9": 10 } },
-    "pc_fennick_skald_a": { "base": "pc_skald_a", "remap": { "9": 10 } },
-    "pc_fennick_skald_b": { "base": "pc_skald_b", "remap": { "9": 10 } },
-    "pc_aldari_warrior_a": { "base": "pc_warrior_a", "remap": { "13": 7, "12": 6, "9": 3 } },
-    "pc_aldari_warrior_b": { "base": "pc_warrior_b", "remap": { "13": 7, "12": 6, "9": 3 } },
-    "pc_aldari_rogue_a": { "base": "pc_rogue_a", "remap": { "13": 7, "12": 6, "9": 3 } },
-    "pc_aldari_rogue_b": { "base": "pc_rogue_b", "remap": { "13": 7, "12": 6, "9": 3 } },
-    "pc_aldari_caster_a": { "base": "pc_caster_a", "remap": { "13": 7, "12": 6, "9": 3 } },
-    "pc_aldari_caster_b": { "base": "pc_caster_b", "remap": { "13": 7, "12": 6, "9": 3 } },
-    "pc_aldari_skald_a": { "base": "pc_skald_a", "remap": { "13": 7, "12": 6, "9": 3 } },
-    "pc_aldari_skald_b": { "base": "pc_skald_b", "remap": { "13": 7, "12": 6, "9": 3 } },
-    "pc_halfwyld_warrior_a": { "base": "pc_warrior_a", "remap": { "9": 15, "2": 14, "20": 16 } },
-    "pc_halfwyld_warrior_b": { "base": "pc_warrior_b", "remap": { "9": 15, "2": 14, "20": 16 } },
-    "pc_halfwyld_rogue_a": { "base": "pc_rogue_a", "remap": { "9": 15, "2": 14, "20": 16 } },
-    "pc_halfwyld_rogue_b": { "base": "pc_rogue_b", "remap": { "9": 15, "2": 14, "20": 16 } },
-    "pc_halfwyld_caster_a": { "base": "pc_caster_a", "remap": { "9": 15, "2": 14, "20": 16 } },
-    "pc_halfwyld_caster_b": { "base": "pc_caster_b", "remap": { "9": 15, "2": 14, "20": 16 } },
-    "pc_halfwyld_skald_a": { "base": "pc_skald_a", "remap": { "9": 15, "2": 14, "20": 16 } },
-    "pc_halfwyld_skald_b": { "base": "pc_skald_b", "remap": { "9": 15, "2": 14, "20": 16 } }
+    "pc_vael_warrior_a": {
+      "base": "pc_warrior_a",
+      "remap": {}
+    },
+    "pc_vael_warrior_b": {
+      "base": "pc_warrior_b",
+      "remap": {}
+    },
+    "pc_vael_rogue_a": {
+      "base": "pc_rogue_a",
+      "remap": {}
+    },
+    "pc_vael_rogue_b": {
+      "base": "pc_rogue_b",
+      "remap": {}
+    },
+    "pc_vael_caster_a": {
+      "base": "pc_caster_a",
+      "remap": {}
+    },
+    "pc_vael_caster_b": {
+      "base": "pc_caster_b",
+      "remap": {}
+    },
+    "pc_vael_skald_a": {
+      "base": "pc_skald_a",
+      "remap": {}
+    },
+    "pc_vael_skald_b": {
+      "base": "pc_skald_b",
+      "remap": {}
+    },
+    "pc_korrun_warrior_a": {
+      "base": "pc_warrior_a",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_korrun_warrior_b": {
+      "base": "pc_warrior_b",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_korrun_rogue_a": {
+      "base": "pc_rogue_a",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_korrun_rogue_b": {
+      "base": "pc_rogue_b",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_korrun_caster_a": {
+      "base": "pc_caster_a",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_korrun_caster_b": {
+      "base": "pc_caster_b",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_korrun_skald_a": {
+      "base": "pc_skald_a",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_korrun_skald_b": {
+      "base": "pc_skald_b",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_fennick_warrior_a": {
+      "base": "pc_warrior_a",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_fennick_warrior_b": {
+      "base": "pc_warrior_b",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_fennick_rogue_a": {
+      "base": "pc_rogue_a",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_fennick_rogue_b": {
+      "base": "pc_rogue_b",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_fennick_caster_a": {
+      "base": "pc_caster_a",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_fennick_caster_b": {
+      "base": "pc_caster_b",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_fennick_skald_a": {
+      "base": "pc_skald_a",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_fennick_skald_b": {
+      "base": "pc_skald_b",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_aldari_warrior_a": {
+      "base": "pc_warrior_a",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_aldari_warrior_b": {
+      "base": "pc_warrior_b",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_aldari_rogue_a": {
+      "base": "pc_rogue_a",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_aldari_rogue_b": {
+      "base": "pc_rogue_b",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_aldari_caster_a": {
+      "base": "pc_caster_a",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_aldari_caster_b": {
+      "base": "pc_caster_b",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_aldari_skald_a": {
+      "base": "pc_skald_a",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_aldari_skald_b": {
+      "base": "pc_skald_b",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_halfwyld_warrior_a": {
+      "base": "pc_warrior_a",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    },
+    "pc_halfwyld_warrior_b": {
+      "base": "pc_warrior_b",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    },
+    "pc_halfwyld_rogue_a": {
+      "base": "pc_rogue_a",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    },
+    "pc_halfwyld_rogue_b": {
+      "base": "pc_rogue_b",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    },
+    "pc_halfwyld_caster_a": {
+      "base": "pc_caster_a",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    },
+    "pc_halfwyld_caster_b": {
+      "base": "pc_caster_b",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    },
+    "pc_halfwyld_skald_a": {
+      "base": "pc_skald_a",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    },
+    "pc_halfwyld_skald_b": {
+      "base": "pc_skald_b",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    }
+  },
+  "anims": {
+    "pc_warrior": {
+      "frames": [
+        {
+          "sprite": "pc_warrior_a",
+          "ms": 600
+        },
+        {
+          "sprite": "pc_warrior_b",
+          "ms": 600
+        }
+      ]
+    },
+    "pc_rogue": {
+      "frames": [
+        {
+          "sprite": "pc_rogue_a",
+          "ms": 600
+        },
+        {
+          "sprite": "pc_rogue_b",
+          "ms": 600
+        }
+      ]
+    },
+    "pc_caster": {
+      "frames": [
+        {
+          "sprite": "pc_caster_a",
+          "ms": 600
+        },
+        {
+          "sprite": "pc_caster_b",
+          "ms": 600
+        }
+      ]
+    },
+    "pc_skald": {
+      "frames": [
+        {
+          "sprite": "pc_skald_a",
+          "ms": 600
+        },
+        {
+          "sprite": "pc_skald_b",
+          "ms": 600
+        }
+      ]
+    }
   }
 }
