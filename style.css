@@ -1,0 +1,125 @@
+:root {
+  --green: #8df272;
+  --dim: #3f7a38;
+  --pale: #c9f7b0;
+  --amber: #ffd96b;
+  --red: #ff7a6b;
+  --bg: #000;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: #050805;
+  color: var(--green);
+  font-family: "Courier New", ui-monospace, monospace;
+  font-size: 14px;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#game {
+  width: 960px;
+  background: var(--bg);
+  border: 2px solid var(--dim);
+  padding: 8px;
+  box-shadow: 0 0 40px rgba(70, 160, 60, 0.18);
+}
+
+#toprow { display: flex; gap: 8px; }
+
+#viewwrap { position: relative; }
+
+#view {
+  display: block;
+  background: #000;
+  image-rendering: pixelated;
+}
+
+#loc {
+  margin-top: 2px;
+  color: var(--dim);
+  font-size: 12px;
+  height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+#status {
+  border: 1px solid var(--dim);
+  padding: 4px 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pale);
+  white-space: pre-wrap;
+  min-height: 52px;
+}
+
+#menu {
+  border: 1px solid var(--dim);
+  padding: 6px 8px;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  color: var(--green);
+  min-height: 30px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+#menu:empty { display: none; }
+#menu .title { color: var(--amber); }
+
+#log {
+  border: 1px solid var(--dim);
+  margin-top: 6px;
+  padding: 6px 8px;
+  flex: 1;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.45;
+  min-height: 90px;
+  max-height: 354px;
+}
+#log .mouth { color: var(--amber); }
+#log .hurt { color: var(--red); }
+#log .good { color: var(--pale); }
+#log p { margin: 0 0 2px 0; }
+
+#roster {
+  border: 1px solid var(--dim);
+  margin-top: 8px;
+  padding: 4px 8px;
+  font-size: 14px;
+  white-space: pre;
+  line-height: 1.5;
+  min-height: 150px;
+}
+#roster .hdr { color: var(--dim); }
+#roster .dead { color: var(--red); }
+#roster .pick { color: var(--amber); }
+#roster .summon { color: var(--pale); font-style: italic; }
+
+#hint {
+  margin-top: 6px;
+  color: var(--dim);
+  font-size: 12px;
+  min-height: 16px;
+  white-space: pre-wrap;
+}
+
+::-webkit-scrollbar { width: 8px; background: #000; }
+::-webkit-scrollbar-thumb { background: var(--dim); }
