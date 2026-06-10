@@ -93,9 +93,22 @@ Rendered at 3× via `--sheet mon_<boss> 3`. All 4 bosses generated from `tools/g
 
 ---
 
-## Step 5a — monster set A
+## Step 5a — monster set A (32×32 → 96×80, 2 frames each)
 
-<!-- verdicts logged as each family is drawn -->
+Rendered at 3× via `--sheet mon_<family> 3`. Generated from `tools/gen_monsters_a.js`.
+mon_hound required 3 revisions (insect-blob→side-wolf→upright wolf). mon_snake_b required 1 revision (disconnected blocks→ellipse-chain S-curve).
+
+- mon_rat_a/b [96×80] — PASS: large oval body, round ears with inner ear, buck teeth, long tail; frame b forelegs raised
+- mon_beetle_a/b [96×80] — PASS: silver dome carapace with concentric ridge rings, red compound eyes, mandibles, 6 legs; frame b elytra raised showing blue wings
+- mon_hound_a/b [96×80] — PASS (rev 3): upright wolf, large grey body, pointed ears, big red glowing eye, white fangs, 4 thick pillar legs; frame b crouching with raised foreleg and red tongue
+- mon_spider_a/b [96×80] — PASS: two-segment body (cephalothorax + abdomen), 8 legs spread, 4-pair red eye cluster, chelicera fangs, hair bristles; frame b front legs raised
+- mon_snake_a/b [96×80] — PASS (snake_b rev 2): frame a S-coil with hollow loops, triangular head, gold slit eyes; frame b diagonal ellipse-chain continuous body, head lunging left, forked tongue
+- mon_zombie_a/b [96×80] — PASS: green humanoid, outstretched arms, red wound patches, one dead eye + empty socket, slack mouth; frame b one arm raised higher
+- mon_skeleton_a/b [96×80] — PASS: skull with dark sockets, ribcage, spine, hip/knee joints, gold sword; frame a sword down, frame b sword raised high
+- mon_blob_a/b [96×80] — PASS: tan pyramid mound, gold eyes with pupils, dashed toothy grin, side pseudopods; frame b spreading wider with drip tendrils
+- mon_wisp_a/b [96×80] — PASS: vivid concentric-ring orb (honey→ember→flame→gold→chalk), 6 orbiting sparks, hanging legs; frame b brighter with radial burst rays
+- mon_brute_a/b [96×80] — PASS: massive green block body, red eyes under heavy brow ridge, white tusks, huge fists, muscle band lines; frame b both fists raised to smash
+- mon_humanoid_a/b [96×80] — PASS: dark triangular robe, hooded face with gold eye glint, gold dagger; frame a dagger horizontal, frame b dagger thrust vertical
 
 ---
 
