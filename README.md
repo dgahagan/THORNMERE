@@ -90,8 +90,12 @@ without touching the mouse.
 | `V` party advances 10' | `R` the party runs |
 | `Space` | hurry the narration |
 
+| `M` | cycle automap (off → corner overlay → full-screen) — Remastered only |
+| `V` | make camp / save to a slot — Remastered save-anywhere only |
+| `7` | view summon sheet — Remastered 7th-slot only |
+
 **Debug:** add `?debug=1` to the URL, then `M` toggles an automap overlay
-(off by default — the base game is true to 1985: bring graph paper).
+(always available in debug, even in Legacy mode).
 `?seed=N` gives a reproducible run.
 
 ## Beginner's primer
@@ -127,6 +131,42 @@ in two schools → Riddlemaster, at the Review Board; class change resets level
 but keeps every spell). Perform the Founding Song at the bell tower with all
 three Verses to win.
 
+## Remastered vs Legacy
+
+At the start of every new game you choose an **experience**:
+
+| Mode | What's on |
+|------|-----------|
+| **Remastered** | All modern comforts: automap, save anywhere, shared inventory, reduced XP, item charges, 7th summon slot |
+| **Legacy** | Bit-for-bit identical to the classic rules. Bring graph paper. |
+| **Custom** | Toggle any feature individually at game-start |
+
+Choosing **Custom** shows a checklist. Locked features (Shared Inventory, Reduced XP) cannot be changed after game-start because they alter character progression; the rest can be toggled via the in-game Options screen (`O`).
+
+### The seven comforts
+
+| Feature | Description |
+|---------|-------------|
+| **Automap** | `M` cycles off → corner overlay → full-screen parchment map. Only visited cells are drawn. Spinners desync the map (cursor drifts from your actual position); the Compass spell re-syncs. A gold marker shows your believed position; candle-colored = desynced. |
+| **Save anywhere** | `V` in the dungeon opens a slot menu (3 manual + 1 autosave). Autosave also triggers on dungeon level transitions and on quit. The Adventurers' Hall save still works in all modes. |
+| **Shared inventory** | Instead of 8 individual packs, the party shares a 40-slot pool. Loot drops straight into it; buy directly to it at Greta's. In the character sheet, press `Pn` to *claim* an item from the pool (it moves to the character's pack and auto-equips); press `R` to return a carried item to the pool. Class restrictions still apply. **Locked at creation.** |
+| **Reduced XP** | XP requirements are **×0.60** of the 1985 curve (40% lower). The exact multiplier lives in `data/balance.json` → `remasteredXpMultiplier`. **Locked at creation.** |
+| **Item charges** | Items with `maxCharges` (currently Eyebright Tonic ×2, Phase Chalk ×3) track remaining uses; the inventory shows `(N ch)`. Without this feature on, each use consumes the item regardless. |
+| **Summons: 7th slot** | Summoned creatures take a dedicated slot *above* the 6-person roster instead of occupying a party slot. Key `7` opens the summon's stat card. Only 1 summon at a time; casting a new summon dismisses the old one. |
+
+### In-game reference (always on, all modes)
+
+These are baseline QoL that don't require any toggle:
+
+- **`?` help** — key reference + active Remastered features listed
+- **Review Board → Browse known spells** — read-only spell reference for any character (`B` at the Review Board)
+- **Character sheet → Inspect item** (`I`) — shows damage/AC stats and flavor text for any carried item
+- **Tavern → Rumor journal** (`J`) — review every rumor your party has heard
+
+### Balance note
+
+The reduced XP multiplier (0.60) was tuned for a party that clears dungeon levels thoroughly before descending. A rush strategy on Legacy XP risks being under-levelled for the Needle; on Reduced XP, thorough play produces slightly over-levelled parties. Adjust `data/balance.json` to taste.
+
 ## The shape of the game
 
 - **Stats** ST/IQ/DX/CN/LK (3–18 + race): melee damage, spell points, AC &
@@ -152,45 +192,53 @@ three Verses to win.
 
 ## The ten-minute playtest tour
 
-A scripted walk that shows off everything new. Start a fresh game (`?seed=7`
-for the canonical tour).
+A scripted walk that shows off everything. Start a **Remastered** game
+(`?seed=7` for the canonical tour) unless noted.
 
-1. **The street** *(art: facades + signboards)* — Turn right at the start and
+1. **Mode selection** — New game → choose **Remastered**. Observe the mode
+   screen's three options; try **Custom** once to see the toggle checklist,
+   then go back and start Remastered.
+2. **The street** *(art: facades + signboards)* — Turn right at the start and
    walk east along the row: Greta's boot-sign, then the scales of the
    Magistrate's Court. Navigation-by-signboard, like 1985. Note the day sky
    dithering toward the horizon and the street hazing with distance. Hover
    the viewport: movement arrows appear — **do this leg mouse-only**.
-2. **Muster at the Hall** *(portraits)* — walk forward into the Hall, create
+3. **Muster at the Hall** *(portraits)* — walk forward into the Hall, create
    a party (Blade, Blade, Warden, Skald, Hexen, Lorist) — each newcomer picks
    a **face** at creation; watch the portrait window while you choose. SAVE.
-3. **Shop mouse-only** *(mouse parity)* — into Greta's: portrait vignette of
-   the shop inside the viewport; buy broadswords, leather, a reed pipe and
-   torches clicking only menu lines and command-bar buttons. The gold jingle
-   plays per purchase.
-4. **Songs back to back** *(the audio centerpiece)* — outside, press `P` and
-   start the **Wayfarer's March** (brisk marching pulse); walk a few steps,
-   then switch to the **Graveman's Dirge** (slow, low, funeral drums). The
-   active-song note pulses in the status panel. Two unmistakably different
-   tunes, switched without a click or pop.
-5. **The Undercroft** *(textured maze + distance shading)* — north row, the
-   Boarded Tannery, descend. Light a torch (`T`): rotted brick, moss, wet
-   sheen on the floor, three steps of visible depth each darker than the
-   last. Let the torch die once to see the dark close in to one dim step.
-6. **A fight** *(animated portrait + combat theme)* — wander until BATTLE:
-   the combat theme kicks in, the lead group's portrait idles at 2 fps in its
-   carved frame. Order an attack by clicking the buttons. If the Skald sings,
-   her song plays a one-round flourish over the theme.
-7. **Poison** *(condition colors)* — find a gas trap (or let a fen adder
-   bite): the poisoned name turns **green** in the roster; at low HP names go
-   **yellow**, then **red**.
-8. **Victory fanfare** *(audio finale)* — win the fight: the combat theme
-   gives way to the victory jingle and the loot lines glow gold in the log.
-   Then back to town — heal at the Temple (chime), level at the Review Board
-   (rising arpeggio), save at the Hall.
-9. **Options** — press `O`: drop the music to taste; reload the page and
-   confirm it stuck.
-10. **The automap check** *(debug)* — add `?debug=1` and press `M` for the
-    overlay if you've lost the graph paper.
+4. **Shop to pool** *(shared inventory)* — into Greta's: buy a couple of
+   items and confirm they appear in the **party pool** (not individual packs).
+   Open any character sheet and press `P1` to claim an item and equip it.
+   The gold jingle plays per purchase.
+5. **Item inspect** *(in-game reference)* — in the character sheet, press `I`
+   and inspect an item: stats and flavor text appear in the log.
+6. **Review Board — spell browse** — step into the Magistrate's Court, pick a
+   caster, press `B` (Browse known spells): the read-only spell list appears
+   with SP costs and explore/combat tags.
+7. **Rumor journal** *(in-game reference)* — visit a tavern, buy two rounds
+   (`R`), then press `J` (Journal): your heard rumors reprint. A third round
+   adds a new entry.
+8. **Songs back to back** *(audio centerpiece)* — outside, press `P` and
+   start the **Wayfarer's March**; walk a few steps, then switch to the
+   **Graveman's Dirge**. Two unmistakably different tunes, switched without pop.
+9. **The Undercroft + automap** — north row, the Boarded Tannery, descend.
+   Light a torch (`T`). Walk around. Press `M` once: **corner overlay**
+   appears, visited cells marked. Press `M` again: **full-screen parchment
+   map** fills the viewport. Press `M` a third time: map off. Navigate a few
+   more steps and confirm the cursor tracks correctly.
+10. **Save-anywhere** — deep in the dungeon press `V`: the camp menu shows 3
+    named slots. Save to slot 1 and confirm. Return to the main menu, load
+    slot 1, and verify you wake at the same spot.
+11. **A fight** *(animated portrait + combat)* — wander until BATTLE: the
+    combat theme kicks in. If you summoned a creature beforehand (Remastered
+    7th-slot), press `7` outside combat to see its stat card.
+12. **Legacy check** *(regression gate)* — start a second game and choose
+    **Legacy**. Confirm: no `M` automap (only `?debug=1` version), no `V`
+    save key, inventory is per-character (8 slots, trade menu). XP requirements
+    are visibly higher at the Review Board. All 53 automated tests pass.
+13. **Options** — press `O`: audio controls use new keys (A–F for
+    volume, X mute, Z done). In Remastered mode the feature toggles are also
+    visible (locked ones are dimmed). Reload to confirm audio settings persist.
 
 ## Editing content (no code required)
 
@@ -273,12 +321,13 @@ scenarios, uses the globally-installed @playwright/mcp's browser),
 
 `npm test` covers three suites:
 
-- **Logic** (unchanged from the wireframe era): combat resolution and boss
-  phases, leveling math and the class-change chain to Riddlemaster, save/load
-  round-tripping the entire game state mid-delve, map traversal (walls both
-  sides, spinners, teleporters, riddle gating, perimeter integrity), and data
-  integrity (84 spells, every referenced monster/item exists, the three
-  Verses are placed).
+- **Logic** (original 27 tests + 11 Remastered tests): combat resolution and
+  boss phases, leveling math and the class-change chain to Riddlemaster,
+  save/load round-tripping the entire game state mid-delve, map traversal
+  (walls both sides, spinners, teleporters, riddle gating, perimeter
+  integrity), data integrity (84 spells, every referenced monster/item exists,
+  the three Verses are placed), v1→v2 save migration, XP multiplier monotonicity,
+  item charge depletion, 7th-slot slot accounting, spinner desync preconditions.
 - **Art** (`test/art.test.js`): every sprite's text grid matches its legend
   and dimensions; every monster in the bestiary resolves to a portrait; the
   three dungeon guardians and Maldrec have 48×48+ showpieces; every town

@@ -823,11 +823,21 @@ function sheetFlow(slot) {
   });
   if (!ch.inventory.length) invLines.push(' (empty pack)');
 
+  const inspectItem = (en) => {
+    const item = DB.item(en.id);
+    const stats = [];
+    if (item.dmg) stats.push(`Dmg ${item.dmg}`);
+    if (item.ac)  stats.push(`AC +${item.ac}`);
+    if (item.maxCharges) stats.push(`Charges ${en.charges ?? item.maxCharges}/${item.maxCharges}`);
+    const label = en.ident ? item.name : item.generic;
+    msg(`${label}${stats.length ? ' — ' + stats.join(', ') : ''}: ${item.flavor || 'No further description.'}`, 'good');
+  };
+
   setMode({
     menu: esc(lines.join('\n')) + '\n' + invLines.join('\n') +
-      '\n\n' + esc('* = equipped.  1-8 equip/unequip, (T)rade, (D)rop, Esc done'),
-    bar: [{ k: 't', label: 'Trade' }, { k: 'd', label: 'Drop' }, { k: 'Escape', label: 'Done' }],
-    hint: 'Number keys or clicks equip/unequip. T trade, D drop, Esc back.',
+      '\n\n' + esc('* = equipped.  1-8 equip/unequip, (I)nspect, (T)rade, (D)rop, Esc done'),
+    bar: [{ k: 'i', label: 'Inspect' }, { k: 't', label: 'Trade' }, { k: 'd', label: 'Drop' }, { k: 'Escape', label: 'Done' }],
+    hint: 'Number keys equip/unequip. I inspect, T trade, D drop, Esc back.',
     draw: () => renderer.special(portraitOf(ch), `${ch.name.toUpperCase()} — ${clsOf(ch).name.toUpperCase()}`),
     onKey(e) {
       const k = e.key.toLowerCase();
@@ -843,6 +853,13 @@ function sheetFlow(slot) {
           msg(err ? err : `${ch.name} readies the ${invItem(ch, i).name}.`);
         }
         return sheetFlow(slot);
+      }
+      if (k === 'i') {
+        if (!ch.inventory.length) { msg('Nothing to inspect.'); return; }
+        return pickFromList('Inspect which?', ch.inventory.map((en, i) => ({ en, i })),
+          ({ en }) => (en.ident ? DB.item(en.id).name : DB.item(en.id).generic),
+          ({ en }) => { inspectItem(en); sheetFlow(slot); },
+          () => sheetFlow(slot));
       }
       if (k === 't') {
         return pickFromList('Trade which?', ch.inventory.map((en, i) => ({ en, i })),
@@ -1194,12 +1211,31 @@ function reviewChar(ch, name, draws) {
           reviewChar(ch, name, draws);
         } },
       { k: 's', label: 'Buy spells', fn: () => spellShop(ch, name, draws) },
+      { k: 'b', label: 'Browse known spells', fn: () => spellBrowser(ch, name, draws) },
       { k: 'c', label: 'Change class', fn: () => classChangeFlow(ch, name, draws) },
       { k: 'w', label: 'Another character', fn: () => reviewMode(name, draws) },
       { k: 'l', label: 'Leave', fn: () => setMode(exploreMode) }
     ],
     onEsc: () => setMode(exploreMode), ...draws
   }));
+}
+
+function spellBrowser(ch, name, draws) {
+  if (!ch.knownSpells.length) {
+    msg(`${ch.name} knows no spells. The archivist taps a shelf of books they cannot touch.`);
+    return reviewChar(ch, name, draws);
+  }
+  const lines = ch.knownSpells.map(code => {
+    const sp = DB.spell(code);
+    if (!sp) return `  ${code} — (unknown)`;
+    const where = [sp.explore && 'explore', sp.combat && 'combat'].filter(Boolean).join('/');
+    return `  ${sp.code.padEnd(4)} ${sp.name.padEnd(20)} SP:${String(sp.sp).padStart(2)}  [${where}]  ${sp.flavor || ''}`;
+  });
+  setMode({
+    menu: esc([`${ch.name}'s known spells (${ch.knownSpells.length}):`, ...lines, '', 'Esc to return.'].join('\n')),
+    hint: 'Esc to return.',
+    onKey(e) { if (e.key === 'Escape') reviewChar(ch, name, draws); }
+  });
 }
 function spellShop(ch, name, draws) {
   const schools = schoolsAvailable(ch);
@@ -1312,10 +1348,23 @@ function tavernMode(name, id, draws) {
             tavernMode(name, id, draws);
           }
         } },
+      { k: 'j', label: 'Review your notes (rumor journal)', fn: () => rumorJournal(name, id, draws) },
       { k: 'l', label: 'Leave', fn: () => setMode(exploreMode) }
     ],
     onEsc: () => setMode(exploreMode), ...draws
   }));
+}
+
+function rumorJournal(name, id, draws) {
+  const heard = RUMORS.slice(0, game.flags.rumorIdx || 0);
+  const body = heard.length
+    ? heard.map((r, i) => `${i + 1}. ${r}`).join('\n\n')
+    : '(You have heard nothing yet. Buy a round.)';
+  setMode({
+    menu: esc([`Your notes — rumors heard in Thornmere (${heard.length}/${RUMORS.length}):`, '', body, '', 'Esc to return.'].join('\n')),
+    hint: 'Esc to return.',
+    onKey(e) { if (e.key === 'Escape') tavernMode(name, id, draws); }
+  });
 }
 
 // ---- Tannery & Bell Tower ------------------------------------------------------------
