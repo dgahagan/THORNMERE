@@ -20,8 +20,10 @@ needs to know.
 | 1146bfb | Step 5a | Monster set A 11 families × 2 frames 96×80 (rat, beetle, hound, spider, snake, zombie, skeleton, blob, wisp, brute, humanoid) — all PASS | DONE |
 | a8b85cf | Fix | Add `anims` + `variants` to set A and showpiece generators; regenerated JSON — 42/42 tests green | DONE |
 | 1fed105 | Step 5b | Monster set B 9 families × 2 frames 96×80 (sorcerer, ghost, bird, hag, knight, choir, gargoyle, golem, moth) — 42/42 green, **visual inspection deferred** | DONE (tests pass) |
+| ffc1bd3 | Art-direction v2 setup | Director rejected 4 families (rat, hound, moth, blob) as "too cute"; wrote feral subjects into manifest, created generate_feral.py (outputs to candidates-feral/) | DONE |
+| 75f2d14–223a75b | Art-direction v2 import | GPU re-generation + adjudication + import of feral winners: mon_rat s11, mon_hound s7, mon_moth s42, mon_blob s11 — 42/42 tests green, eye_pulse verified | DONE |
 
-The test suite (`npm test`) runs 42/42 green on `main` as of this handoff.
+The test suite (`npm test`) runs 42/42 green as of the v2 feral import pass (2026-06-10).
 
 ---
 

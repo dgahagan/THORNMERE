@@ -7,6 +7,15 @@ decision the game director should review, or is explicitly cleared with justific
 
 ## Flagged — requires author decision
 
+### ~~0. Feral re-prompt pass (mon_rat, mon_hound, mon_moth, mon_blob)~~ — CLOSED 2026-06-10
+
+Director identified four families as "too cute". Feral v2 subjects written into manifest,
+regenerated to candidates-feral/, adjudicated by Dan, and imported. Winners:
+mon_rat s11, mon_hound s7, mon_moth s42, mon_blob s11. 42/42 tests pass.
+All four eye_pulse regions re-measured and verified. Item closed.
+
+---
+
 ### 1. PC portrait identity (all four archetypes)
 
 **Files:** `dev/pixel-art/candidates/pc_warrior_s42_sub16.png`,
