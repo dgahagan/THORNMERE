@@ -364,7 +364,7 @@ Human adjudication required — self-judging tone is what caused the v1 error.
 
 | id | chosen_seed | crush_tag | verdict | notes |
 |---|---|---|---|---|
-| mon_rat | — | — | — | PENDING |
-| mon_hound | — | — | — | PENDING |
-| mon_moth | — | — | — | PENDING |
-| mon_blob | — | — | — | PENDING |
+| mon_rat | 11 | sub14 | replace | Hunched feral pose, dark grey facial shadow over face, two red eyes clearly read at game scale. Chosen over s17/s42 (bluer, colder) and s3 (warmer brown but less face shadow depth). |
+| mon_hound | 7 | sub12 | replace | Snarling hunched wolf, dominant red-orange glowing eyes readable at game scale, good forward-lean aggression. Chosen over s3 (bulkier, less dynamic) and s42 (tighter portrait, less body presence). |
+| mon_moth | 42 | sub16 | replace | Compact folded-wing pose — both concentric ring eye-spots visible, folded posture reads as resting predator. Chosen over spread-wing variants (s17/s23) which sacrificed ring readability for wingspan. |
+| mon_blob | 11 | sub12 | replace | Two distinct sunken eye sockets clearly readable, wide open mouth with crooked embedded teeth. Better balance of horror and readability than s3 (too face-filling) or s42 (too compact). |

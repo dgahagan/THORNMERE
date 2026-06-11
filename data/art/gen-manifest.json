@@ -647,7 +647,14 @@
         23,
         42
       ],
-      "seeds_generated": [],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
       "chosen_seed": 7,
       "frame_effects": {
         "b": [
@@ -666,7 +673,7 @@
         "a": 400,
         "b": 400
       },
-      "status": "regenerating",
+      "status": "candidates",
       "verdict": "replace",
       "notes": "Warm brown wings. Eye-spot rings: blood-to-flame + violet. Blue-black eye centers. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
     },
@@ -708,8 +715,15 @@
         23,
         42
       ],
-      "seeds_generated": [],
-      "chosen_seed": 42,
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 11,
       "frame_effects": {
         "b": [
           "eye_pulse"
@@ -717,19 +731,19 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 32,
+          "x": 26,
           "y": 24,
-          "w": 32,
-          "h": 10
+          "w": 36,
+          "h": 16
         }
       },
       "frame_ms": {
         "a": 400,
         "b": 400
       },
-      "status": "regenerating",
+      "status": "imported",
       "verdict": "replace",
-      "notes": "Existing procedural art scores PASS. Generate to compare. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
+      "notes": "Existing procedural art scores PASS. Generate to compare. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded. Chosen s11: hunched feral pose, dark grey facial shadow, two prominent red eyes read clearly at game scale."
     },
     {
       "id": "mon_beetle",
@@ -835,7 +849,14 @@
         23,
         42
       ],
-      "seeds_generated": [],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
       "chosen_seed": 42,
       "frame_effects": {
         "b": [
@@ -854,9 +875,9 @@
         "a": 400,
         "b": 400
       },
-      "status": "regenerating",
+      "status": "candidates",
       "verdict": "replace",
-      "notes": "Pure grey body ramp; single red-to-flame eye for contrast. Procedural PASS — compare carefully. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
+      "notes": "Pure grey body ramp; single red-to-flame eye for contrast. Procedural PASS \u2014 compare carefully. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
     },
     {
       "id": "mon_spider",
@@ -1161,7 +1182,14 @@
         23,
         42
       ],
-      "seeds_generated": [],
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
       "chosen_seed": 42,
       "frame_effects": {
         "b": [
@@ -1180,7 +1208,7 @@
         "a": 400,
         "b": 400
       },
-      "status": "regenerating",
+      "status": "candidates",
       "verdict": "replace",
       "notes": "Warm amber-brown body; gold eyes. Drop green/blue entirely. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
     },
