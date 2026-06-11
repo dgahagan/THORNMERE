@@ -583,4 +583,12 @@ concentric-ring eye is seated in a pale rim-lit hood, dominating the upper figur
 (criterion b, which ALL v1 seeds failed). Trapped faces correctly demoted to robe
 texture; green pendant + skeletal hand present. All ten read as box-art now.
 Worker read for Dan: s31 (deep dramatic hood, large seated eye), s23 (cleanest
-concentric eye), s7/s1 (crisp balanced) are the strongest. **Awaiting Dan's pick.**
+concentric eye), s7/s1 (crisp balanced) are the strongest.
+**IMPORTED — Dan picked s13 (2026-06-11).** Charcoal triangular robe holds a
+strong silhouette; large concentric eye (blue iris, bright core, void center,
+black pupil) seated in a pale rim-lit hood and dominating the upper figure; faces
+demoted to robe texture; green pendant + skeletal hand. Imported via explicit mode
+from `candidates-regen-v2/` (3 frames; c double-pulses). Eye region re-measured to
+the concentric eye `x39,y15,w16,h15` (old box `x30,y14,w36,h24`); verified
+eye_pulse on b and c brightens only the eye box (153 px), c brighter than b.
+**Both v1 NOT-BOX-ART failures resolved. W4 closed.**

@@ -1551,7 +1551,7 @@
         31,
         42
       ],
-      "chosen_seed": 42,
+      "chosen_seed": 13,
       "frame_effects": {
         "b": [
           "eye_pulse"
@@ -1563,10 +1563,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 30,
-          "y": 14,
-          "w": 36,
-          "h": 24
+          "x": 39,
+          "y": 15,
+          "w": 16,
+          "h": 15
         }
       },
       "frame_ms": {
@@ -1574,9 +1574,9 @@
         "b": 400,
         "c": 300
       },
-      "status": "candidates",
+      "status": "imported",
       "verdict": "replace",
-      "notes": "Concentric eye is the defining feature; trapped faces are secondary texture ON the robe. W4 regen per director review 2026-06-11: v1 failed the box-art bar (NOT BOX ART) -- the 'black robe' collided with bg_indices [0,1] (transparency keys), so the figure had no silhouette. Robe MUST land on shadow(2)/slate(3), NOT black/night. Eye must be enormous and seated in the hood. v1 s42 import superseded; re-measure eye region after the new import."
+      "notes": "Concentric eye is the defining feature; trapped faces are secondary texture ON the robe. W4 regen per director review 2026-06-11: v1 failed the box-art bar (NOT BOX ART) -- the 'black robe' collided with bg_indices [0,1] (transparency keys), so the figure had no silhouette. Robe MUST land on shadow(2)/slate(3), NOT black/night. Eye must be enormous and seated in the hood. v1 s42 import superseded; re-measure eye region after the new import. IMPORTED s13 (Dan pick 2026-06-11): charcoal robe holds a strong triangular silhouette, large concentric eye seated in the hood, faces as robe texture. Both v1 failure criteria resolved. Eye region re-measured to the concentric eye x39,y15,w16,h15."
     },
     {
       "id": "mon_mock_king",
