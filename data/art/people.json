@@ -671,6 +671,142 @@
     }
   },
   "variants": {
+    "pc_vael_warrior": {
+      "base": "pc_warrior",
+      "remap": {}
+    },
+    "pc_vael_rogue": {
+      "base": "pc_rogue",
+      "remap": {}
+    },
+    "pc_vael_caster": {
+      "base": "pc_caster",
+      "remap": {}
+    },
+    "pc_vael_skald": {
+      "base": "pc_skald",
+      "remap": {}
+    },
+    "pc_korrun_warrior": {
+      "base": "pc_warrior",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_korrun_rogue": {
+      "base": "pc_rogue",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_korrun_caster": {
+      "base": "pc_caster",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_korrun_skald": {
+      "base": "pc_skald",
+      "remap": {
+        "13": 12,
+        "12": 11,
+        "9": 8
+      }
+    },
+    "pc_fennick_warrior": {
+      "base": "pc_warrior",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_fennick_rogue": {
+      "base": "pc_rogue",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_fennick_caster": {
+      "base": "pc_caster",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_fennick_skald": {
+      "base": "pc_skald",
+      "remap": {
+        "9": 10
+      }
+    },
+    "pc_aldari_warrior": {
+      "base": "pc_warrior",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_aldari_rogue": {
+      "base": "pc_rogue",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_aldari_caster": {
+      "base": "pc_caster",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_aldari_skald": {
+      "base": "pc_skald",
+      "remap": {
+        "13": 7,
+        "12": 6,
+        "9": 3
+      }
+    },
+    "pc_halfwyld_warrior": {
+      "base": "pc_warrior",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    },
+    "pc_halfwyld_rogue": {
+      "base": "pc_rogue",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    },
+    "pc_halfwyld_caster": {
+      "base": "pc_caster",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    },
+    "pc_halfwyld_skald": {
+      "base": "pc_skald",
+      "remap": {
+        "9": 15,
+        "2": 14,
+        "20": 16
+      }
+    },
     "pc_vael_warrior_a": {
       "base": "pc_warrior_a",
       "remap": {}

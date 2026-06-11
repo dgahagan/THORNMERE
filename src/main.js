@@ -365,7 +365,11 @@ const ARCHETYPES = {
   knave: 'rogue', strider: 'rogue', skald: 'skald'
 };
 function archetypeOf(clsId) { return ARCHETYPES[clsId] || 'caster'; }
-function portraitOf(ch) { return ch.portrait || `pc_${ch.race}_${archetypeOf(ch.cls)}_a`; }
+// Un-suffixed id so resolveVariant picks the animated pc_<arch> drawable with
+// the race remap (pc_<race>_<arch> anim-based variants in people.json). W1: was
+// hardcoded `_a`, which froze the inspection portrait on frame a — no
+// breathe/eye_pulse ever played in-engine.
+function portraitOf(ch) { return ch.portrait || `pc_${ch.race}_${archetypeOf(ch.cls)}`; }
 
 function doStep(backward) {
   const events = step(game, rng, { backward });
