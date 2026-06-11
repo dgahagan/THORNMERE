@@ -1085,7 +1085,7 @@
       "id": "mon_skeleton",
       "art_class": "monster",
       "art_file": "data/art/monsters.json",
-      "subject": "animated skeleton warrior, yellowed bone skull with dark hollow eye sockets, visible ribcage, exposed spine and hip joints, holding a gold sword",
+      "subject": "animated skeleton warrior, bleached bone-white and pale grey bones, chalk-coloured skull with dark hollow eye sockets, visible ribcage, exposed spine and hip joints, holding a single gold sword as the only gold accent",
       "style_suffix_key": "monster",
       "dims": [
         96,
@@ -1116,14 +1116,7 @@
         23,
         42
       ],
-      "seeds_generated": [
-        3,
-        7,
-        11,
-        17,
-        23,
-        42
-      ],
+      "seeds_generated": [],
       "chosen_seed": 42,
       "frame_effects": {
         "b": [
@@ -1142,9 +1135,9 @@
         "a": 400,
         "b": 400
       },
-      "status": "imported",
+      "status": "regenerating",
       "verdict": "replace",
-      "notes": "Bone whites (bone/chalk/honey). Dark hollow sockets. Gold sword accent."
+      "notes": "Bone whites (bone/chalk). Dark hollow sockets. Gold reserved for the SWORD only. W6 regen per director decision 2026-06-11: v1 came out gold-boned on all 6 seeds (inverted the 'bone whites + gold sword' intent); fiction + engine distance-shading both favour grey. De-emphasised 'yellowed'. Expect bones on 6/7, 12 only as warm shadow. Re-measure eye region after import (old box x32,y16,w32,h10 was fitted to the gold pixels). v1 s42 import superseded."
     },
     {
       "id": "mon_blob",
@@ -1496,7 +1489,7 @@
       "id": "mon_choir_eldest",
       "art_class": "showpiece",
       "art_file": "data/art/monsters3.json",
-      "subject": "vast robed figure in black triangular robe filling frame, single giant concentric-ring eye dominating the hood with void center and blue iris and bright core and black pupil, dozens of tiny trapped faces across robe like imprisoned souls, green pendant gem, one skeletal clawed hand emerging",
+      "subject": "vast robed figure in charcoal triangular robe with pale rim-lit hood and shoulder line filling the frame, one enormous concentric-ring eye seated inside the hood dominating half the figure with void center and blue iris and bright core and black pupil, dozens of tiny trapped faces embossed across the robe surface like imprisoned souls, green pendant gem, one skeletal clawed hand emerging",
       "style_suffix_key": "showpiece",
       "dims": [
         96,
@@ -1539,18 +1532,7 @@
         31,
         42
       ],
-      "seeds_generated": [
-        1,
-        3,
-        5,
-        7,
-        11,
-        13,
-        17,
-        23,
-        31,
-        42
-      ],
+      "seeds_generated": [],
       "chosen_seed": 42,
       "frame_effects": {
         "b": [
@@ -1574,9 +1556,9 @@
         "b": 400,
         "c": 300
       },
-      "status": "imported",
+      "status": "regenerating",
       "verdict": "replace",
-      "notes": "Concentric eye is the defining feature. Trapped faces are secondary detail."
+      "notes": "Concentric eye is the defining feature; trapped faces are secondary texture ON the robe. W4 regen per director review 2026-06-11: v1 failed the box-art bar (NOT BOX ART) -- the 'black robe' collided with bg_indices [0,1] (transparency keys), so the figure had no silhouette. Robe MUST land on shadow(2)/slate(3), NOT black/night. Eye must be enormous and seated in the hood. v1 s42 import superseded; re-measure eye region after the new import."
     },
     {
       "id": "mon_mock_king",
