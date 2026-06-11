@@ -527,3 +527,24 @@ is wanted before the GPU regen, **s31** is the best existing silhouette-holder �
 re-picking it would at least show a robed figure instead of floating bits, though
 it still fails the giant-eye bar. This is a flip requiring review (W2/W3 protocol
 + re-measure the eye region), not an automatic action.
+
+### W7 — PC portrait distinctness (warrior-s42 vs skald-s42): **DISTINCT — no change**
+
+Report-only check (Dan kept all four s42 portraits). Rendered the imported Vael
+base portraits side by side at game-display (5×) and true 1× game scale
+(`art-review/w7/pc_warrior_vs_skald.png`). The audit flagged a risk that the two
+warm-toned masculine portraits read as the same person, with the skald's "green
+garb accent" too weak to separate them.
+
+**Finding: they read as clearly distinct at both scales**, and the separation does
+**not** rely on the weak green accent:
+- **Warrior:** clean-shaven, short hair, stern face, **cool blue-grey plate**
+  pauldrons.
+- **Skald:** full **beard**, longer hair, holding a round **instrument** at the
+  chest (a distinct lower-body silhouette the warrior lacks), all-**warm
+  leather/brown** garb.
+
+The instrument + beard + cool-plate-vs-warm-leather palette carry the distinction
+even at 1×. The audit's "both warm brown/gold" concern was overstated — the
+warrior reads distinctly cooler/armored. **No green touch-up or re-pick needed;
+the keep-all-four-s42 decision stands cleanly.**
