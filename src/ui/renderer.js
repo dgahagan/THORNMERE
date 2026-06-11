@@ -276,11 +276,11 @@ export class Renderer {
     if (title) fb.textCentered(title, CX, 10, C.gold);
   }
 
-  artBox(drawable, label, sub) {
+  artBox(drawable, label, sub, cap = 192) {
     const fb = this.fb;
     const fr = frameAt(drawable, this.now);
     const sp = fr && ART.sprites[fr.name];
-    const scale = sp ? Math.max(1, Math.floor(192 / Math.max(sp.w, sp.h))) : 1;
+    const scale = sp ? Math.max(1, Math.floor(cap / Math.max(sp.w, sp.h))) : 1;
     const dw = sp ? sp.w * scale : 96, dh = sp ? sp.h * scale : 96;
     const bw = Math.max(dw + 16, 120), bh = Math.max(dh + 16, 120);
     const bx = CX - (bw >> 1), by = CY - (bh >> 1) - 12;
@@ -307,7 +307,9 @@ export class Renderer {
   interior(name, id) {
     this.panel(null);
     const drawable = resolveVariant('int_' + id) || resolveVariant('per_' + id);
-    this.artBox(drawable, name.toUpperCase());
+    // Interiors crush to 112×80 (≈ original BT art window); cap 224 keeps the
+    // 2× display crisp (112→224px) instead of dropping to 1× under the 192 cap.
+    this.artBox(drawable, name.toUpperCase(), null, 224);
     this.fb.flush();
   }
 

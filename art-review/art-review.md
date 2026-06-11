@@ -620,3 +620,31 @@ bronze bell + daylight. Output: `candidates-interiors-v2/` (v1 kept). Sheets:
 **Awaiting Dan's per-interior winner picks (9).** Then import (rename int_*_a →
 int_* to replace the procedural sprites so resolveVariant finds the AI art) and
 tighten per-winner palettes if any crush muddy.
+
+---
+
+## W8 interiors — resolution bump to 112×80 + import (2026-06-11)
+
+Director sanity-checked against original Bard's Tale Amiga screenshots
+(`dev/original-amiga-screenshots/`): the original monster/interior art window is
+**~117×83 native, drawn 1:1**. Our crush was 96×72 (interiors) / 96×80 (monsters)
+— slightly *under* the original. 96 was the largest native width the art-box
+still doubled to a crisp 2× (96→192px). Decision: bump **interiors to 112×80**
+(≤117, ~1.4 aspect matching the original), re-crush from the 480×360 raws (cropped
+to 1.4 to avoid distortion). Before/after confirmed a real gain, strongest on the
+populated rooms (figures read crisper).
+
+Renderer: `artBox` gained a `cap` param; `interior()` passes 224 so 112-wide art
+displays at 2× (224px) instead of dropping to 1× under the 192 cap. Surgical —
+monsters/portraits unchanged (per "interiors only for now").
+
+Imported 8 winners at 112×80 → `signs.json`, renaming `int_<id>_a` → `int_<id>`
+to replace the procedural sprites (so `resolveVariant('int_<id>')` finds the AI
+art): belltower s11, hall s11, goose s23, hart s17, review s42, spark s42,
+tannery s42, temple s42. 42/42 tests.
+
+**int_greta still pending** — Greta is a woman's name; v2 rendered a male
+shopkeeper, so her subject was rewritten female and she regenerates fresh at
+448×320 (`generate_interiors.py --id int_greta`), then imports as the 9th.
+Open follow-up: if 112×80 reads better in-game, consider re-crushing the
+monsters/showpieces/portraits to 112-wide too (no-GPU re-crush + re-import pass).
