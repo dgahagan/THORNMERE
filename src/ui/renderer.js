@@ -102,10 +102,25 @@ export class Renderer {
       const t = Math.min(1, d / Math.max(dMax, 3));
       const lvl = town ? Math.min(shadeLevel(d, boost), 1.0 + boost) : shadeLevel(d, boost);
       for (let x = 0; x < W; x++) {
-        let base = fb.mix(floor.near, floor.far, t, x, y);
-        // wet sheen / bone flecks, scattered deterministically
-        if (floor.sheen != null && (y % 5 === 2) && ((x * 29 + y * 53) % 23) < 3) base = floor.sheen;
-        if (floor.fleck != null && ((x * 37 + y * 71) % 311) === 0) base = floor.fleck;
+        let base;
+        if (town) {
+          // perspective cobblestone street: running-bond grid in world space,
+          // dark mortar at the seams, a few stone shades per cobble
+          const wu = (x - CX) * d / (2 * K);
+          const rowF = d * 2.6, rowI = Math.floor(rowF);
+          const colF = wu * 4.0 + (rowI & 1 ? 0.5 : 0);
+          const su = ((colF % 1) + 1) % 1, sv = ((rowF % 1) + 1) % 1;
+          if (su < 0.11 || sv < 0.13) base = 3;          // mortar (slate-dark)
+          else {
+            const h = ((Math.floor(colF) * 73856093) ^ (rowI * 19349663)) >>> 0;
+            base = [4, 5, 4, 10][h & 3];                 // slate / stone / slate / warm cobble
+          }
+        } else {
+          base = fb.mix(floor.near, floor.far, t, x, y);
+          // wet sheen / bone flecks, scattered deterministically
+          if (floor.sheen != null && (y % 5 === 2) && ((x * 29 + y * 53) % 23) < 3) base = floor.sheen;
+          if (floor.fleck != null && ((x * 37 + y * 71) % 311) === 0) base = floor.fleck;
+        }
         fb.px[row + x] = fb.shaded(base, lvl, x, y);
       }
     }
@@ -118,9 +133,21 @@ export class Renderer {
     const sky = style.sky[isNight(game) ? 'night' : dusk ? 'dusk' : 'day'];
     const t = Math.min(1, ((CY - y) / CY) * 1.6); // 1 at top, 0 at horizon
     const row = y * W;
+    const day = sky.stars == null;               // night uses stars instead of clouds
     for (let x = 0; x < W; x++) {
       let c = fb.mix(sky.horizon, sky.top, t, x, y);
-      if (sky.stars != null && ((x * 97 + y * 61 + (x >> 3) * 13) % 331) === 7) c = sky.stars;
+      if (day) {
+        // soft drifting clouds: low-frequency value noise banded at two altitudes
+        const f = Math.sin(x * 0.055 + y * 0.5) * 0.5 + Math.sin(x * 0.021 + 4.2) * 0.5
+                + Math.sin(x * 0.11 - y * 0.2) * 0.3;
+        const w = Math.max(0, 1 - Math.abs(y - 28) / 8) + 0.85 * Math.max(0, 1 - Math.abs(y - 50) / 6);
+        const cloud = (f + 0.45) * w;
+        if (cloud > 0.62) c = 7;                 // bright cloud core (chalk)
+        else if (cloud > 0.34) c = 6;            // cloud body (bone)
+        else if (cloud > 0.16 && ((x + y) & 1)) c = 23; // dithered wispy edge (mist-blue)
+      } else if (sky.stars != null && ((x * 97 + y * 61 + (x >> 3) * 13) % 331) === 7) {
+        c = sky.stars;
+      }
       fb.px[row + x] = c;
     }
   }
@@ -129,6 +156,7 @@ export class Renderer {
   walls(game, map, style, maxDepth, boost) {
     const f = game.pos.facing;
     const rf = (f + 1) % 4;
+    const town = map.kind === 'town';
     const cellAt = (k, o) => ({
       x: game.pos.x + DX[f] * k + DX[rf] * o,
       y: game.pos.y + DY[f] * k + DY[rf] * o
@@ -143,9 +171,9 @@ export class Renderer {
       if (st === 'open') return null;
       if (bld) {
         if (st === 'door') {
-          return { tex: beyond.id.startsWith('empty') ? style.boards : style.door, sign: beyond };
+          return { tex: beyond.id.startsWith('empty') ? style.boards : style.door, sign: beyond, roof: town };
         }
-        return { tex: style.facade || style.wall };
+        return { tex: style.facade || style.wall, roof: town };
       }
       if (st === 'door') return { tex: style.door };
       if (st === 'riddle') return { tex: style.riddleDoor };
@@ -161,7 +189,7 @@ export class Renderer {
       for (const o of [-1, 1]) {
         if (edgeTex(k, 0, o === -1 ? 3 : 1)) continue;     // can't see in
         const outer = edgeTex(k, o, o === -1 ? 3 : 1);
-        if (outer) this.sideWall(o === -1 ? -1.5 : 1.5, dNear, dFar, outer.tex, boost);
+        if (outer) this.sideWall(o === -1 ? -1.5 : 1.5, dNear, dFar, outer.tex, boost, outer.roof);
         const sideFront = edgeTex(k, o, 0);
         if (sideFront) this.frontWall(o - 0.5, o + 0.5, dFar, sideFront, lvlFar);
       }
@@ -169,8 +197,8 @@ export class Renderer {
       // center column side walls
       const left = edgeTex(k, 0, 3);
       const right = edgeTex(k, 0, 1);
-      if (left) this.sideWall(-0.5, dNear, dFar, left.tex, boost);
-      if (right) this.sideWall(0.5, dNear, dFar, right.tex, boost);
+      if (left) this.sideWall(-0.5, dNear, dFar, left.tex, boost, left.roof);
+      if (right) this.sideWall(0.5, dNear, dFar, right.tex, boost, right.roof);
 
       // center front wall
       const front = edgeTex(k, 0, 0);
@@ -200,11 +228,26 @@ export class Renderer {
         if (v >= 0) fb.px[y * W + x] = fb.shaded(v, lvl, x, y);
       }
     }
+    // gable roof: a slate triangle peaking over the facing wall
+    if (edge.roof && t > 1) {
+      const xc = (x1 + x2) / 2, span = Math.max(1, (x2 - x1) / 2);
+      const roofH = Math.max(3, Math.round((b - t) * 0.30));
+      const ov = Math.max(1, Math.round((x2 - x1) * 0.06));   // eave overhang
+      const xa = Math.max(1, x1 - ov), xb = Math.min(W - 1, x2 + ov), yb = Math.min(H - 1, t);
+      for (let x = xa; x < xb; x++) {
+        const frac = 1 - Math.min(1, Math.abs(x - xc) / (span + ov));
+        const yTop = Math.round(t - roofH * frac);
+        for (let y = Math.max(1, yTop); y < yb; y++) {
+          const rc = y < yTop + 2 ? 5 : (((x + y) & 3) === 0 ? 4 : 3); // ridge / fleck / slate
+          fb.px[y * W + x] = fb.shaded(rc, lvl, x, y);
+        }
+      }
+    }
     if (edge.sign) this.signboard(edge.sign, x1, x2, t, b, d);
   }
 
   // wall parallel to the view at lateral u, spanning depths dNear..dFar
-  sideWall(u, dNear, dFar, texName, boost) {
+  sideWall(u, dNear, dFar, texName, boost, roof) {
     const fb = this.fb;
     const tex = sprite(texName);
     const xn = Math.round(px(u, dNear)), xf = Math.round(px(u, dFar));
@@ -222,6 +265,14 @@ export class Renderer {
         const tv = Math.min(tex.h - 1, (((y - t) * tex.h) / (b - t)) | 0);
         const v = tex.data[tv * tex.w + tu];
         if (v >= 0) fb.px[y * W + x] = fb.shaded(v, lvl, x, y);
+      }
+      // slate cornice/roofline above the eave (tapers with depth)
+      if (roof && t > 1) {
+        const yTop = Math.max(1, t - Math.max(2, Math.round((b - t) * 0.26)));
+        for (let y = yTop; y < t; y++) {
+          const rc = y < yTop + 2 ? 5 : (((x + y) & 3) === 0 ? 4 : 3);
+          fb.px[y * W + x] = fb.shaded(rc, lvl, x, y);
+        }
       }
     }
   }
