@@ -857,7 +857,7 @@
         23,
         42
       ],
-      "chosen_seed": 42,
+      "chosen_seed": 7,
       "frame_effects": {
         "b": [
           "eye_pulse"
@@ -865,19 +865,19 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 34,
+          "x": 26,
           "y": 22,
-          "w": 28,
-          "h": 10
+          "w": 44,
+          "h": 16
         }
       },
       "frame_ms": {
         "a": 400,
         "b": 400
       },
-      "status": "candidates",
+      "status": "imported",
       "verdict": "replace",
-      "notes": "Pure grey body ramp; single red-to-flame eye for contrast. Procedural PASS \u2014 compare carefully. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
+      "notes": "Pure grey body ramp; single red-to-flame eye for contrast. Procedural PASS \u2014 compare carefully. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded. Chosen s7: snarling hunched wolf, red-orange glowing eyes dominant at game scale, strong forward-lean aggression."
     },
     {
       "id": "mon_spider",
