@@ -592,3 +592,31 @@ from `candidates-regen-v2/` (3 frames; c double-pulses). Eye region re-measured 
 the concentric eye `x39,y15,w16,h15` (old box `x30,y14,w36,h24`); verified
 eye_pulse on b and c brightens only the eye box (153 px), c brighter than b.
 **Both v1 NOT-BOX-ART failures resolved. W4 closed.**
+
+---
+
+## W8 interiors — v2 batch (prompt fix) results (2026-06-11)
+
+Director review of v1 found HUD bleed + an empty-feeling world + an illegible
+belltower. v2 regenerated all 9 with: suffix fix (no "game screen art"/"game
+asset"; added "no text/UI/HUD"), social rooms populated (no NPC overlay exists in
+the engine — `renderer.interior` draws one full scene), belltower reworked to a
+bronze bell + daylight. Output: `candidates-interiors-v2/` (v1 kept). Sheets:
+`art-review/interiors-v2/<id>-sheet.png` (6 seeds each, crushed, ~2× game scale).
+
+**All three issues resolved (worker verification):**
+- **UI bleed gone** — the v1 offenders (int_review s23, int_spark s17, int_hall
+  s11) and the rest are clean; the quest board in int_hall now reads as a board,
+  not a "QUEST" menu.
+- **World feels alive** — int_hall (adventurers + quest board), int_greta
+  (shopkeeper + shelves), int_review (magistrate + gallery), int_temple (priest
+  tending candles), int_spark (mage + blue crystals), int_goose (patrons +
+  bartender), int_hart (travellers + fireplace) all populated; figures survive
+  the 96×72 crush as readable silhouettes. int_tannery + int_belltower stay
+  deserted by design.
+- **Belltower legible** — every seed now reads as a tower: prominent bronze bell,
+  bright daylight through louvered windows, timber beams.
+
+**Awaiting Dan's per-interior winner picks (9).** Then import (rename int_*_a →
+int_* to replace the procedural sprites so resolveVariant finds the AI art) and
+tighten per-winner palettes if any crush muddy.
