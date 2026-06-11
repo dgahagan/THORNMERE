@@ -1190,7 +1190,7 @@
         23,
         42
       ],
-      "chosen_seed": 42,
+      "chosen_seed": 11,
       "frame_effects": {
         "b": [
           "eye_pulse"
@@ -1198,19 +1198,19 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 30,
-          "y": 26,
-          "w": 36,
-          "h": 12
+          "x": 28,
+          "y": 20,
+          "w": 42,
+          "h": 22
         }
       },
       "frame_ms": {
         "a": 400,
         "b": 400
       },
-      "status": "candidates",
+      "status": "imported",
       "verdict": "replace",
-      "notes": "Warm amber-brown body; gold eyes. Drop green/blue entirely. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
+      "notes": "Warm amber-brown body; gold eyes. Drop green/blue entirely. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded. Chosen s11: two distinct sunken gold eye sockets clearly readable, wide open mouth with crooked teeth. Better readability balance than s3 (too face-filling) or s42 (too compact)."
     },
     {
       "id": "mon_wisp",
