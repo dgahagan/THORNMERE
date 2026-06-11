@@ -2292,14 +2292,21 @@
         23,
         42
       ],
-      "seeds_generated": [],
-      "chosen_seed": null,
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 11,
       "frame_effects": {},
       "frame_regions": {},
       "frame_ms": {},
-      "status": "pending",
+      "status": "imported",
       "verdict": "new",
-      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art. v2 prompt fix 2026-06-11: removed HUD-triggering suffix; populated social rooms with people (no NPC overlay exists); belltower reworked for legibility (bronze bell + daylight). v3: female shopkeeper (Greta is a woman); dims 112x80."
+      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art. v2 prompt fix 2026-06-11: removed HUD-triggering suffix; populated social rooms with people (no NPC overlay exists); belltower reworked for legibility (bronze bell + daylight). v3: female shopkeeper (Greta is a woman); dims 112x80. IMPORTED s11 (female Greta) at 112x80; renamed to replace procedural."
     },
     {
       "id": "int_review",

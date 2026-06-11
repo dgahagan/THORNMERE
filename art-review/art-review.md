@@ -648,3 +648,8 @@ shopkeeper, so her subject was rewritten female and she regenerates fresh at
 448×320 (`generate_interiors.py --id int_greta`), then imports as the 9th.
 Open follow-up: if 112×80 reads better in-game, consider re-crushing the
 monsters/showpieces/portraits to 112-wide too (no-GPU re-crush + re-import pass).
+
+**int_greta IMPORTED s11 (2026-06-11)** — female Greta (stout matronly aproned
+shopkeeper behind the counter, stocked shelves, customer) at 112×80, renamed to
+replace the procedural. **All 9 interiors now AI art at 112×80. W8 interiors
+batch COMPLETE.**
