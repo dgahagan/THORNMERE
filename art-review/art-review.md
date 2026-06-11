@@ -310,3 +310,59 @@ Criteria derived from the original pipeline spec and PIPELINE-HANDOFF.md step li
 | A | Before/after captures (three standard scenes) | NOT MET | Requires game engine running; artrender.js can produce before/after PNGs — deferred to final README pass |
 | B | Icons (16×16) and FX sprites (24×24) updated | NOT MET | PIPELINE-HANDOFF step 3/4; out of scope for this AI pipeline pass — icons and FX remain procedural (all tests pass on current sizes) |
 | C | Live in-game frame-effect timing (2–4 fps eye pulse) | PARTIAL | Frame-effect pixel correctness verified programmatically (MET). Actual animation timing (ms values in `frame_ms`) is recorded in manifest and written to `anims` section; visual playback requires the game engine. The ms values (400/400 for monsters, 400/320 for wisp) produce 2.5 fps — within spec. |
+
+---
+
+## Feral re-prompt pass — 2026-06-10
+
+**Trigger:** Director review of v1 AI imports identified four families as "too cute" / tonally
+mismatched for a dark 1985-style dungeon crawler. A mid-pipeline directive to move mon_rat toward
+"mangy/feral" was never written into the manifest, so the cute v1 subjects drove generation and
+import. Fix: write feral subjects into manifest NOW (source of truth), regenerate all four families
+to new output dir, adjudicate as humans.
+
+**Families in scope:** mon_rat, mon_hound, mon_moth, mon_blob
+
+**Subject changes recorded in manifest** (`data/art/gen-manifest.json`, status=regenerating):
+
+| id | v1 subject (superseded) | v2 feral subject |
+|---|---|---|
+| mon_rat | large fen rat, upright pose, round grey body, round cupped ears... | gaunt mangy fen rat, hunched aggressive pose, matted patchy grey-brown fur with scabby bald patches, long yellowed incisors bared, ragged notched ears, scaly hairless tail, glinting malevolent red eyes |
+| mon_hound | upright wolf hound, large stocky grey body, pointed ears, single large red glowing eye... | snarling gaunt wolf hound, ribs showing through matted grey fur, hackles raised, ears pinned flat, single huge red glowing eye, jaw agape with bared fangs, predatory hunched stance |
+| mon_moth | giant basilisk moth with enormous spread wings, wings covered in concentric ring eye-spots... | sinister giant basilisk moth, ragged tattered-edged wings spread wide, hypnotic concentric ring eye-spots, spiny bristled antennae, gaunt chitinous segmented thorax, hooked clawed legs |
+| mon_blob | amorphous tallow blob monster, tan-amber pyramid mound shape, two gold coin eyes... | dripping amorphous tallow blob horror, slumping half-melted wax mound, two uneven sunken gold eyes under sagging wax lids, wide drooping mouth with crooked embedded teeth, grasping pseudopod arms, greasy glistening surface |
+
+**Pipeline:** `dev/pixel-art/generate_feral.py` — identical to generate.py except
+`CANDIDATES_DIR = candidates-feral/` (no clobber of v1 set). v2 filenames follow same
+`<id>_s<seed>_sub<N>.png` convention.
+
+**v1 sub-palette tags** (will match v2 since allowed indices unchanged):
+
+| id | sub tag |
+|---|---|
+| mon_rat | sub14 |
+| mon_hound | sub12 |
+| mon_moth | sub16 |
+| mon_blob | sub12 |
+
+### Generation log (to be filled after GPU run)
+
+GPU run: PENDING — awaiting Dan
+
+| id | seed | raw exists | crush tag | notes |
+|---|---|---|---|---|
+| mon_rat | 3,7,11,17,23,42 | — | sub14 | |
+| mon_hound | 3,7,11,17,23,42 | — | sub12 | |
+| mon_moth | 3,7,11,17,23,42 | — | sub16 | |
+| mon_blob | 3,7,11,17,23,42 | — | sub12 | |
+
+### Adjudication (to be filled after comparison sheets presented)
+
+Human adjudication required — self-judging tone is what caused the v1 error.
+
+| id | chosen_seed | crush_tag | verdict | notes |
+|---|---|---|---|---|
+| mon_rat | — | — | — | PENDING |
+| mon_hound | — | — | — | PENDING |
+| mon_moth | — | — | — | PENDING |
+| mon_blob | — | — | — | PENDING |

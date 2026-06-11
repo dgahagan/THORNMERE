@@ -611,7 +611,7 @@
       "id": "mon_moth",
       "art_class": "monster",
       "art_file": "data/art/monsters2.json",
-      "subject": "giant basilisk moth with enormous spread wings, wings covered in concentric ring eye-spots, feathery antennae, segmented thorax body",
+      "subject": "sinister giant basilisk moth, ragged tattered-edged wings spread wide, hypnotic concentric ring eye-spots, spiny bristled antennae, gaunt chitinous segmented thorax, hooked clawed legs",
       "style_suffix_key": "monster",
       "dims": [
         96,
@@ -647,14 +647,7 @@
         23,
         42
       ],
-      "seeds_generated": [
-        3,
-        7,
-        11,
-        17,
-        23,
-        42
-      ],
+      "seeds_generated": [],
       "chosen_seed": 7,
       "frame_effects": {
         "b": [
@@ -673,15 +666,15 @@
         "a": 400,
         "b": 400
       },
-      "status": "imported",
+      "status": "regenerating",
       "verdict": "replace",
-      "notes": "Warm brown wings. Eye-spot rings: blood-to-flame + violet. Blue-black eye centers."
+      "notes": "Warm brown wings. Eye-spot rings: blood-to-flame + violet. Blue-black eye centers. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
     },
     {
       "id": "mon_rat",
       "art_class": "monster",
       "art_file": "data/art/monsters.json",
-      "subject": "large fen rat, upright pose, round grey body, round cupped ears with inner ear, prominent buck teeth, long hairless tail, small red beady eyes",
+      "subject": "gaunt mangy fen rat, hunched aggressive pose, matted patchy grey-brown fur with scabby bald patches, long yellowed incisors bared, ragged notched ears, scaly hairless tail, glinting malevolent red eyes",
       "style_suffix_key": "monster",
       "dims": [
         96,
@@ -715,14 +708,7 @@
         23,
         42
       ],
-      "seeds_generated": [
-        3,
-        7,
-        11,
-        17,
-        23,
-        42
-      ],
+      "seeds_generated": [],
       "chosen_seed": 42,
       "frame_effects": {
         "b": [
@@ -741,9 +727,9 @@
         "a": 400,
         "b": 400
       },
-      "status": "imported",
+      "status": "regenerating",
       "verdict": "replace",
-      "notes": "Existing procedural art scores PASS. Generate to compare."
+      "notes": "Existing procedural art scores PASS. Generate to compare. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
     },
     {
       "id": "mon_beetle",
@@ -817,7 +803,7 @@
       "id": "mon_hound",
       "art_class": "monster",
       "art_file": "data/art/monsters.json",
-      "subject": "upright wolf hound, large stocky grey body, pointed ears, single large red glowing eye, bared white fangs, four thick pillar legs",
+      "subject": "snarling gaunt wolf hound, ribs showing through matted grey fur, hackles raised, ears pinned flat, single huge red glowing eye, jaw agape with bared fangs, predatory hunched stance",
       "style_suffix_key": "monster",
       "dims": [
         96,
@@ -849,14 +835,7 @@
         23,
         42
       ],
-      "seeds_generated": [
-        3,
-        7,
-        11,
-        17,
-        23,
-        42
-      ],
+      "seeds_generated": [],
       "chosen_seed": 42,
       "frame_effects": {
         "b": [
@@ -875,9 +854,9 @@
         "a": 400,
         "b": 400
       },
-      "status": "imported",
+      "status": "regenerating",
       "verdict": "replace",
-      "notes": "Pure grey body ramp; single red-to-flame eye for contrast. Procedural PASS \u2014 compare carefully."
+      "notes": "Pure grey body ramp; single red-to-flame eye for contrast. Procedural PASS — compare carefully. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
     },
     {
       "id": "mon_spider",
@@ -1150,7 +1129,7 @@
       "id": "mon_blob",
       "art_class": "monster",
       "art_file": "data/art/monsters.json",
-      "subject": "amorphous tallow blob monster, tan-amber pyramid mound shape, two gold coin eyes with black pupils, dashed toothy grin, side pseudopod arms, shiny gelatinous surface",
+      "subject": "dripping amorphous tallow blob horror, slumping half-melted wax mound, two uneven sunken gold eyes under sagging wax lids, wide drooping mouth with crooked embedded teeth, grasping pseudopod arms, greasy glistening surface",
       "style_suffix_key": "monster",
       "dims": [
         96,
@@ -1182,14 +1161,7 @@
         23,
         42
       ],
-      "seeds_generated": [
-        3,
-        7,
-        11,
-        17,
-        23,
-        42
-      ],
+      "seeds_generated": [],
       "chosen_seed": 42,
       "frame_effects": {
         "b": [
@@ -1208,9 +1180,9 @@
         "a": 400,
         "b": 400
       },
-      "status": "imported",
+      "status": "regenerating",
       "verdict": "replace",
-      "notes": "Warm amber-brown body; gold eyes. Drop green/blue entirely."
+      "notes": "Warm amber-brown body; gold eyes. Drop green/blue entirely. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
     },
     {
       "id": "mon_wisp",
