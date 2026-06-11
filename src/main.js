@@ -56,6 +56,16 @@ let narrating = false;
 let sceneFlash = null;   // transient portrait-window scene: {id, label, until}
 let mapViewCycle = 0;    // 0=off 1=corner-overlay 2=full-screen (Remastered automap)
 
+// Reduced XP: multiplier from balance.json, applied when game.settings.reducedXp is on.
+function getXpMult() { return game.settings?.reducedXp ? DB.balance.remasteredXpMultiplier : 1.0; }
+
+// Item charges: initialize entry.charges when item has maxCharges (Remastered charges feature).
+// Always initializes charges so they're accurate; show only when feature is on.
+function applyCharges(entry) {
+  const item = DB.item(entry.id);
+  if (item.maxCharges && entry.charges == null) entry.charges = item.maxCharges;
+}
+
 // Inventory adapter — one interface, two implementations: pool (Remastered) or per-character pack (Legacy).
 // All inventory flows route through these helpers; no scattered conditionals below.
 function invList(ch)          { return game.settings?.sharedInventory ? (game.pool?.items ?? []) : ch.inventory; }
@@ -373,6 +383,7 @@ const exploreMode = {
     if (k === 'q') return quitFlow();
     if (k === '?') return helpMode();
     if (/^[1-6]$/.test(k)) return sheetFlow(parseInt(k, 10) - 1);
+    if (k === '7' && game.settings?.seventhSlot && game.summons.length > 0) return sheetFlow(6);
   }
 };
 
@@ -491,6 +502,7 @@ function grantTreasure(e, pending) {
     const item = DB.item(itemId);
     if (game.settings?.sharedInventory) {
       if (invAddItem(null, itemId, true)) {
+        const en = game.pool.items[game.pool.items.length - 1]; applyCharges(en);
         pending.push({ text: `${item.name} → party pool.`, type: 'msg' });
       } else {
         pending.push({ text: `${item.name} — pool full! Dropped.`, type: 'msg' });
@@ -501,7 +513,10 @@ function grantTreasure(e, pending) {
         holder = realParty(game).find(ch => isAlive(ch));
         holder?.inventory.push({ id: itemId, ident: true });
       }
-      if (holder) pending.push({ text: `${holder.name} takes ${item.name}.`, type: 'msg' });
+      if (holder) {
+        const en = holder.inventory[holder.inventory.length - 1]; applyCharges(en);
+        pending.push({ text: `${holder.name} takes ${item.name}.`, type: 'msg' });
+      }
     }
   }
   if (e.gold) pending.push({ text: `You pocket ${e.gold} gold.`, type: 'msg' });
@@ -639,7 +654,14 @@ function useItemExplore(ch, idx) {
   const use = item.use;
   if (!use) { msg(`The ${entry.ident ? item.name : item.generic} does nothing obvious here.`); return setMode(exploreMode); }
   const done = (text, consume = true) => {
-    if (consume) invRemoveItem(ch, idx);
+    if (consume) {
+      if (entry.charges != null) {
+        entry.charges -= 1;
+        if (entry.charges <= 0) invRemoveItem(ch, idx);
+      } else {
+        invRemoveItem(ch, idx);
+      }
+    }
     if (text) msg(text, 'good');
     setMode(exploreMode);
   };
@@ -683,14 +705,30 @@ function useItemExplore(ch, idx) {
 function sheetFlow(slot) {
   const chars = partyChars(game);
   const ch = chars[slot];
-  if (!ch || ch.summon) { render(); return; }
+  if (!ch) { render(); return; }
+  if (ch.summon) {
+    // 7th-slot summon info
+    const def = DB.monster(ch.monsterId);
+    setMode({
+      menu: esc([
+        `${ch.name} — summoned ${ch.illusion ? 'illusion ' : ''}creature`,
+        `HP ${ch.hp}/${ch.maxHp}  AC ${def.ac}`,
+        def.flavor || '',
+        '',
+        'Esc to return.'
+      ].join('\n')),
+      hint: 'Esc to return.',
+      onKey(e) { if (e.key === 'Escape') { highlightId = null; setMode(exploreMode); } }
+    });
+    return;
+  }
   highlightId = ch.id;
   const shared = game.settings?.sharedInventory;
   const cls = clsOf(ch);
   const lines = [];
   lines.push(`${ch.name} — ${DB.race(ch.race).name} ${cls.name}, level ${ch.level}`);
   lines.push(STATS.map(s => `${s} ${ch.stats[s]}`).join('  '));
-  lines.push(`HP ${ch.hp}/${ch.maxHp}  SP ${ch.sp}/${ch.maxSp}  AC ${effectiveAC(ch)}  XP ${ch.xp} (next: ${xpForLevel(ch.cls, ch.level + 1)})`);
+  lines.push(`HP ${ch.hp}/${ch.maxHp}  SP ${ch.sp}/${ch.maxSp}  AC ${effectiveAC(ch)}  XP ${ch.xp} (next: ${xpForLevel(ch.cls, ch.level + 1, getXpMult())})`);
   if (ch.drained) lines.push(`Drained ${ch.drained} level(s) — the Temple can restore them.`);
   const tiers = Object.entries(ch.schoolTiers).map(([s, t]) => `${s}:${t}`).join(' ');
   if (tiers) lines.push(`Spell tiers — ${tiers}`);
@@ -700,15 +738,16 @@ function sheetFlow(slot) {
   if (shared) {
     // Shared mode: show pool; equipping claims item from pool into ch.inventory
     const pool = game.pool?.items ?? [];
+    const chargesTag = (en) => game.settings?.charges && en.charges != null ? ` (${en.charges} ch)` : '';
     const packLines = ch.inventory.map((en, i) => {
       const item = DB.item(en.id);
       const eq = Object.values(ch.equip).includes(i) ? '*' : ' ';
-      return `  ${i + 1}${eq} ${en.ident ? item.name : item.generic}`;
+      return `  ${i + 1}${eq} ${en.ident ? item.name : item.generic}${chargesTag(en)}`;
     });
     const poolLines = pool.map((en, i) => {
       const item = DB.item(en.id);
       const ok = classAllowed(ch, item) ? '' : ' (not your trade)';
-      return `<span class="opt" data-key="p${i + 1}">  [P${i + 1}] ${esc(en.ident ? item.name : item.generic)}${esc(ok)}</span>`;
+      return `<span class="opt" data-key="p${i + 1}">  [P${i + 1}] ${esc(en.ident ? item.name : item.generic)}${esc(chargesTag(en))}${esc(ok)}</span>`;
     });
     const packSection = packLines.length ? packLines.join('\n') : '  (no items equipped/held)';
     const poolSection = poolLines.length ? poolLines.join('\n') : '  (pool empty)';
@@ -775,11 +814,12 @@ function sheetFlow(slot) {
   }
 
   // Legacy mode — per-character inventory
+  const chargesTagL = (en) => game.settings?.charges && en.charges != null ? ` (${en.charges} ch)` : '';
   const invLines = ch.inventory.map((en, i) => {
     const item = DB.item(en.id);
     const eq = Object.values(ch.equip).includes(i) ? '*' : ' ';
     const ok = classAllowed(ch, item) ? '' : ' (not your trade)';
-    return `<span class="opt" data-key="${i + 1}"> ${i + 1}${eq} ${esc(en.ident ? item.name : item.generic)}${esc(ok)}</span>`;
+    return `<span class="opt" data-key="${i + 1}"> ${i + 1}${eq} ${esc(en.ident ? item.name : item.generic)}${esc(chargesTagL(en))}${esc(ok)}</span>`;
   });
   if (!ch.inventory.length) invLines.push(' (empty pack)');
 
@@ -1065,7 +1105,7 @@ function shopMode(name, draws) {
 function buyFlow(ch, name, draws) {
   pickFromList(`Greta's stock — gold ${game.gold} — buying for ${ch.name}`, shopStock(),
     it => `${it.name.padEnd(20)} ${String(it.price).padStart(5)}g${classAllowed(ch, it) ? '' : '  (not their trade)'}`,
-    (it) => { const r = buyItem(game, ch, it.id); if (r.ok) sfx('gold'); msg(r.msg, r.ok ? 'good' : ''); buyFlow(ch, name, draws); },
+    (it) => { const r = buyItem(game, ch, it.id); if (r.ok) { sfx('gold'); applyCharges(ch.inventory[ch.inventory.length - 1]); } msg(r.msg, r.ok ? 'good' : ''); buyFlow(ch, name, draws); },
     () => shopMode(name, draws));
 }
 function sellFlow(ch, name, draws) {
@@ -1094,6 +1134,7 @@ function buyFlowPool(name, draws) {
       if (!poolAdd(game, it.id, true)) { msg('The party pool is full (40 items).'); return buyFlowPool(name, draws); }
       game.gold -= item.price;
       sfx('gold');
+      applyCharges(game.pool.items[game.pool.items.length - 1]);
       msg(`${item.name} added to the party pool. (${item.price} gold)`, 'good');
       buyFlowPool(name, draws);
     },
@@ -1139,13 +1180,14 @@ function reviewMode(name, draws) {
   pickChar('The Review Board sees whom?', null, (ch) => reviewChar(ch, name, draws), () => setMode(exploreMode));
 }
 function reviewChar(ch, name, draws) {
-  const need = xpForLevel(ch.cls, ch.level + 1) - ch.xp;
+  const mult = getXpMult();
+  const need = xpForLevel(ch.cls, ch.level + 1, mult) - ch.xp;
   setMode(menuMode({
     title: `${name} — ${ch.name}, ${clsOf(ch).name} ${ch.level}`,
-    body: canLevelUp(ch) ? 'The Board nods: advancement is due.' : `XP to next level: ${need}.`,
+    body: canLevelUp(ch, mult) ? 'The Board nods: advancement is due.' : `XP to next level: ${need}.`,
     options: [
       { k: 't', label: 'Train a level', fn: () => {
-          if (!canLevelUp(ch)) { msg(`The Board is unmoved. ${need} more experience.`); return reviewChar(ch, name, draws); }
+          if (!canLevelUp(ch, mult)) { msg(`The Board is unmoved. ${need} more experience.`); return reviewChar(ch, name, draws); }
           const g = levelUp(rng, ch);
           sfx('levelup');
           msg(`${ch.name} is now level ${ch.level}! (+${g.hpGain} HP${g.spGain ? `, +${g.spGain} SP` : ''})`, 'good');

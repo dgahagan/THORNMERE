@@ -112,7 +112,7 @@
     "flavor": "A pinch under the tongue and the knees remember their job." },
   { "id": "stone_salt", "name": "Stone-Salt", "generic": "Pouch?", "type": "potion", "use": { "kind": "cure", "flags": ["stone"] }, "price": 300, "shop": true,
     "flavor": "Scraped from a statue that got better." },
-  { "id": "eyebright_tonic", "name": "Eyebright Tonic", "generic": "Vial?", "type": "potion", "use": { "kind": "trueseeing", "duration": 100 }, "price": 80, "shop": true,
+  { "id": "eyebright_tonic", "name": "Eyebright Tonic", "generic": "Vial?", "type": "potion", "maxCharges": 2, "use": { "kind": "trueseeing", "duration": 100 }, "price": 80, "shop": true,
     "flavor": "For one hundred breaths, nothing lies to you. People hate it." },
   { "id": "wine_flask", "name": "Flask of Tavern Wine", "generic": "Flask?", "type": "potion", "use": { "kind": "song_restore", "amount": 1 }, "price": 15, "shop": true,
     "flavor": "The Drowned Goose's second-worst vintage. A Skald's best friend." },
@@ -120,7 +120,7 @@
     "flavor": "Bottled weather. Shake, throw, repent." },
   { "id": "recall_scroll", "name": "Scroll of Returning", "generic": "Scroll?", "type": "potion", "use": { "kind": "recall" }, "price": 300, "shop": true,
     "flavor": "One word, one way home, one use." },
-  { "id": "phase_chalk", "name": "Phase Chalk", "generic": "Chalk?", "type": "potion", "use": { "kind": "phase" }, "price": 200, "shop": true,
+  { "id": "phase_chalk", "name": "Phase Chalk", "generic": "Chalk?", "type": "potion", "maxCharges": 3, "use": { "kind": "phase" }, "price": 200, "shop": true,
     "flavor": "Draw a door. Knock once. Don't linger." },
 
   { "id": "verse_first", "name": "The First Verse", "generic": "Relic?", "type": "quest", "price": 0, "unique": true,
