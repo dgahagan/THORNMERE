@@ -548,3 +548,35 @@ The instrument + beard + cool-plate-vs-warm-leather palette carry the distinctio
 even at 1×. The audit's "both warm brown/gold" concern was overstated — the
 warrior reads distinctly cooler/armored. **No green touch-up or re-pick needed;
 the keep-all-four-s42 decision stands cleanly.**
+
+---
+
+## W4 / W6 regeneration — v2 candidates (GPU run 2026-06-11 13:37–13:39)
+
+Director-approved subjects generated via `generate_regen.py` → all raws + crushed
+in `dev/pixel-art/candidates-regen-v2/` (never clobbering v1). Manifest auto-updated
+to `status: candidates`. **Winners picked by human — presenting, not self-judging.**
+
+### Generation + crush log
+| family | seeds | raws | crush tag | crushed |
+|---|---|---|---|---|
+| mon_skeleton (W6) | 3,7,11,17,23,42 | 6/6 | sub11 | 6/6 |
+| mon_choir_eldest (W4) | 1,3,5,7,11,13,17,23,31,42 | 10/10 | sub19 | 10/10 |
+
+### W6 skeleton — regen SUCCEEDED (sheet `art-review/regen-v2/skeleton-v2-adjud.png`)
+The inversion is fixed: **all 6 candidates are bone-white/grey skeletons holding a
+GOLD SWORD** (hollow eye sockets, full ribcage) — the exact opposite of the v1
+gold-bones/grey-sword miss. Gold is now correctly the *sword accent*. All six are
+strong and close; differences are mostly sword pose. Worker read for Dan: s7/s17
+have the cleanest upright gold sword + clearest skull; all are viable. **Awaiting
+Dan's pick.**
+
+### W4 choir_eldest — regen SUCCEEDED (sheet `art-review/regen-v2/choir_eldest-v2-shipsim.png`)
+Both v1 failure criteria resolved. Judged as-they'd-ship (transparency applied,
+night bg): **visible mass jumped to 41–47%** (v1 s42 was 12%, v1 best s31 was 36%)
+— the **charcoal robe now holds a strong triangular silhouette**, and the **large
+concentric-ring eye is seated in a pale rim-lit hood, dominating the upper figure**
+(criterion b, which ALL v1 seeds failed). Trapped faces correctly demoted to robe
+texture; green pendant + skeletal hand present. All ten read as box-art now.
+Worker read for Dan: s31 (deep dramatic hood, large seated eye), s23 (cleanest
+concentric eye), s7/s1 (crisp balanced) are the strongest. **Awaiting Dan's pick.**
