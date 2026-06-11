@@ -345,16 +345,18 @@ to new output dir, adjudicate as humans.
 | mon_moth | sub16 |
 | mon_blob | sub12 |
 
-### Generation log (to be filled after GPU run)
+### Generation log
 
-GPU run: PENDING — awaiting Dan
+GPU run: COMPLETE — 2026-06-10 23:30–23:35. All 24 raws + 24 crushed landed in `candidates-feral/`.
 
-| id | seed | raw exists | crush tag | notes |
+| id | seeds | raw exists | crush tag | crushed exists |
 |---|---|---|---|---|
-| mon_rat | 3,7,11,17,23,42 | — | sub14 | |
-| mon_hound | 3,7,11,17,23,42 | — | sub12 | |
-| mon_moth | 3,7,11,17,23,42 | — | sub16 | |
-| mon_blob | 3,7,11,17,23,42 | — | sub12 | |
+| mon_rat | 3,7,11,17,23,42 | YES (×6) | sub14 | YES (×6) |
+| mon_hound | 3,7,11,17,23,42 | YES (×6) | sub12 | YES (×6) |
+| mon_moth | 3,7,11,17,23,42 | YES (×6) | sub16 | YES (×6) |
+| mon_blob | 3,7,11,17,23,42 | YES (×6) | sub12 | YES (×6) |
+
+Comparison sheets: `art-review/feral-compare-<family>.png` (v1 frame-a reference + 6 feral candidates, 2740×376 each).
 
 ### Adjudication (to be filled after comparison sheets presented)
 
