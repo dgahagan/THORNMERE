@@ -399,6 +399,49 @@ export class Renderer {
     this.fb.flush();
   }
 
+  // ---- player automap (Remastered) ------------------------------------------
+  parchmentMap(game, am, fullscreen) {
+    const fb = this.fb;
+    const map = currentMap(game);
+    const CS = fullscreen
+      ? Math.max(3, Math.floor(Math.min((W - 44) / map.w, (H - 50) / map.h)))
+      : Math.max(2, Math.floor(Math.min(110 / map.w, 110 / map.h)));
+    const mapW = map.w * CS, mapH = map.h * CS;
+    let ox, oy;
+    if (fullscreen) {
+      ox = ((W - mapW) >> 1);
+      oy = ((H - mapH) >> 1) + 8;
+      fb.fillRect(0, 0, W, H, C.bone);
+      fb.textCentered(map.name || 'MAP', W >> 1, 3, C.gold);
+      if (am && !am.synced) fb.textCentered('~ DESYNC ~', W >> 1, H - 10, C.dim);
+    } else {
+      ox = W - mapW - 14;
+      oy = 10;
+      fb.fillRect(ox - 3, oy - 3, mapW + 6, mapH + 6, C.black);
+    }
+    const visited = new Set(am ? am.visited : []);
+    for (let y = 0; y < map.h; y++) {
+      for (let x = 0; x < map.w; x++) {
+        if (!visited.has(x + ',' + y)) continue;
+        const sx = ox + x * CS, sy = oy + (map.h - 1 - y) * CS;
+        if (fullscreen) fb.fillRect(sx, sy, CS, CS, C.chalk);
+        if (edgeAt(map, x, y, 0) !== '0') fb.fillRect(sx, sy, CS + 1, 1, C.dim);
+        if (edgeAt(map, x, y, 2) !== '0') fb.fillRect(sx, sy + CS, CS + 1, 1, C.dim);
+        if (edgeAt(map, x, y, 3) !== '0') fb.fillRect(sx, sy, 1, CS + 1, C.dim);
+        if (edgeAt(map, x, y, 1) !== '0') fb.fillRect(sx + CS, sy, 1, CS + 1, C.dim);
+      }
+    }
+    const cursor = am?.cursor || { x: game.pos.x, y: game.pos.y, facing: game.pos.facing };
+    const axc = ox + cursor.x * CS + (CS >> 1);
+    const ayc = oy + (map.h - 1 - cursor.y) * CS + (CS >> 1);
+    const f = cursor.facing;
+    const vx = [0, 1, 0, -1][f], vy = [-1, 0, 1, 0][f];
+    const col = (am && !am.synced) ? C.candle : C.gold;
+    fb.line(axc - vx * CS * 0.3, ayc - vy * CS * 0.3, axc + vx * CS * 0.4, ayc + vy * CS * 0.4, col);
+    fb.pset(axc + vx, ayc + vy, col);
+    fb.flush();
+  }
+
   // ---- debug automap ----------------------------------------------------------
   automap(game) {
     const fb = this.fb;

@@ -337,9 +337,9 @@ const exploreMode = {
   onKey(e) {
     const k = e.key.toLowerCase();
     if (k === 'arrowup' || k === 'w') return doStep(false);
-    if (k === 'arrowdown' || k === 's') { turn(game, 2); return render(); }
-    if (k === 'arrowleft' || k === 'a') { turn(game, -1); return render(); }
-    if (k === 'arrowright' || k === 'd') { turn(game, 1); return render(); }
+    if (k === 'arrowdown' || k === 's') { turn(game, 2); updateAutomap(game, [], { isTurn: true }); return render(); }
+    if (k === 'arrowleft' || k === 'a') { turn(game, -1); updateAutomap(game, [], { isTurn: true }); return render(); }
+    if (k === 'arrowright' || k === 'd') { turn(game, 1); updateAutomap(game, [], { isTurn: true }); return render(); }
     if (k === 'e') {
       const evs = searchSecrets(game, rng);
       if (evs.some(x => /secret door/.test(x.text || ''))) sfx('secret');
@@ -410,9 +410,24 @@ function archetypeOf(clsId) { return ARCHETYPES[clsId] || 'caster'; }
 function portraitOf(ch) { return ch.portrait || `pc_${ch.race}_${archetypeOf(ch.cls)}`; }
 
 function doStep(backward) {
+  const preFacing = game.pos.facing;
+  const stepDir = backward ? (preFacing + 2) % 4 : preFacing;
+  const intX = game.pos.x + DX[stepDir];
+  const intY = game.pos.y + DY[stepDir];
+
   const events = step(game, rng, { backward });
-  if (events.some(e => e.type === 'bump')) sfx('bump');
-  else sfx(['undercroft', 'barrow'].some(p => game.pos.map.startsWith(p)) ? 'footstep_dirt' : 'footstep_stone');
+
+  if (events.some(e => e.type === 'bump')) {
+    sfx('bump');
+  } else {
+    sfx(['undercroft', 'barrow'].some(p => game.pos.map.startsWith(p)) ? 'footstep_dirt' : 'footstep_stone');
+    updateAutomap(game, events, {
+      stepDir,
+      intX, intY,
+      spinnerDesync:  game.pos.facing !== preFacing,
+      teleportDesync: game.pos.x !== intX || game.pos.y !== intY,
+    });
+  }
   handleEvents(events);
 }
 
@@ -477,6 +492,7 @@ function travel(to, announce = true) {
   sfx('stairs');
   if (announce) msg(`— ${currentMap(game).name} —`, 'mouth');
   if (game.settings?.saveAnywhere) saveTo(AUTO_KEY);
+  updateAutomap(game, [], {});
   setMode(exploreMode);
 }
 
@@ -1390,6 +1406,7 @@ function customModeFlow() {
 
 function startNewGame() {
   if (game.settings.sharedInventory && !game.pool) game.pool = { items: [] };
+  updateAutomap(game, [], {});
   setMode(exploreMode);
 }
 
@@ -1419,8 +1436,46 @@ function campFlow() {
   }));
 }
 
-function updateAutomap(_game, _events) {
-  // Phase 2: full automap cursor tracking and visited-cell recording
+function updateAutomap(game, _events, opts = {}) {
+  if (!game.settings?.automap) return;
+  const am = automapFor(game, game.pos.map);
+
+  if (!am.cursor) {
+    am.cursor = { x: game.pos.x, y: game.pos.y, facing: game.pos.facing };
+    am.synced = true;
+  }
+
+  const { stepDir, intX, intY, spinnerDesync, teleportDesync, isTurn } = opts;
+
+  if (isTurn) {
+    if (am.synced || game.effects?.some(e => e.kind === 'compass')) {
+      am.cursor.facing = game.pos.facing;
+    }
+  } else if (stepDir !== undefined) {
+    if (teleportDesync) {
+      am.cursor.x = intX;
+      am.cursor.y = intY;
+      am.cursor.facing = spinnerDesync ? stepDir : game.pos.facing;
+      am.synced = false;
+    } else {
+      am.cursor.x = game.pos.x;
+      am.cursor.y = game.pos.y;
+      if (spinnerDesync) {
+        am.cursor.facing = stepDir;
+        am.synced = false;
+      } else {
+        am.cursor.facing = game.pos.facing;
+      }
+    }
+  }
+
+  const key = am.cursor.x + ',' + am.cursor.y;
+  if (!am.visited.includes(key)) am.visited.push(key);
+
+  if (game.effects?.some(e => e.kind === 'compass')) {
+    am.cursor = { x: game.pos.x, y: game.pos.y, facing: game.pos.facing };
+    am.synced = true;
+  }
 }
 
 function gameOverMode() {
