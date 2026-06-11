@@ -133,17 +133,16 @@ freely — these are art direction.
 | `fx_gate` | 16×16 | heavy iron portcullis gate set in a stone arch |
 | `sign_generic` | 12×8 | small blank carved-wood shop sign on a bracket *(tiny — may stay procedural)* |
 
-### 3e. UI glyphs (`ui.json` ui_*) — **DECISION NEEDED, recommend OUT**
+### 3e. UI glyphs (`ui.json` ui_*) — **RULED OUT by director 2026-06-11**
 | id | dims | note |
 |---|---|---|
 | `ui_compass` | 16×16 | functional HUD compass rose |
 | `ui_note_a` / `ui_note_b` | 8×8 | functional HUD music-note (anim `ui_note`) |
 
-> **Recommend EXCLUDE these three.** They are tiny functional HUD glyphs, not
-> scene art; FLUX at 8×8 is pointless and risks making them less legible than the
-> current clean pixel art. The audit (`audit-01.md` §4 B) already found existing
-> UI icons "polished pixel art" and the v2.1 spec excludes "small UI icons."
-> **Dan: confirm OUT, or name them IN.** Everything else in 3a–3d is proposed IN.
+> **DECIDED: these three stay OUT.** Tiny functional HUD glyphs, not scene art;
+> FLUX at 8×8 is pointless and risks making them less legible than the current
+> clean pixel art. `font.json` also out. **In scope from `ui.json`:** the 8 `fx_*`
+> furniture sprites + `sign_generic` (§3d). Everything in 3a–3d is IN.
 
 ---
 
@@ -199,12 +198,12 @@ Each batch:
 
 ## 6. Open questions for Dan (blocking generation, not this doc)
 
-1. **§3e UI glyphs** — confirm `ui_compass` / `ui_note_a` / `ui_note_b` OUT
-   (recommended), or name them IN.
+1. **§3e UI glyphs** — ✅ RESOLVED 2026-06-11: ruled OUT (`ui_compass`,
+   `ui_note_a/b`, `font.json`). In scope: `fx_*` ×8 + `sign_generic`.
 2. **§4 textures** — can the local FLUX.2-klein pipeline generate seamless/tileable
-   output? (Determines option B vs A vs D.)
+   output? (Determines option B vs A vs D.) — **STILL OPEN, blocks the TEX batch.**
 3. **Subject lines (§3)** — approve / edit the ~38 in-scope drafts before any
-   manifest write.
+   manifest write. — **STILL OPEN, blocks all batches.**
 4. **Palette `allowed` sets** — per-sprite; will be drafted at manifest-write time
    with the approved subjects (not blocking now).
 
