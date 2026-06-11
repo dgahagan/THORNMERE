@@ -200,11 +200,25 @@ Each batch:
 
 1. **§3e UI glyphs** — ✅ RESOLVED 2026-06-11: ruled OUT (`ui_compass`,
    `ui_note_a/b`, `font.json`). In scope: `fx_*` ×8 + `sign_generic`.
-2. **§4 textures** — can the local FLUX.2-klein pipeline generate seamless/tileable
-   output? (Determines option B vs A vs D.) — **STILL OPEN, blocks the TEX batch.**
-3. **Subject lines (§3)** — approve / edit the ~38 in-scope drafts before any
-   manifest write. — **INTERIORS (9) APPROVED 2026-06-11** (manifest entries
-   written, `generate_interiors.py` ready). Signboards (9) + FX (9) still open.
+2. **§3b Signboards (9)** — ✅ RESOLVED 2026-06-11: **ruled OUT, keep procedural.**
+   They hang on doors in the first-person view, distance-scaled to ~36px; the bold
+   procedural emblems (crossed-swords, bell, scales…) read better there than a
+   FLUX image crushed to 36×28. Same logic as the UI glyphs.
+3. **§4 textures** — can the local FLUX.2-klein do seamless/tileable output?
+   **TEST IT:** `dev/pixel-art/test_tiling.py` (circular-padding trick) on the
+   host → eyeball `tiling-test/*_circular_2x2.png` for seams. Seams gone → viable
+   (option A/B); seams remain → keep procedural (option D, same 32×32-tiny + must-
+   tile double penalty as signboards). **Blocks the TEX batch until tested.**
+4. **Subject lines (§3)** — INTERIORS (9) ✅ done & imported at 112×80. Signboards
+   ruled OUT (#2). **FX furniture (8 fx_* + sign_generic) still open** — small
+   16×16 viewport icons; likely the same procedural-wins logic, decide before
+   spending generation.
+
+**Resolution note (2026-06-11):** the big-art bump to ~112-wide (interiors 112×80,
+monster/showpiece portraits 112×93, ≈ original BT's ~117 art window) is done. The
+recurring lesson across signboards/textures/glyphs: **small distance-scaled
+viewport elements (≤36px) are better as bold procedural pixel art than as crushed
+FLUX** — FLUX wins on the large art windows, not the tiny ones.
 4. **Palette `allowed` sets** — per-sprite; will be drafted at manifest-write time
    with the approved subjects (not blocking now).
 
