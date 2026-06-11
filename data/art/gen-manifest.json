@@ -5,7 +5,7 @@
     "showpiece": "pixel art, boss monster portrait, dramatic full composition, facing viewer, fantasy dungeon boss, 16-bit Amiga style, 1985 computer RPG, limited palette, solid black background, game asset",
     "character": "pixel art, fantasy RPG character portrait, head and shoulders, close-up, facing viewer, dungeon adventurer, 16-bit Amiga style, limited palette, solid black background, game asset",
     "scene": "pixel art, wide panoramic fantasy landscape illustration, atmospheric, 16-bit Amiga style, muted limited palette, dark background, game screen art",
-    "interior": "pixel art, interior room scene, atmospheric lighting, 16-bit Amiga style, muted limited palette, dark background, game screen art"
+    "interior": "pixel art, interior room scene, fantasy RPG environment, atmospheric lighting, 16-bit Amiga style, muted limited palette, painted scene illustration, no text, no UI, no HUD, no health bar, no interface"
   },
   "gen_dims": {
     "monster": [
@@ -2182,7 +2182,7 @@
       "id": "int_hall",
       "art_class": "interior",
       "art_file": "data/art/signs.json",
-      "subject": "interior of a stone adventurers' guild hall, quest notice board, hearth, weapon racks, warm torchlight",
+      "subject": "interior of a stone adventurers' guild hall, several adventurers gathered studying a quest notice board, a clerk at the counter, hearth, weapon racks, warm torchlight",
       "style_suffix_key": "interior",
       "dims": [
         96,
@@ -2234,13 +2234,13 @@
       "frame_ms": {},
       "status": "pending",
       "verdict": "new",
-      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art."
+      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art. v2 prompt fix 2026-06-11: removed HUD-triggering suffix; populated social rooms with people (no NPC overlay exists); belltower reworked for legibility (bronze bell + daylight)."
     },
     {
       "id": "int_greta",
       "art_class": "interior",
       "art_file": "data/art/signs.json",
-      "subject": "interior of a cluttered provisioner's shop, shelves of sacks barrels and gear, counter, lantern light",
+      "subject": "interior of a cluttered provisioner's shop, a stout shopkeeper behind the counter, a customer browsing the shelves of sacks barrels and gear, lantern light",
       "style_suffix_key": "interior",
       "dims": [
         96,
@@ -2292,13 +2292,13 @@
       "frame_ms": {},
       "status": "pending",
       "verdict": "new",
-      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art."
+      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art. v2 prompt fix 2026-06-11: removed HUD-triggering suffix; populated social rooms with people (no NPC overlay exists); belltower reworked for legibility (bronze bell + daylight)."
     },
     {
       "id": "int_review",
       "art_class": "interior",
       "art_file": "data/art/signs.json",
-      "subject": "interior of a stern magistrate's courtroom, raised judge's bench, hanging banners, cold stone, shafts of light",
+      "subject": "interior of a stern magistrate's courtroom, a robed magistrate seated at the raised bench, townsfolk seated on the gallery benches, hanging banners, cold stone, shafts of light",
       "style_suffix_key": "interior",
       "dims": [
         96,
@@ -2350,13 +2350,13 @@
       "frame_ms": {},
       "status": "pending",
       "verdict": "new",
-      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art."
+      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art. v2 prompt fix 2026-06-11: removed HUD-triggering suffix; populated social rooms with people (no NPC overlay exists); belltower reworked for legibility (bronze bell + daylight)."
     },
     {
       "id": "int_temple",
       "art_class": "interior",
       "art_file": "data/art/signs.json",
-      "subject": "interior of a quiet candlelit temple, rows of candles, altar bearing a single sacred flame, serene shadow",
+      "subject": "interior of a quiet candlelit temple, a robed priest tending rows of candles at an altar bearing a single sacred flame, serene shadow",
       "style_suffix_key": "interior",
       "dims": [
         96,
@@ -2408,13 +2408,13 @@
       "frame_ms": {},
       "status": "pending",
       "verdict": "new",
-      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art."
+      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art. v2 prompt fix 2026-06-11: removed HUD-triggering suffix; populated social rooms with people (no NPC overlay exists); belltower reworked for legibility (bronze bell + daylight)."
     },
     {
       "id": "int_spark",
       "art_class": "interior",
       "art_file": "data/art/signs.json",
-      "subject": "interior of a mage's spark house, arcane workbench, glowing crystals and scrolls, blue magical glow",
+      "subject": "interior of a mage's spark house, a robed mage working at an arcane workbench, glowing crystals and scrolls, blue magical glow",
       "style_suffix_key": "interior",
       "dims": [
         96,
@@ -2466,13 +2466,13 @@
       "frame_ms": {},
       "status": "pending",
       "verdict": "new",
-      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art."
+      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art. v2 prompt fix 2026-06-11: removed HUD-triggering suffix; populated social rooms with people (no NPC overlay exists); belltower reworked for legibility (bronze bell + daylight)."
     },
     {
       "id": "int_goose",
       "art_class": "interior",
       "art_file": "data/art/signs.json",
-      "subject": "dim waterside tavern interior, the Drowned Goose, plank tables, tankards, hung fishing nets, hearth glow",
+      "subject": "interior of a dim waterside tavern, patrons drinking at plank tables, a bartender behind the bar, tankards, hung fishing nets, hearth glow",
       "style_suffix_key": "interior",
       "dims": [
         96,
@@ -2524,13 +2524,13 @@
       "frame_ms": {},
       "status": "pending",
       "verdict": "new",
-      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art."
+      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art. v2 prompt fix 2026-06-11: removed HUD-triggering suffix; populated social rooms with people (no NPC overlay exists); belltower reworked for legibility (bronze bell + daylight)."
     },
     {
       "id": "int_hart",
       "art_class": "interior",
       "art_file": "data/art/signs.json",
-      "subject": "cozy inn common-room interior, the Hart & Hollow, antler chandelier, fireplace, wooden booths",
+      "subject": "interior of a cozy inn common room, travellers resting at wooden booths, an innkeeper by the bar, antler chandelier, fireplace",
       "style_suffix_key": "interior",
       "dims": [
         96,
@@ -2582,13 +2582,13 @@
       "frame_ms": {},
       "status": "pending",
       "verdict": "new",
-      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art."
+      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art. v2 prompt fix 2026-06-11: removed HUD-triggering suffix; populated social rooms with people (no NPC overlay exists); belltower reworked for legibility (bronze bell + daylight)."
     },
     {
       "id": "int_tannery",
       "art_class": "interior",
       "art_file": "data/art/signs.json",
-      "subject": "abandoned boarded tannery interior, empty curing racks, dust, broken light through boarded windows, gloom",
+      "subject": "interior of an abandoned boarded tannery, empty curing racks, dust, broken light through boarded windows, deserted, no people",
       "style_suffix_key": "interior",
       "dims": [
         96,
@@ -2640,13 +2640,13 @@
       "frame_ms": {},
       "status": "pending",
       "verdict": "new",
-      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art."
+      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art. v2 prompt fix 2026-06-11: removed HUD-triggering suffix; populated social rooms with people (no NPC overlay exists); belltower reworked for legibility (bronze bell + daylight)."
     },
     {
       "id": "int_belltower",
       "art_class": "interior",
       "art_file": "data/art/signs.json",
-      "subject": "stone bell-tower base interior, great hanging bell, ropes, spiral stair, dim vertical light",
+      "subject": "interior of a stone bell-tower chamber, a great bronze bell hanging prominently overhead, shafts of daylight through louvered window openings, wooden support beams, a spiral stair, deserted",
       "style_suffix_key": "interior",
       "dims": [
         96,
@@ -2698,7 +2698,7 @@
       "frame_ms": {},
       "status": "pending",
       "verdict": "new",
-      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art."
+      "notes": "W8 asset-regen interiors batch 2026-06-11; replaces procedural int_* from gen_signs.js. Allowed is a broad interior palette; tighten per-winner at import. Import note: rename int_*_a -> int_* (replace procedural) so resolveVariant('int_*') finds the AI art. v2 prompt fix 2026-06-11: removed HUD-triggering suffix; populated social rooms with people (no NPC overlay exists); belltower reworked for legibility (bronze bell + daylight)."
     }
   ]
 }

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""generate_interiors.py — audit-01 W8 asset-regen INTERIORS batch.
+"""generate_interiors.py — audit-01 W8 asset-regen INTERIORS batch (v2).
 
-Same pipeline as generate.py, but CANDIDATES_DIR points to candidates-interiors/
-(never clobbering other candidate sets) and it processes the 9 building-interior
-entries (art_class == "interior") — director-approved subjects already locked into
-the manifest.
+Same pipeline as generate.py, but CANDIDATES_DIR points to candidates-interiors-v2/
+(v2 = prompt fix: HUD-triggering suffix removed, social rooms populated with
+people, belltower reworked for legibility; v1 candidates-interiors/ kept as the
+prior set) and it processes the 9 building-interior entries (art_class ==
+"interior") — director-approved subjects already locked into the manifest.
 
 Usage (from within distrobox, dev/pixel-art/):
   python3 generate_interiors.py --dry-run        # preview prompts + plan, no GPU
@@ -25,7 +26,7 @@ REPO = Path(__file__).resolve().parents[2]
 PIXELART_DIR = Path(__file__).resolve().parent
 MANIFEST_PATH = REPO / "data" / "art" / "gen-manifest.json"
 PALETTE_PATH = REPO / "data" / "art" / "palette.json"
-CANDIDATES_DIR = PIXELART_DIR / "candidates-interiors"
+CANDIDATES_DIR = PIXELART_DIR / "candidates-interiors-v2"
 REQUEST_PATH = PIXELART_DIR / "gen_request_interiors.json"
 
 sys.path.insert(0, str(PIXELART_DIR))
