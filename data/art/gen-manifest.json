@@ -1633,7 +1633,7 @@
         31,
         42
       ],
-      "chosen_seed": 42,
+      "chosen_seed": 13,
       "frame_effects": {
         "b": [
           "eye_pulse"
@@ -1645,10 +1645,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 28,
-          "y": 24,
-          "w": 40,
-          "h": 10
+          "x": 35,
+          "y": 22,
+          "w": 24,
+          "h": 9
         }
       },
       "frame_ms": {
@@ -1658,7 +1658,7 @@
       },
       "status": "imported",
       "verdict": "replace",
-      "notes": "Blue-gold tile body is the key read. Must look tiled/ceramic, not smooth."
+      "notes": "Blue-gold tile body is the key read. Must look tiled/ceramic, not smooth. W3 re-adjudication 2026-06-11: flipped s42->s13 (s42 read as gilt plate per blind audit + showpiece review; s13 has the cleanest gold-grout ceramic tile grid while keeping crown prongs, glowing rectangular eyes, and medallion. s23 was runner-up but its horn-crown and panel-outline body did not fix the tile defect). Eye region re-measured to x35,y22,w24,h9."
     },
     {
       "id": "mon_maldrec",

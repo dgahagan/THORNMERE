@@ -398,3 +398,33 @@ indices 25/26 cluster at x41–54,y27–36): `frame_regions.eye` updated from th
 s42-fitted `x28,y22,w40,h14` to **`x40,y26,w16,h12`**. Verified frame b brightens
 only the eye box (185 px, all inside x40–55,y26–37). Confidence: clear win on
 subject fidelity.
+
+### W3 — mon_mock_king (showpiece): **FLIP s42 → s13**
+
+Defining read (manifest): "blue-gold **tile** body… must look tiled/ceramic, not
+smooth." Both the blind audit and the showpiece review independently flagged s42's
+body as reading like **gilt plate, not tiled ceramic** — that is the defect this
+re-adjudication exists to fix. Per-seed (all sub15, 10-seed showpiece):
+
+| seed | read | verdict |
+|---|---|---|
+| s1 | clean balanced figure, two framed rectangular eyes, moderate gold grout | runner-up (tiling only moderate) |
+| s3 | leaner/statue-like, moderate grout, narrower eyes | midpack |
+| s5 | big medallion but body reads smooth, weak tile | smooth |
+| s7 | smooth plastic body, single vertical line — minimal tiling | weakest tile read |
+| s11 | mostly smooth, some grout | midpack |
+| **s13** | **clearest gold-grout tile grid (decisive ceramic read); bright rectangular eyes; crown prongs; prominent medallion** | **WINNER — clear on the deciding criterion** |
+| s17 | decent tiling, squat, good — but no standout | midpack |
+| s23 | brightest eyes + most commanding squat silhouette, BUT crown reads as two **horns** (manifest wants three prongs) and tiling is panel-outlines, not a fine ceramic grid | strong runner-up; lost on tile + crown reads |
+| s31 | narrow eyes, smooth body | smooth |
+| s42 (old pick) | gold follows **segment edges = gilt plate**; eyes narrow, not glowing — the flagged defect | superseded |
+
+Decision factor: s13 most decisively delivers the tiled-ceramic read (the named
+gap) while still hitting crown prongs, glowing eyes, and medallion; s23 was close
+on silhouette/eyes but its horn-crown and panel-outline body don't fix the tile
+defect. Imported s13 → `monsters3.json`. Eyes located spatially (bright blues
+22/23 also tile the body, so isolated the dense upper band rows 23–29, x36–57):
+`frame_regions.eye` updated from s42-fitted `x28,y24,w40,h10` to **`x35,y22,w24,h9`**.
+Verified eye_pulse on frames b and c brightens only the eye box (176 px, inside
+x35–58,y22–30); c double-pulses brighter than b. Closes the showpiece review's
+sole SHIP-WITH-NOTES reservation on this boss.
