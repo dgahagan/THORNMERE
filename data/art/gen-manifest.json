@@ -1116,8 +1116,15 @@
         23,
         42
       ],
-      "seeds_generated": [],
-      "chosen_seed": 42,
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 11,
       "frame_effects": {
         "b": [
           "eye_pulse"
@@ -1125,19 +1132,19 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 32,
-          "y": 16,
-          "w": 32,
-          "h": 10
+          "x": 40,
+          "y": 13,
+          "w": 16,
+          "h": 8
         }
       },
       "frame_ms": {
         "a": 400,
         "b": 400
       },
-      "status": "regenerating",
+      "status": "imported",
       "verdict": "replace",
-      "notes": "Bone whites (bone/chalk). Dark hollow sockets. Gold reserved for the SWORD only. W6 regen per director decision 2026-06-11: v1 came out gold-boned on all 6 seeds (inverted the 'bone whites + gold sword' intent); fiction + engine distance-shading both favour grey. De-emphasised 'yellowed'. Expect bones on 6/7, 12 only as warm shadow. Re-measure eye region after import (old box x32,y16,w32,h10 was fitted to the gold pixels). v1 s42 import superseded."
+      "notes": "Bone whites (bone/chalk). Dark hollow sockets. Gold reserved for the SWORD only. W6 regen per director decision 2026-06-11: v1 came out gold-boned on all 6 seeds (inverted the 'bone whites + gold sword' intent); fiction + engine distance-shading both favour grey. De-emphasised 'yellowed'. Expect bones on 6/7, 12 only as warm shadow. Re-measure eye region after import (old box x32,y16,w32,h10 was fitted to the gold pixels). v1 s42 import superseded. IMPORTED s11 (Dan pick 2026-06-11): bone-white skull/ribcage, gold sword as the sole gold accent -- inversion fixed. Eye region re-measured to the skull sockets x40,y13,w16,h8."
     },
     {
       "id": "mon_blob",
@@ -1532,7 +1539,18 @@
         31,
         42
       ],
-      "seeds_generated": [],
+      "seeds_generated": [
+        1,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        23,
+        31,
+        42
+      ],
       "chosen_seed": 42,
       "frame_effects": {
         "b": [
@@ -1556,7 +1574,7 @@
         "b": 400,
         "c": 300
       },
-      "status": "regenerating",
+      "status": "candidates",
       "verdict": "replace",
       "notes": "Concentric eye is the defining feature; trapped faces are secondary texture ON the robe. W4 regen per director review 2026-06-11: v1 failed the box-art bar (NOT BOX ART) -- the 'black robe' collided with bg_indices [0,1] (transparency keys), so the figure had no silhouette. Robe MUST land on shadow(2)/slate(3), NOT black/night. Eye must be enormous and seated in the hood. v1 s42 import superseded; re-measure eye region after the new import."
     },

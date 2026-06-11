@@ -568,8 +568,12 @@ The inversion is fixed: **all 6 candidates are bone-white/grey skeletons holding
 GOLD SWORD** (hollow eye sockets, full ribcage) — the exact opposite of the v1
 gold-bones/grey-sword miss. Gold is now correctly the *sword accent*. All six are
 strong and close; differences are mostly sword pose. Worker read for Dan: s7/s17
-have the cleanest upright gold sword + clearest skull; all are viable. **Awaiting
-Dan's pick.**
+have the cleanest upright gold sword + clearest skull; all are viable.
+**IMPORTED — Dan picked s11 (2026-06-11).** Bone-white skull + ribcage, gold sword
+the sole gold accent. Imported via explicit mode from `candidates-regen-v2/` (no
+v1 clobber); eye_pulse region re-measured to the skull sockets `x40,y13,w16,h8`
+(old box `x32,y16,w32,h10` was fitted to the v1 gold pixels); verified frame b
+brightens only the socket box (53 px). 42/42 tests. **W6 closed.**
 
 ### W4 choir_eldest — regen SUCCEEDED (sheet `art-review/regen-v2/choir_eldest-v2-shipsim.png`)
 Both v1 failure criteria resolved. Judged as-they'd-ship (transparency applied,
