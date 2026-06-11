@@ -31,7 +31,8 @@ import { makeChest, inspectChest, disarmChest, openChest } from './core/loot.js'
 import {
   shopStock, buyItem, sellItem, sellPrice, identifyCost, identifyItem,
   templePrices, templeService, sparkCost, sparkRecharge, nextRumor, wineCost,
-  buyWine, addToParty, removeFromParty, moveInOrder, deleteCharacter
+  buyWine, addToParty, removeFromParty, moveInOrder, deleteCharacter,
+  poolAdd, poolRemove
 } from './core/services.js';
 import { Renderer } from './ui/renderer.js';
 import { loadArt } from './ui/art.js';
@@ -54,6 +55,18 @@ let highlightId = null;
 let narrating = false;
 let sceneFlash = null;   // transient portrait-window scene: {id, label, until}
 let mapViewCycle = 0;    // 0=off 1=corner-overlay 2=full-screen (Remastered automap)
+
+// Inventory adapter — one interface, two implementations: pool (Remastered) or per-character pack (Legacy).
+// All inventory flows route through these helpers; no scattered conditionals below.
+function invList(ch)          { return game.settings?.sharedInventory ? (game.pool?.items ?? []) : ch.inventory; }
+function invAddItem(ch, id, ident = true) {
+  if (game.settings?.sharedInventory) return poolAdd(game, id, ident);
+  return addToInventory(ch, id, ident);
+}
+function invRemoveItem(ch, idx) {
+  if (game.settings?.sharedInventory) poolRemove(game, idx);
+  else removeFromInventory(ch, idx);
+}
 
 // one entry point for keys, shared by keyboard and mouse (full parity)
 function pressKey(key) {
@@ -476,12 +489,20 @@ function grantTreasure(e, pending) {
   game.gold += e.gold || 0;
   for (const itemId of e.items || []) {
     const item = DB.item(itemId);
-    let holder = realParty(game).find(ch => isAlive(ch) && addToInventory(ch, itemId, true));
-    if (!holder) {
-      holder = realParty(game).find(ch => isAlive(ch));
-      holder?.inventory.push({ id: itemId, ident: true });
+    if (game.settings?.sharedInventory) {
+      if (invAddItem(null, itemId, true)) {
+        pending.push({ text: `${item.name} → party pool.`, type: 'msg' });
+      } else {
+        pending.push({ text: `${item.name} — pool full! Dropped.`, type: 'msg' });
+      }
+    } else {
+      let holder = realParty(game).find(ch => isAlive(ch) && addToInventory(ch, itemId, true));
+      if (!holder) {
+        holder = realParty(game).find(ch => isAlive(ch));
+        holder?.inventory.push({ id: itemId, ident: true });
+      }
+      if (holder) pending.push({ text: `${holder.name} takes ${item.name}.`, type: 'msg' });
     }
-    if (holder) pending.push({ text: `${holder.name} takes ${item.name}.`, type: 'msg' });
   }
   if (e.gold) pending.push({ text: `You pocket ${e.gold} gold.`, type: 'msg' });
 }
@@ -591,6 +612,17 @@ function lightItem(ch, idx) {
 }
 
 function useFlow() {
+  if (game.settings?.sharedInventory) {
+    const pool = game.pool?.items ?? [];
+    if (!pool.length) { msg('The party pool is empty.'); return setMode(exploreMode); }
+    pickChar('Who uses an item?', ch => isAlive(ch), (ch) => {
+      pickFromList('Party pool — use which?', pool.map((en, i) => ({ en, i })),
+        ({ en }) => (en.ident ? DB.item(en.id).name : DB.item(en.id).generic),
+        ({ i }) => useItemExplore(ch, i),
+        () => setMode(exploreMode));
+    }, () => setMode(exploreMode));
+    return;
+  }
   pickChar('Who rummages?', ch => isAlive(ch) && ch.inventory.length > 0, (ch) => {
     pickFromList(`${ch.name}'s pack`, ch.inventory.map((en, i) => ({ en, i })),
       ({ en }) => (en.ident ? DB.item(en.id).name : DB.item(en.id).generic),
@@ -600,13 +632,14 @@ function useFlow() {
 }
 
 function useItemExplore(ch, idx) {
-  const entry = ch.inventory[idx];
+  const entry = invList(ch)[idx];
+  if (!entry) { msg('No such item.'); return setMode(exploreMode); }
   const item = DB.item(entry.id);
   if (item.type === 'light') return lightItem(ch, idx);
   const use = item.use;
   if (!use) { msg(`The ${entry.ident ? item.name : item.generic} does nothing obvious here.`); return setMode(exploreMode); }
   const done = (text, consume = true) => {
-    if (consume) removeFromInventory(ch, idx);
+    if (consume) invRemoveItem(ch, idx);
     if (text) msg(text, 'good');
     setMode(exploreMode);
   };
@@ -652,6 +685,7 @@ function sheetFlow(slot) {
   const ch = chars[slot];
   if (!ch || ch.summon) { render(); return; }
   highlightId = ch.id;
+  const shared = game.settings?.sharedInventory;
   const cls = clsOf(ch);
   const lines = [];
   lines.push(`${ch.name} — ${DB.race(ch.race).name} ${cls.name}, level ${ch.level}`);
@@ -662,6 +696,85 @@ function sheetFlow(slot) {
   if (tiers) lines.push(`Spell tiers — ${tiers}`);
   if (ch.cls === 'skald') lines.push(`Songs left today: ${ch.songsLeft}`);
   lines.push('');
+
+  if (shared) {
+    // Shared mode: show pool; equipping claims item from pool into ch.inventory
+    const pool = game.pool?.items ?? [];
+    const packLines = ch.inventory.map((en, i) => {
+      const item = DB.item(en.id);
+      const eq = Object.values(ch.equip).includes(i) ? '*' : ' ';
+      return `  ${i + 1}${eq} ${en.ident ? item.name : item.generic}`;
+    });
+    const poolLines = pool.map((en, i) => {
+      const item = DB.item(en.id);
+      const ok = classAllowed(ch, item) ? '' : ' (not your trade)';
+      return `<span class="opt" data-key="p${i + 1}">  [P${i + 1}] ${esc(en.ident ? item.name : item.generic)}${esc(ok)}</span>`;
+    });
+    const packSection = packLines.length ? packLines.join('\n') : '  (no items equipped/held)';
+    const poolSection = poolLines.length ? poolLines.join('\n') : '  (pool empty)';
+    setMode({
+      menu: esc(lines.join('\n'))
+        + '\n' + esc(`Carried/equipped (1-${ch.inventory.length || 8}):\n`) + esc(packSection)
+        + '\n' + esc(`\nParty pool (P1-P${Math.max(pool.length, 1)} to claim/equip):\n`) + poolSection
+        + '\n\n' + esc('1-8 equip/unequip carried · Pn claim from pool · (R)eturn carried to pool · (D)rop · Esc done'),
+      bar: [{ k: 'r', label: 'Return to pool' }, { k: 'd', label: 'Drop' }, { k: 'Escape', label: 'Done' }],
+      hint: 'Pn = claim from pool. 1-8 equip/unequip. R = return to pool. Esc back.',
+      draw: () => renderer.special(portraitOf(ch), `${ch.name.toUpperCase()} — ${clsOf(ch).name.toUpperCase()}`),
+      onKey(e) {
+        const k = e.key.toLowerCase();
+        if (k === 'escape') { highlightId = null; return setMode(exploreModeOrCurrent()); }
+        // Equip/unequip from ch.inventory (1-8)
+        if (/^[1-8]$/.test(k)) {
+          const i = parseInt(k, 10) - 1;
+          if (!ch.inventory[i]) return;
+          if (Object.values(ch.equip).includes(i)) {
+            for (const s of SLOTS) if (ch.equip[s] === i) unequipSlot(ch, s);
+            msg(`${ch.name} puts away the ${invItem(ch, i).name}.`);
+          } else {
+            const err = equipItem(ch, i);
+            msg(err ? err : `${ch.name} readies the ${invItem(ch, i).name}.`);
+          }
+          return sheetFlow(slot);
+        }
+        // Claim from pool (Pn) — move pool item to ch.inventory and equip
+        const pm = e.key.match(/^[Pp](\d+)$/);
+        if (pm) {
+          const pi = parseInt(pm[1], 10) - 1;
+          const en = pool[pi];
+          if (!en) return;
+          if (!addToInventory(ch, en.id, en.ident)) { msg(`${ch.name}'s pack is full (8 items).`); return sheetFlow(slot); }
+          poolRemove(game, pi);
+          const newIdx = ch.inventory.length - 1;
+          const err = equipItem(ch, newIdx);
+          msg(err ? `${ch.name} takes ${DB.item(en.id).name} from the pool.` : `${ch.name} takes and readies ${DB.item(en.id).name}.`);
+          return sheetFlow(slot);
+        }
+        // Return carried to pool (r)
+        if (k === 'r') {
+          if (!ch.inventory.length) { msg('Nothing to return.'); return; }
+          return pickFromList('Return which to the pool?', ch.inventory.map((en, i) => ({ en, i })),
+            ({ en }) => (en.ident ? DB.item(en.id).name : DB.item(en.id).generic),
+            ({ en, i }) => {
+              for (const s of SLOTS) if (ch.equip[s] === i) unequipSlot(ch, s);
+              removeFromInventory(ch, i);
+              poolAdd(game, en.id, en.ident);
+              msg(`${DB.item(en.id).name} returned to the party pool.`);
+              sheetFlow(slot);
+            }, () => sheetFlow(slot));
+        }
+        if (k === 'd') {
+          if (!ch.inventory.length) { msg('Nothing to drop.'); return; }
+          return pickFromList('Drop which?', ch.inventory.map((en, i) => ({ en, i })),
+            ({ en }) => (en.ident ? DB.item(en.id).name : DB.item(en.id).generic),
+            ({ i }) => { msg(`${invItem(ch, i).name || 'It'} is left in the dust.`); removeFromInventory(ch, i); sheetFlow(slot); },
+            () => sheetFlow(slot));
+        }
+      }
+    });
+    return;
+  }
+
+  // Legacy mode — per-character inventory
   const invLines = ch.inventory.map((en, i) => {
     const item = DB.item(en.id);
     const eq = Object.values(ch.equip).includes(i) ? '*' : ' ';
@@ -682,7 +795,6 @@ function sheetFlow(slot) {
       if (/^[1-8]$/.test(k)) {
         const i = parseInt(k, 10) - 1;
         if (!ch.inventory[i]) return;
-        const slotName = DB.item(ch.inventory[i].id).type;
         if (Object.values(ch.equip).includes(i)) {
           for (const s of SLOTS) if (ch.equip[s] === i) unequipSlot(ch, s);
           msg(`${ch.name} puts away the ${invItem(ch, i).name}.`);
@@ -921,18 +1033,35 @@ function deleteFlow(hall, draws) {
 
 // ---- Greta's ---------------------------------------------------------------
 function shopMode(name, draws) {
+  const shared = game.settings?.sharedInventory;
+  const hasSellable = shared ? (game.pool?.items.length > 0) : realParty(game).some(ch => ch.inventory.length > 0);
+  const hasUnknown  = shared ? (game.pool?.items.some(e => !e.ident)) : realParty(game).some(ch => ch.inventory.some(e => !e.ident));
   setMode(menuMode({
     title: `${name}. Greta looks up: "Buying or wasting my time?"`,
-    body: `Party gold: ${game.gold}`,
+    body: `Party gold: ${game.gold}${shared ? '  (shared pool)' : ''}`,
     options: [
-      { k: 'b', label: 'Buy', fn: () => pickChar('Who buys?', null, ch => buyFlow(ch, name, draws), () => shopMode(name, draws)) },
-      { k: 's', label: 'Sell', fn: () => pickChar('Who sells?', ch => ch.inventory.length > 0, ch => sellFlow(ch, name, draws), () => shopMode(name, draws)) },
-      { k: 'i', label: 'Identify', fn: () => pickChar('Whose mystery?', ch => ch.inventory.some(e => !e.ident), ch => identFlow(ch, name, draws), () => shopMode(name, draws)) },
+      { k: 'b', label: 'Buy', fn: () => {
+          if (shared) buyFlowPool(name, draws);
+          else pickChar('Who buys?', null, ch => buyFlow(ch, name, draws), () => shopMode(name, draws));
+        }
+      },
+      { k: 's', label: 'Sell', dim: !hasSellable, fn: () => {
+          if (shared) sellFlowPool(name, draws);
+          else pickChar('Who sells?', ch => ch.inventory.length > 0, ch => sellFlow(ch, name, draws), () => shopMode(name, draws));
+        }
+      },
+      { k: 'i', label: 'Identify', dim: !hasUnknown, fn: () => {
+          if (shared) identFlowPool(name, draws);
+          else pickChar('Whose mystery?', ch => ch.inventory.some(e => !e.ident), ch => identFlow(ch, name, draws), () => shopMode(name, draws));
+        }
+      },
       { k: 'l', label: 'Leave', fn: () => setMode(exploreMode) }
     ],
     onEsc: () => setMode(exploreMode), ...draws
   }));
 }
+
+// Legacy individual-character shop flows
 function buyFlow(ch, name, draws) {
   pickFromList(`Greta's stock — gold ${game.gold} — buying for ${ch.name}`, shopStock(),
     it => `${it.name.padEnd(20)} ${String(it.price).padStart(5)}g${classAllowed(ch, it) ? '' : '  (not their trade)'}`,
@@ -952,6 +1081,56 @@ function identFlow(ch, name, draws) {
   pickFromList(`Identify — gold ${game.gold}`, unk,
     ({ en }) => `${DB.item(en.id).generic.padEnd(16)} fee ${identifyCost(game, en)}g`,
     ({ i }) => { const r = identifyItem(game, ch, i); msg(r.msg, r.ok ? 'good' : ''); identFlow(ch, name, draws); },
+    () => shopMode(name, draws));
+}
+
+// Shared-pool shop flows (Remastered sharedInventory)
+function buyFlowPool(name, draws) {
+  pickFromList(`Greta's stock — gold ${game.gold} — pool (${game.pool.items.length}/40)`, shopStock(),
+    it => `${it.name.padEnd(20)} ${String(it.price).padStart(5)}g`,
+    (it) => {
+      const item = DB.item(it.id);
+      if (game.gold < item.price) { msg('Greta sniffs: "Coin first."'); return buyFlowPool(name, draws); }
+      if (!poolAdd(game, it.id, true)) { msg('The party pool is full (40 items).'); return buyFlowPool(name, draws); }
+      game.gold -= item.price;
+      sfx('gold');
+      msg(`${item.name} added to the party pool. (${item.price} gold)`, 'good');
+      buyFlowPool(name, draws);
+    },
+    () => shopMode(name, draws));
+}
+function sellFlowPool(name, draws) {
+  const pool = game.pool.items;
+  if (!pool.length) return shopMode(name, draws);
+  pickFromList('Party pool — sell which?', pool.map((en, i) => ({ en, i })),
+    ({ en }) => `${(en.ident ? DB.item(en.id).name : DB.item(en.id).generic).padEnd(20)} ${String(sellPrice(en)).padStart(4)}g`,
+    ({ en, i }) => {
+      const item = DB.item(en.id);
+      if (item.type === 'quest') { msg('"That, I will not touch," says Greta.'); return sellFlowPool(name, draws); }
+      const price = sellPrice(en);
+      poolRemove(game, i);
+      game.gold += price;
+      sfx('gold');
+      msg(`Greta pays ${price} gold for the ${en.ident ? item.name : item.generic}.`, 'good');
+      sellFlowPool(name, draws);
+    },
+    () => shopMode(name, draws));
+}
+function identFlowPool(name, draws) {
+  const pool = game.pool.items;
+  const unk = pool.map((en, i) => ({ en, i })).filter(({ en }) => !en.ident);
+  if (!unk.length) return shopMode(name, draws);
+  pickFromList(`Identify pool items — gold ${game.gold}`, unk,
+    ({ en }) => `${DB.item(en.id).generic.padEnd(16)} fee ${identifyCost(game, en)}g`,
+    ({ en, i }) => {
+      const cost = identifyCost(game, en);
+      if (game.gold < cost) { msg(`Identification costs ${cost} gold.`); return identFlowPool(name, draws); }
+      game.gold -= cost;
+      en.ident = true;
+      const item = DB.item(en.id);
+      msg(`Greta turns it over twice. "${item.name}. ${item.flavor}"`, 'good');
+      identFlowPool(name, draws);
+    },
     () => shopMode(name, draws));
 }
 
