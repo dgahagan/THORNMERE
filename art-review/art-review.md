@@ -653,3 +653,18 @@ monsters/showpieces/portraits to 112-wide too (no-GPU re-crush + re-import pass)
 shopkeeper behind the counter, stocked shelves, customer) at 112×80, renamed to
 replace the procedural. **All 9 interiors now AI art at 112×80. W8 interiors
 batch COMPLETE.**
+
+---
+
+## Monster/showpiece re-crush to 112×93 (2026-06-11)
+
+Follow-up to the interior 112×80 bump: re-crushed all 24 monster/showpiece
+sprites from their chosen-seed raws (96×80 → 112×93, preserving the 1.2 portrait
+aspect). Same composition at higher res, so eye_pulse `frame_regions` scaled
+linearly (×112/96, ×93/80) — no manual re-measure. Crushed previews →
+`candidates-112/` (no clobber). Raws sourced correctly: feral families from
+`candidates-feral/`, skeleton/choir_eldest from `candidates-regen-v2/`, the rest
+from `candidates/`. `combatPortrait` cap raised to 224 so 112-wide monsters
+display at a crisp 2× (224px), matching interiors. Verified eye_pulse lands on
+the eyes/visor for spider/golem/mock_king/candleking/knight; 42/42 tests.
+Batch script: `dev/pixel-art/recrush_monsters_112.py`.

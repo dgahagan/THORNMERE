@@ -62,8 +62,8 @@
       "subject": "hooded cult mage in dark robes, pointed cowl, knotted wooden staff, blood-red glowing eyes, pale bony hands",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -112,10 +112,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 30,
-          "y": 26,
-          "w": 36,
-          "h": 12
+          "x": 35,
+          "y": 30,
+          "w": 42,
+          "h": 14
         }
       },
       "frame_ms": {
@@ -133,8 +133,8 @@
       "subject": "translucent spectral shroud-wight, pale chalk face, hollow black eye sockets, howling open mouth, mist-blue ethereal trailing form",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -179,10 +179,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 32,
-          "y": 24,
-          "w": 32,
-          "h": 10
+          "x": 37,
+          "y": 28,
+          "w": 37,
+          "h": 12
         }
       },
       "frame_ms": {
@@ -200,8 +200,8 @@
       "subject": "gaunt predatory storm-bird, outstretched dark feathered wings, sharp hooked beak, fierce yellow eyes, sharp talons",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -249,10 +249,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 34,
-          "y": 22,
-          "w": 28,
-          "h": 10
+          "x": 40,
+          "y": 26,
+          "w": 33,
+          "h": 12
         }
       },
       "frame_ms": {
@@ -270,8 +270,8 @@
       "subject": "ancient fen hag with green-tinged warty skin, wild honey-coloured matted hair, hooked nose, clawed grasping hands, rotten teeth",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -319,10 +319,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 28,
-          "y": 24,
-          "w": 40,
-          "h": 12
+          "x": 33,
+          "y": 28,
+          "w": 47,
+          "h": 14
         }
       },
       "frame_ms": {
@@ -340,8 +340,8 @@
       "subject": "undead plate-armour knight, closed visor with violet glowing slit, kite shield, notched broadsword, tattered tabard",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -388,10 +388,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 32,
-          "y": 26,
-          "w": 32,
-          "h": 8
+          "x": 37,
+          "y": 30,
+          "w": 37,
+          "h": 9
         }
       },
       "frame_ms": {
@@ -409,8 +409,8 @@
       "subject": "three hooded singers bound side by side, centre figure taller, all three mouths open in gaping black O shapes, hollow dark eyes",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -458,10 +458,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 24,
-          "y": 22,
-          "w": 48,
-          "h": 12
+          "x": 28,
+          "y": 26,
+          "w": 56,
+          "h": 14
         }
       },
       "frame_ms": {
@@ -479,8 +479,8 @@
       "subject": "stone gargoyle with two cracked horns, deep orange ember glowing eyes, wide fanged grin, crouched stone wings spread behind",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -528,10 +528,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 30,
-          "y": 24,
-          "w": 36,
-          "h": 10
+          "x": 35,
+          "y": 28,
+          "w": 42,
+          "h": 12
         }
       },
       "frame_ms": {
@@ -549,8 +549,8 @@
       "subject": "blocky rune-carved stone golem, rectangular angular head, wide shoulders, sky-blue glowing chest rune symbol, inlaid glowing eye slits",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -598,10 +598,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 36,
-          "y": 19,
-          "w": 24,
-          "h": 7
+          "x": 42,
+          "y": 22,
+          "w": 28,
+          "h": 8
         }
       },
       "frame_ms": {
@@ -619,8 +619,8 @@
       "subject": "sinister giant basilisk moth, ragged tattered-edged wings spread wide, hypnotic concentric ring eye-spots, spiny bristled antennae, gaunt chitinous segmented thorax, hooked clawed legs",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -668,10 +668,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 4,
-          "y": 4,
-          "w": 88,
-          "h": 26
+          "x": 5,
+          "y": 5,
+          "w": 103,
+          "h": 30
         }
       },
       "frame_ms": {
@@ -689,8 +689,8 @@
       "subject": "gaunt mangy fen rat, hunched aggressive pose, matted patchy grey-brown fur with scabby bald patches, long yellowed incisors bared, ragged notched ears, scaly hairless tail, glinting malevolent red eyes",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -736,10 +736,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 26,
-          "y": 24,
-          "w": 36,
-          "h": 16
+          "x": 30,
+          "y": 28,
+          "w": 42,
+          "h": 19
         }
       },
       "frame_ms": {
@@ -757,8 +757,8 @@
       "subject": "large dungeon beetle, shiny silver dome carapace with concentric ridge rings, faceted red compound eyes, sharp mandibles, six articulated legs",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -804,10 +804,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 28,
-          "y": 28,
-          "w": 40,
-          "h": 10
+          "x": 33,
+          "y": 33,
+          "w": 47,
+          "h": 12
         }
       },
       "frame_ms": {
@@ -825,8 +825,8 @@
       "subject": "snarling gaunt wolf hound, ribs showing through matted grey fur, hackles raised, ears pinned flat, single huge red glowing eye, jaw agape with bared fangs, predatory hunched stance",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -870,10 +870,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 26,
-          "y": 22,
-          "w": 44,
-          "h": 16
+          "x": 30,
+          "y": 26,
+          "w": 51,
+          "h": 19
         }
       },
       "frame_ms": {
@@ -891,8 +891,8 @@
       "subject": "large dungeon spider, brown two-segment body cephalothorax and abdomen, eight hairy legs spread wide, four-pair red eye cluster, chelicera fangs",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -937,10 +937,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 40,
-          "y": 26,
-          "w": 16,
-          "h": 12
+          "x": 47,
+          "y": 30,
+          "w": 19,
+          "h": 14
         }
       },
       "frame_ms": {
@@ -958,8 +958,8 @@
       "subject": "large dungeon adder snake in S-coil pose, green scaled body, triangular head, gold slit vertical pupils, forked tongue",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -1005,10 +1005,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 36,
-          "y": 18,
-          "w": 24,
-          "h": 10
+          "x": 42,
+          "y": 21,
+          "w": 28,
+          "h": 12
         }
       },
       "frame_ms": {
@@ -1026,8 +1026,8 @@
       "subject": "rotting undead zombie, greenish decaying flesh, outstretched clutching arms, red wound patches, one milky dead eye and one empty hollow socket, slack open mouth",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -1072,10 +1072,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 28,
-          "y": 20,
-          "w": 40,
-          "h": 12
+          "x": 33,
+          "y": 23,
+          "w": 47,
+          "h": 14
         }
       },
       "frame_ms": {
@@ -1093,8 +1093,8 @@
       "subject": "animated skeleton warrior, bleached bone-white and pale grey bones, chalk-coloured skull with dark hollow eye sockets, visible ribcage, exposed spine and hip joints, holding a single gold sword as the only gold accent",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -1137,10 +1137,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 40,
-          "y": 13,
-          "w": 16,
-          "h": 8
+          "x": 47,
+          "y": 15,
+          "w": 19,
+          "h": 9
         }
       },
       "frame_ms": {
@@ -1158,8 +1158,8 @@
       "subject": "dripping amorphous tallow blob horror, slumping half-melted wax mound, two uneven sunken gold eyes under sagging wax lids, wide drooping mouth with crooked embedded teeth, grasping pseudopod arms, greasy glistening surface",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -1203,10 +1203,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 28,
-          "y": 20,
-          "w": 42,
-          "h": 22
+          "x": 33,
+          "y": 23,
+          "w": 49,
+          "h": 26
         }
       },
       "frame_ms": {
@@ -1224,8 +1224,8 @@
       "subject": "glowing will-o-wisp orb monster, vivid concentric ring orb from dark honey to bright candle at center, six orbiting spark particles, trailing wisp legs below",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -1267,10 +1267,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 24,
-          "y": 18,
-          "w": 48,
-          "h": 28
+          "x": 28,
+          "y": 21,
+          "w": 56,
+          "h": 33
         }
       },
       "frame_ms": {
@@ -1288,8 +1288,8 @@
       "subject": "hulking swamp troll brute, mossy green skin, tusked underbite, hunched shoulders, glowing red eyes, massive fists",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -1330,10 +1330,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 30,
-          "y": 24,
-          "w": 36,
-          "h": 12
+          "x": 35,
+          "y": 28,
+          "w": 42,
+          "h": 14
         }
       },
       "frame_ms": {
@@ -1351,8 +1351,8 @@
       "subject": "cloaked dungeon thief humanoid, dark triangular hooded robe, glinting gold eye beneath hood, holding a gold-hilted dagger",
       "style_suffix_key": "monster",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -1396,10 +1396,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 32,
-          "y": 24,
-          "w": 32,
-          "h": 8
+          "x": 37,
+          "y": 28,
+          "w": 37,
+          "h": 9
         }
       },
       "frame_ms": {
@@ -1417,8 +1417,8 @@
       "subject": "massive wax golem king, pale waxy body seated on candle throne, eight tall candle pillars flanking left and right, crown of blue flames on head, large sunken red ember eye-sockets, gaping mouth with wax teeth",
       "style_suffix_key": "showpiece",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -1482,10 +1482,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 28,
-          "y": 22,
-          "w": 40,
-          "h": 14
+          "x": 33,
+          "y": 26,
+          "w": 47,
+          "h": 16
         }
       },
       "frame_ms": {
@@ -1504,8 +1504,8 @@
       "subject": "vast robed figure in charcoal triangular robe with pale rim-lit hood and shoulder line filling the frame, one enormous concentric-ring eye seated inside the hood dominating half the figure with void center and blue iris and bright core and black pupil, dozens of tiny trapped faces embossed across the robe surface like imprisoned souls, green pendant gem, one skeletal clawed hand emerging",
       "style_suffix_key": "showpiece",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -1568,10 +1568,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 39,
-          "y": 15,
-          "w": 16,
-          "h": 15
+          "x": 46,
+          "y": 17,
+          "w": 19,
+          "h": 17
         }
       },
       "frame_ms": {
@@ -1590,8 +1590,8 @@
       "subject": "squat blue glazed ceramic tile golem, body covered in blue tile pattern with gold grout lines, three gold crown prongs on head, wide rectangular glowing sky-blue eyes, round gold belly medallion, stubby branch arms",
       "style_suffix_key": "showpiece",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -1650,10 +1650,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 35,
-          "y": 22,
-          "w": 24,
-          "h": 9
+          "x": 41,
+          "y": 26,
+          "w": 28,
+          "h": 10
         }
       },
       "frame_ms": {
@@ -1672,8 +1672,8 @@
       "subject": "sinister sorcerer in black triangular robe, angular boxy face with violet glowing eyes and wide upturned grin, tall staff topped with bright blue orb, one arm raised in casting pose",
       "style_suffix_key": "showpiece",
       "dims": [
-        96,
-        80
+        112,
+        93
       ],
       "allowed": [
         0,
@@ -1734,10 +1734,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 28,
-          "y": 24,
-          "w": 40,
-          "h": 10
+          "x": 33,
+          "y": 28,
+          "w": 47,
+          "h": 12
         }
       },
       "frame_ms": {

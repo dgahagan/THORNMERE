@@ -300,7 +300,8 @@ export class Renderer {
   combatPortrait(game, monsterDef) {
     this.panel('BATTLE');
     const drawable = resolveVariant(monsterDef.id) || resolveVariant('mon_' + monsterDef.portrait);
-    this.artBox(drawable, monsterDef.name.toUpperCase());
+    // Monsters crush to 112×93; cap 224 keeps the 2× display (112→224px), matching interiors.
+    this.artBox(drawable, monsterDef.name.toUpperCase(), null, 224);
     this.fb.flush();
   }
 
