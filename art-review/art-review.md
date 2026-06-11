@@ -460,3 +460,62 @@ This is a materially better evidentiary basis than the original "replace"
 rationale, and it does not vindicate blanket trust in s42 (spider and mock_king
 flipped outright in W2/W3) — the seed won where the field was even and lost where
 a specific key read was contested.*
+
+### W4 — mon_choir_eldest (showpiece): **NO SEED PASSES — regeneration required**
+
+The showpiece review failed this boss as NOT BOX ART (`audit-01-showpieces.md`):
+the black robe composites into the night background leaving no silhouette, and
+the defining concentric-ring eye renders small and detached. W4 re-judges the 10
+seeds for (a) robe value separation from the night bg and (b) a large eye seated
+in the hood — importing only if a seed passes **both**.
+
+**Structural root cause (not a seed problem):** the manifest `subject` says
+*"**black** triangular robe"*, but `bg_indices` are `[0,1]` (black + night) — the
+transparency keys. So any robe pixel painted black/night becomes invisible. The
+shipped s42 is **88% black/night → only 12% visible**: a small eye and a scatter
+of floating faces/hand, no figure (`art-review/w5/mon_choir_eldest-sheet.png`).
+
+Judged each candidate **as it would ship** — re-indexed to palette, indices 0/1
+made transparent, composited over the night bg `#16121e`
+(`art-review/w5/mon_choir_eldest-shipsim.png`). Visible-mass = silhouette survival:
+
+| seed | visible mass | robe silhouette (a) | giant eye in hood (b) |
+|---|---|---|---|
+| s1 | 14% | fail — robe transparent, bits float | small eye, top |
+| s3 | 14% | fail | small eye |
+| s5 | 16% | fail — thin edge only | small eye |
+| s7 | 24% | partial — dim triangle | small eye |
+| s11 | **37%** | **holds — triangular robe reads** | small eye |
+| s13 | 31% | holds — dark triangular body | small eye |
+| s17 | 29% | partial | small eye |
+| s23 | 16% | fail | small eye |
+| s31 | **36%** | **holds best — solid robed triangle** | small eye |
+| s42 (cur) | 12% | **fail — worst; floating bits only** | tiny detached eye |
+
+**Verdict: no seed passes both.** Criterion (a) is seed-dependent and several seeds
+(s31, s11, s13) hold a real robe silhouette — but criterion (b) **fails on all
+ten**: the concentric eye is small and top-mounted in every candidate, with the
+trapped faces dominating (the composition is inverted — faces should be secondary
+texture, the eye should dominate). **STOPPED — no import.**
+
+**Regeneration required.** Manifest subject rewrite drafted in `audit-01.md` §7 W4,
+**PENDING DAN approval of wording**:
+> "vast robed figure in charcoal triangular robe with pale rim-lit hood and
+> shoulder line filling the frame, one enormous concentric-ring eye seated inside
+> the hood dominating half the figure with void center and blue iris and bright
+> core and black pupil, dozens of tiny trapped faces embossed across the robe
+> surface like imprisoned souls, green pendant gem, one skeletal clawed hand
+> emerging"
+
+The rewrite fixes both failures by construction: **charcoal** robe (index 2/3,
+not the transparent black) holds a silhouette + a **pale rim-lit hood** edge for
+separation; **enormous eye dominating half the figure** fixes the small-eye miss;
+faces demoted to "embossed across the robe surface" (texture, not subject). On
+regen, keep `bg_indices [0,1]` but ensure the robe lands on shadow/slate, not
+black — add a manifest note to that effect.
+
+**Optional zero-cost stopgap for Dan (NOT done here):** if an interim improvement
+is wanted before the GPU regen, **s31** is the best existing silhouette-holder —
+re-picking it would at least show a robed figure instead of floating bits, though
+it still fails the giant-eye bar. This is a flip requiring review (W2/W3 protocol
++ re-measure the eye region), not an automatic action.
