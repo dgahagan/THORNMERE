@@ -204,21 +204,32 @@ Each batch:
    They hang on doors in the first-person view, distance-scaled to ~36px; the bold
    procedural emblems (crossed-swords, bell, scales…) read better there than a
    FLUX image crushed to 36×28. Same logic as the UI glyphs.
-3. **§4 textures** — can the local FLUX.2-klein do seamless/tileable output?
-   **TEST IT:** `dev/pixel-art/test_tiling.py` (circular-padding trick) on the
-   host → eyeball `tiling-test/*_circular_2x2.png` for seams. Seams gone → viable
-   (option A/B); seams remain → keep procedural (option D, same 32×32-tiny + must-
-   tile double penalty as signboards). **Blocks the TEX batch until tested.**
-4. **Subject lines (§3)** — INTERIORS (9) ✅ done & imported at 112×80. Signboards
-   ruled OUT (#2). **FX furniture (8 fx_* + sign_generic) still open** — small
-   16×16 viewport icons; likely the same procedural-wins logic, decide before
-   spending generation.
+3. **§4 textures** — ✅ RESOLVED 2026-06-11: **ruled OUT, keep procedural.**
+   `test_tiling.py` ran on the host: circular padding *reduced* seams but FLUX
+   does NOT tile cleanly (it's transformer-based — circular padding only wraps the
+   VAE conv edges, not the transformer-generated structure, so the layout still
+   seams). Combined with the 32×32-tiny + distance-shaded factors, procedural
+   wins. True seamless would need latent-rolling tiling — not worth it at 32px.
+4. **§3d FX furniture (8 fx_* + sign_generic, 16×16)** — ✅ RESOLVED 2026-06-11:
+   **ruled OUT, keep procedural.** Same logic as signboards/glyphs — tiny
+   viewport icons read better as bold procedural pixel art than crushed FLUX.
 
-**Resolution note (2026-06-11):** the big-art bump to ~112-wide (interiors 112×80,
-monster/showpiece portraits 112×93, ≈ original BT's ~117 art window) is done. The
-recurring lesson across signboards/textures/glyphs: **small distance-scaled
-viewport elements (≤36px) are better as bold procedural pixel art than as crushed
-FLUX** — FLUX wins on the large art windows, not the tiny ones.
+## FINAL W8 OUTCOME (2026-06-11)
+
+The asset-regen resolved on a clean principle: **FLUX for the large art windows,
+procedural for the small viewport elements.**
+
+| asset | dims | outcome |
+|---|---|---|
+| **Interiors** | 96×72 → **112×80** | ✅ regenerated via FLUX, populated, imported & live |
+| **Monster/showpiece portraits** | 96×80 → **112×93** | ✅ re-crushed to 112-wide (bonus pass), live |
+| Signboards | 36×28 | ❌ keep procedural (distance-scaled emblems) |
+| Textures | 32×32 | ❌ keep procedural (FLUX can't tile cleanly + tiny) |
+| FX furniture | 16×16 | ❌ keep procedural (tiny viewport icons) |
+| UI glyphs / font | 8–16px | ❌ keep procedural (functional HUD) |
+
+The "~112-wide" target (≈ the original BT ~117 art window) was validated against
+`dev/original-amiga-screenshots/`. W8 is **closed**.
 4. **Palette `allowed` sets** — per-sprite; will be drafted at manifest-write time
    with the approved subjects (not blocking now).
 
