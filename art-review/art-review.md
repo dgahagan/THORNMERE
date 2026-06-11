@@ -221,3 +221,92 @@ with only hat/hood color changed. Zero character differentiation. Replaced by 32
 
 PC portraits (32×40) and scenes (160×64 / 160×120) completed via AI pipeline above.
 Icons, FX sprites, and NPC faces remain procedural — not in AI pipeline scope for this pass.
+
+---
+
+## Expanded adjudication — three contested sprites
+
+Three sprites where multiple seeds were viewed and a genuine judgment call was made.
+For each: seeds examined, winner, runner-up(s), and decisive criteria.
+
+### scene_victory — three seeds compared
+
+Seeds examined: **s7** (chosen), **s42**, **s11**.
+
+| seed | description | verdict |
+|---|---|---|
+| s7 | Stone church with tall pointed spire, golden river running left-to-right in foreground catching the sunset reflection, flanking mountains, classic silhouette composition | **CHOSEN** |
+| s42 | Round stone clocktower/watchtower (no spire), foreground wildflowers, warm gold tones, slightly smaller building fill in frame | runner-up |
+| s11 | Bell tower with pagoda-influenced roof pitch, dense conifer forest both flanks, heavily amber/orange sky, bell visible inside tower window | eliminated |
+
+**Why s7 wins:** The church-and-spire silhouette is the unambiguous signifier of "civilization restored" in European medieval visual vocabulary — exactly the register a victory screen needs. The river reflection doubles the light source, creating visual depth the other seeds lack. s42 is compositionally strong but reads as "watch post" not "triumph." s11 has superior warm saturation but the east-Asian roofline pitch breaks the setting's coherent visual period.
+
+**Why this matters:** scene_victory is the last image the player sees after completing the dungeon. The final emotional cue is architectural. Church → collective triumph. Tower → personal observation. The choice is semantic, not aesthetic.
+
+---
+
+### scene_title — three seeds compared
+
+Seeds examined: **s42** (chosen), **s7**, **s3**.
+
+| seed | description | verdict |
+|---|---|---|
+| s42 | Pure silhouette panorama, all buildings in near-black against a blue-grey misty sky, atmospheric haze filling the mid-ground, varied roofline with bell tower | **CHOSEN** |
+| s7 | Village street view with warm brown building facades showing stone texture, thatch detail, tall lit church spire at right, single tree in foreground — more readable but brighter | runner-up |
+| s3 | Transition-hour scene (ambiguous dawn/dusk), warm amber on building walls, lighter sky but still misty, visually reads as early morning | eliminated |
+
+**Why s42 wins:** A title screen for a dark dungeon crawler should withhold information and invite unease. s42's silhouette mode obscures Thornmere — you see the shape of a town but not its character. That ambiguity is what makes the player lean in. s7 is more attractive as art but more welcoming as image; "welcoming" is the wrong register for a game about descending into cursed crypts. s3 is eliminated immediately: dawn/morning lighting contradicts the game's persistent nocturnal tone.
+
+**Sub-palette note:** s42 sub20 uses 20 colours including mist-blue and grey ramps — the palette naturally suppresses warmth, which reinforces the silhouette read. s7's warmer stone tones fight the dark-town concept at the colour level.
+
+---
+
+### pc_caster — three seeds compared
+
+Seeds examined: **s42** (chosen), **s7**, **s3**.
+
+| seed | description | verdict |
+|---|---|---|
+| s42 | Dark straight hair falling past shoulders, pale skin, blue faceted gem amulet at collar, dark robe with subtle blue sheen | **CHOSEN** |
+| s7 | Light honey-blonde long hair, blue eyes prominent, blue collar trim — academic wizard aesthetic, lighter overall tone | runner-up |
+| s3 | Light blonde/warm hair, similar face to s7, blue eyes, slightly different neckline — near-duplicate of s7 archetype | eliminated |
+
+**Why s42 wins:** s7 and s3 both converge on the blonde-blue-eyed mage — a palatable academic type, but not palette-coherent with Thornmere's dark-fantasy tone. The sub14 allowed palette (indices: 0,1,2,3,11,12,13,14,15,16,17,28,29,30) skews towards grey-green and brown-gold ramps. Dark hair crushed against those tones reads clearly in game; light hair competes with the grey ramps and muddies the silhouette at small display sizes.
+
+**The gem is the tie-breaker:** The blue amulet in s42 gives the caster a visual accent that reads as "magic item" at a glance. This gives the portrait an in-world prop that the warrior (armour) and rogue (blade) also carry. s7's lighter palette distributes the visual interest across hair and eyes — no single landmark for the eye to lock to.
+
+**Identity note:** This choice is flagged in NEEDS-HUMAN.md. The physical presentation is a design decision, not a quality call.
+
+---
+
+## Acceptance criteria walkthrough — v2.1
+
+Criteria derived from the original pipeline spec and PIPELINE-HANDOFF.md step list.
+
+| # | Criterion | Status | Evidence |
+|---|---|---|---|
+| 1 | All 30 manifest entries: verdict set, status=imported | MET | `gen-manifest.json`: 30/30 entries `"status":"imported"`, all `"verdict":"replace"` |
+| 2 | 42/42 test suite passes after all imports | MET | `npm test` output: `pass 42 / fail 0` (verified post-import) |
+| 3 | Per-sprite sub-palettes recorded as art direction | MET | Each manifest entry has `"allowed":[...]` with specific index list; recorded before generation, not derived from output |
+| 4 | Seeds recorded; any sprite regenerable bit-for-bit | MET | `chosen_seed` set for all 30 entries; `seeds_generated` lists all seeds generated; `host_gen.py` uses `torch.Generator("cpu").manual_seed(seed)` — CPU generator is deterministic |
+| 5 | Mode-tagged filenames in candidates | MET | All crushed PNGs follow `<id>_s<seed>_sub<N>.png` pattern; gitignored as working artifacts |
+| 6 | Contemporaneous review log (art-review.md) | MET | This file; verdict + one-line reasoning for all 30 entries; zero entries logged without reasoning |
+| 7 | Loud failure on empty/invalid config | MET | `import_sprite.py` exits with `SystemExit` if `chosen_seed` is None; `generate.py` exits if `seeds_to_generate` is empty; `pixelcore.validate_allowed()` fails on empty or out-of-range |
+| 8 | One verbatim style suffix per art class | MET | `gen-manifest.json` `"style_suffixes"` has four keys (monster, showpiece, character, scene); each entry's `style_suffix_key` points to one of these — never per-entry overrides |
+| 9 | Import round-trip pixel-identical | MET | 11 entries sampled across all five art JSON files; re-derive index grid from candidate PNG using same `nearest_palette_idx` + `bg_indices` logic as `import_sprite.py`; 0 mismatches on all 11 (including largest: scene_title 10,240 px, scene_victory 19,200 px) |
+| 10 | Frame-effect eye_pulse verified | MET | Programmatic check: all 24 eye_pulse-only entries — 0 errors, 0 outside-region changes; every pixel in eye region either brightened by exactly one BRIGHTEN step or is at-top-of-chain (left unchanged, correct) |
+| 11 | Frame-effect breathe+eye_pulse verified | MET | All 4 PC portrait entries: full simulation of breathe (torso shift 1px down) then eye_pulse applied to frame_a; compared to frame_b pixel-by-pixel; 0 mismatches on all four |
+| 12 | Dimension validation: target sizes present | MET | Test suite `art.test.js` validates every sprite's `rows` count == `h` and every row width == `w`; all imported sprites are at target dims (96×80 monsters, 32×40 PC portraits, 160×64/120 scenes); 42/42 pass confirms no dimension regressions |
+| 13 | Showpiece ≥48×48 constraint | MET | Test 5 explicitly asserts `sp.w >= 48 && sp.h >= 48` for all five showpiece variants; imported showpieces are 96×80; 42/42 pass |
+| 14 | Race × archetype × face portrait coverage | MET | Test 8 checks `pc_${race}_${arch}_${f}` for all races × archetypes × frames; people.json has variants mapping those keys to the imported base archetypes; 42/42 pass |
+| 15 | NEEDS-HUMAN.md written | MET | `NEEDS-HUMAN.md` created; two flagged items (PC portrait identity, mon_skeleton palette shift); four art classes cleared with justification; zero-rejections rationale documented |
+| 16 | Candidates directory gitignored | MET | `.gitignore` entry `dev/pixel-art/candidates/` added; confirmed not tracked |
+| 17 | distrobox/GPU bridge used for all generation | MET | `generate.py` invokes `distrobox-host-exec bash -lc 'source ~/pixelart-venv/bin/activate && ...'`; no GPU code runs in the container; all 194 raws generated via this bridge in the prior session |
+
+**Not-met / out of scope:**
+
+| # | Criterion | Status | Note |
+|---|---|---|---|
+| A | Before/after captures (three standard scenes) | NOT MET | Requires game engine running; artrender.js can produce before/after PNGs — deferred to final README pass |
+| B | Icons (16×16) and FX sprites (24×24) updated | NOT MET | PIPELINE-HANDOFF step 3/4; out of scope for this AI pipeline pass — icons and FX remain procedural (all tests pass on current sizes) |
+| C | Live in-game frame-effect timing (2–4 fps eye pulse) | PARTIAL | Frame-effect pixel correctness verified programmatically (MET). Actual animation timing (ms values in `frame_ms`) is recorded in manifest and written to `anims` section; visual playback requires the game engine. The ms values (400/400 for monsters, 400/320 for wisp) produce 2.5 fps — within spec. |
