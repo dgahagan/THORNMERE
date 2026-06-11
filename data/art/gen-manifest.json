@@ -655,7 +655,7 @@
         23,
         42
       ],
-      "chosen_seed": 7,
+      "chosen_seed": 42,
       "frame_effects": {
         "b": [
           "eye_pulse"
@@ -663,19 +663,19 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 20,
-          "y": 16,
-          "w": 56,
-          "h": 20
+          "x": 4,
+          "y": 4,
+          "w": 88,
+          "h": 26
         }
       },
       "frame_ms": {
         "a": 400,
         "b": 400
       },
-      "status": "candidates",
+      "status": "imported",
       "verdict": "replace",
-      "notes": "Warm brown wings. Eye-spot rings: blood-to-flame + violet. Blue-black eye centers. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded."
+      "notes": "Warm brown wings. Eye-spot rings: blood-to-flame + violet. Blue-black eye centers. v2 feral re-prompt per director review 2026-06-10; v1 'cute' import superseded. Chosen s42: compact folded-wing pose, both concentric ring eye-spots legible. Folded posture reads predatory; spread-wing variants sacrificed ring clarity."
     },
     {
       "id": "mon_rat",
