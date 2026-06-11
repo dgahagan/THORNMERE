@@ -203,7 +203,8 @@ Each batch:
 2. **§4 textures** — can the local FLUX.2-klein pipeline generate seamless/tileable
    output? (Determines option B vs A vs D.) — **STILL OPEN, blocks the TEX batch.**
 3. **Subject lines (§3)** — approve / edit the ~38 in-scope drafts before any
-   manifest write. — **STILL OPEN, blocks all batches.**
+   manifest write. — **INTERIORS (9) APPROVED 2026-06-11** (manifest entries
+   written, `generate_interiors.py` ready). Signboards (9) + FX (9) still open.
 4. **Palette `allowed` sets** — per-sprite; will be drafted at manifest-write time
    with the approved subjects (not blocking now).
 
