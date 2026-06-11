@@ -455,6 +455,14 @@ import via the W2/W3 protocol (re-measure the eye-slit region — s42's box was
 fitted to its eye slits). Confidence: close call — s42 is acceptable, but the key
 read is stronger elsewhere. **STOPPED here; no import.**
 
+> **RESOLVED 2026-06-11 — Dan chose to flip to s17.** Imported s17 →
+> `monsters2.json`: large bold geometric chest rune (the defining read now lands
+> strongly), glowing eye slits. Eye-slit region re-measured to `x36,y19,w24,h7`
+> (the slits sit at rows 20–24; the chest rune at rows 45–72 is left static).
+> Verified eye_pulse brightens only the slit box (146 px, x36–59,y19–25). 42/42
+> tests. So Set-B net result is **5/7 uphold s42, 2 flipped** (golem joins the
+> outright-flip column with spider and mock_king from W2/W3).
+
 *Net W5 outcome: the s42 table largely stands for Set B (6/7), with one soft flag.
 This is a materially better evidentiary basis than the original "replace"
 rationale, and it does not vindicate blanket trust in s42 (spider and mock_king

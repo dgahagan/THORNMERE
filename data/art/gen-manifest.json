@@ -585,7 +585,7 @@
         23,
         42
       ],
-      "chosen_seed": 42,
+      "chosen_seed": 17,
       "frame_effects": {
         "b": [
           "eye_pulse"
@@ -593,10 +593,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 32,
-          "y": 26,
-          "w": 32,
-          "h": 8
+          "x": 36,
+          "y": 19,
+          "w": 24,
+          "h": 7
         }
       },
       "frame_ms": {
@@ -605,7 +605,7 @@
       },
       "status": "imported",
       "verdict": "replace",
-      "notes": "Stone body in grey-to-chalk ramp, warm stone accents. Sky-blue rune glow."
+      "notes": "Stone body in grey-to-chalk ramp, warm stone accents. Sky-blue rune glow. W5 flip 2026-06-11: s42->s17 (s42 chest rune -- the defining read -- was a modest glyph; s17 carries a large bold geometric rune). Eye-slit region re-measured to x36,y19,w24,h7 (distinct from the chest rune at rows 45-72)."
     },
     {
       "id": "mon_moth",
