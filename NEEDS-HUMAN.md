@@ -7,6 +7,8 @@ decision the game director should review, or is explicitly cleared with justific
 
 ## Flagged — requires author decision
 
+_All flagged items resolved as of 2026-06-11 (see audit-01 W6/W7). No open decisions._
+
 ### ~~0. Feral re-prompt pass (mon_rat, mon_hound, mon_moth, mon_blob)~~ — CLOSED 2026-06-10
 
 Director identified four families as "too cute". Feral v2 subjects written into manifest,
@@ -16,46 +18,24 @@ All four eye_pulse regions re-measured and verified. Item closed.
 
 ---
 
-### 1. PC portrait identity (all four archetypes)
+### ~~1. PC portrait identity (all four archetypes)~~ — CLOSED 2026-06-11
 
-**Files:** `dev/pixel-art/candidates/pc_warrior_s42_sub16.png`,
-`pc_rogue_s42_sub12.png`, `pc_caster_s42_sub14.png`, `pc_skald_s42_sub15.png`
-
-**Issue:** The pipeline chose specific faces, gender presentations, and skin tones
-for the four player-character archetypes. These are not bestiary monsters with
-fixed descriptions — they represent whoever the player imagines themselves to be.
-The current picks (s42 for all four) are:
-
-- warrior: stern, shaved-head, medium-tan skin, plate armor
-- rogue: hooded, partially shadowed face, androgynous
-- caster: dark straight hair, blue gem amulet, pale skin
-- skald: bearded, warm-toned, leather/chain armor
-
-These are reasonable but the author should confirm they match the intended
-character scope or swap to one of the five other recorded seeds (s3, s7, s11,
-s17, s23 — all at target dims in `candidates/`).
-
-**Why automation can't settle this:** Archetype identity is a narrative/design
-decision about who the player is, not a quality comparison.
+Director (audit-01 W7) **kept all four s42 picks** (veteran darker-skinned
+warrior, shadowed androgynous rogue, dark-haired austere caster, bearded
+bard-warrior skald). Confirmed coherent + legible at 1×, and a worker check
+verified warrior-s42 vs skald-s42 read as distinct characters (beard + held
+instrument + cool-plate-vs-warm-leather), so no green touch-up or re-pick needed.
 
 ---
 
-### 2. mon_skeleton palette shift (grey → gold bones)
+### ~~2. mon_skeleton palette shift (grey → gold bones)~~ — CLOSED 2026-06-11
 
-**Files:** `dev/pixel-art/candidates/mon_skeleton_s42_sub11.png` (chosen),
-procedural reference at `art-review/mon_skeleton-sheet.png`
-
-**Issue:** The procedural skeleton was a grey-bone warrior with a gold sword —
-a classic undead trope. The AI skeleton (sub11 = allowed indices 0,1,2,3,6,7,12,13,28,29,30)
-rendered with fully gold bones, making it read as a "cursed ancient warrior" or
-golden idol rather than a standard undead. This is a valid artistic direction but
-changes the monster's visual identity.
-
-The bestiary entry for the skeleton should be checked: if the encounter text
-describes bleached white bones, the grey procedural may be more accurate.
-If the flavor text has any "golden curse" or "ancient crypt warrior" angle, s42 wins.
-
-**Contender to compare:** `art-review/mon_skeleton-sheet.png` (procedural, grey)
+Director (audit-01 W6) chose **(b) regenerate toward grey/bone-white** — the
+tier-1 `bonechatter` flavor, the manifest's own "bone whites… gold sword" intent,
+and the engine's distance-shading (gold dead-ends into blood-red) all pointed
+grey, none pointed gold. Family regenerated; **s11 imported**: bone-white skull +
+ribcage with a gold sword as the sole gold accent (the inversion is fixed). Later
+re-crushed to 112×93 with the monster batch.
 
 ---
 

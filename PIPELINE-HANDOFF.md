@@ -45,10 +45,10 @@ classes are in scope for the AI pipeline.
 |-----------|------|-------------|-------|
 | Wall/door textures | `data/art/textures.json` | 32×32 | 11 sprites; artBox scale=6 |
 | Signboards | `data/art/signs.json` | 36×28 | 9 signs; scale=8 |
-| Interior scenes | `data/art/signs.json` | 96×72 | 9 interiors; scale=3 |
-| Boss showpieces | `data/art/monsters3.json` | 96×80 | 4 bosses × 3 frames |
-| Monster set A | `data/art/monsters.json` | 96×80 | 11 families × 2 frames |
-| Monster set B | `data/art/monsters2.json` | 96×80 | 9 families × 2 frames |
+| Interior scenes | `data/art/signs.json` | **112×80** | 9 interiors; AI-regenerated 2026-06-11 (was 96×72); artBox cap 224 |
+| Boss showpieces | `data/art/monsters3.json` | **112×93** | 4 bosses × 3 frames; re-crushed 2026-06-11 (was 96×80) |
+| Monster set A | `data/art/monsters.json` | **112×93** | 11 families × 2 frames; re-crushed 2026-06-11 (was 96×80) |
+| Monster set B | `data/art/monsters2.json` | **112×93** | 9 families × 2 frames; re-crushed 2026-06-11 (was 96×80) |
 | PC portrait chips | `data/art/people.json` | 32×40 | 4 classes × 1 frame (was 24×24) |
 | PC icons | `data/art/people.json` | 16×16 | 10 icons (was 8×8) |
 | FX sprites | `data/art/ui.json` | 24×24 | (was 16×12–16) |
@@ -108,3 +108,44 @@ Key rules for the test suite to pass:
    rather than the old ones.
 6. Run `npm test` — target 42/42 green.
 7. README before/after screenshots and final commit.
+
+---
+
+## Audit-01 remediation + asset-regen (2026-06-11)
+
+An independent advisor audit (`dev/advisor/audit-01.md`) reviewed the completed
+art pass; the worker remediation (branch `worker/audit-01-remediation`) executed
+its findings. Status:
+
+| Item | Outcome |
+|---|---|
+| **W1** PC portrait animation bug | Fixed — `portraitOf` un-suffixed + anim-based race variants; inspection portraits now breathe/eye_pulse |
+| **W2** mon_spider re-adjudication | Flipped s42→s17 (two-segment body + 4-eye cluster) |
+| **W3** mon_mock_king re-adjudication | Flipped s42→s13 (ceramic tile grid; closed the showpiece reservation) |
+| **W4** mon_choir_eldest | Regenerated (charcoal robe holds silhouette + giant seated eye); s13 imported |
+| **W5** Set-B spot re-judge | 6/7 upheld s42; mon_golem flipped s42→s17 (bold chest rune) |
+| **W6** mon_skeleton | Regenerated grey/bone-white; s11 imported (gold = sword only) |
+| **W7** PC portrait identity | Kept all four s42 (warrior/skald confirmed distinct) |
+| **W8** Asset regeneration | See below |
+| **W9** artrender.js outdir bug | Fixed (positional outdir + loud failure on bad args) |
+| **W10** Paper-trail close-out | This update + NEEDS-HUMAN items 1&2 closed |
+
+**W8 asset-regen principle: FLUX for the large art windows, procedural for the
+small viewport elements.**
+- **Interiors** (9) — AI-regenerated at **112×80**, populated (social rooms get
+  people; tannery/belltower deserted), Greta female. Imported (renamed
+  `int_*_a`→`int_*`, replacing the procedural sprites). Display cap 224 (2×).
+- **Monster/showpiece portraits** (24) — re-crushed from chosen-seed raws to
+  **112×93** (≈ original BT ~117 art window; validated vs
+  `dev/original-amiga-screenshots/`). eye_pulse regions scaled linearly.
+  `combatPortrait` cap 224.
+- **Signboards / textures / FX / UI glyphs** — kept **procedural**: small,
+  distance-scaled viewport elements where bold procedural pixel art beats crushed
+  FLUX. Textures additionally can't tile cleanly (FLUX is transformer-based;
+  circular padding only wraps VAE conv edges — see `dev/pixel-art/test_tiling.py`).
+
+**Renderer note:** `artBox(drawable, label, sub, cap=192)` — `interior()` and
+`combatPortrait()` pass `cap=224` so 112-wide art displays at a crisp 2× (224px).
+
+**Open / deferred:** town first-person viewport polish (ground, sky, building
+roofs) — see `dev/backlog.md`. 42/42 tests throughout.

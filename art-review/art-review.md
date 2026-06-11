@@ -307,9 +307,9 @@ Criteria derived from the original pipeline spec and PIPELINE-HANDOFF.md step li
 
 | # | Criterion | Status | Note |
 |---|---|---|---|
-| A | Before/after captures (three standard scenes) | NOT MET | Requires game engine running; artrender.js can produce before/after PNGs — deferred to final README pass |
-| B | Icons (16×16) and FX sprites (24×24) updated | NOT MET | PIPELINE-HANDOFF step 3/4; out of scope for this AI pipeline pass — icons and FX remain procedural (all tests pass on current sizes) |
-| C | Live in-game frame-effect timing (2–4 fps eye pulse) | PARTIAL | Frame-effect pixel correctness verified programmatically (MET). Actual animation timing (ms values in `frame_ms`) is recorded in manifest and written to `anims` section; visual playback requires the game engine. The ms values (400/400 for monsters, 400/320 for wisp) produce 2.5 fps — within spec. |
+| A | Before/after captures (three standard scenes) | **MET** (audit-01 W-verification) | Live engine captures taken (`dev/advisor/render/live/`) against baseline `thornmere-start.png`; monster eye_pulse confirmed oscillating live at 400ms cadence |
+| B | Icons (16×16) and FX sprites (24×24) updated | **RESOLVED — keep procedural** (audit-01 W8, director ruling 2026-06-11) | Small distance-scaled viewport elements (icons/FX/signboards/textures) read better as bold procedural pixel art than crushed FLUX; FLUX reserved for the large art windows (interiors/portraits) |
+| C | Live in-game frame-effect timing (2–4 fps eye pulse) | **MET** (audit-01 W1) | Monster eye_pulse verified oscillating live (400ms, 2.5fps). PC portrait breathe+eye_pulse was invisible (`portraitOf` hardcoded `_a`) — **fixed in W1**; inspection portraits now animate |
 
 ---
 
