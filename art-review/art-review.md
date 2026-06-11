@@ -368,3 +368,33 @@ Human adjudication required — self-judging tone is what caused the v1 error.
 | mon_hound | 7 | sub12 | replace | Snarling hunched wolf, dominant red-orange glowing eyes readable at game scale, good forward-lean aggression. Chosen over s3 (bulkier, less dynamic) and s42 (tighter portrait, less body presence). |
 | mon_moth | 42 | sub16 | replace | Compact folded-wing pose — both concentric ring eye-spots visible, folded posture reads as resting predator. Chosen over spread-wing variants (s17/s23) which sacrificed ring readability for wingspan. |
 | mon_blob | 11 | sub12 | replace | Two distinct sunken eye sockets clearly readable, wide open mouth with crooked embedded teeth. Better balance of horror and readability than s3 (too face-filling) or s42 (too compact). |
+
+---
+
+## Audit-01 re-adjudication (W2 / W3) — seed-vs-seed from existing candidates
+
+Per `dev/advisor/audit-01.md` §7. These re-judge families the original pass
+awarded to seed 42 on thin (AI-vs-procedural) reasoning. No regeneration — the
+better seeds already existed on disk. Judged from crushed `_sub` candidates at
+~2× game scale (montages `art-review/mon_<id>-readjudication.png`), then the
+imported winner rendered from game data and viewed (`art-review/readjud/`).
+
+### W2 — mon_spider: **FLIP s42 → s17**
+
+The manifest's own key reads are a **two-segment body** (cephalothorax + abdomen)
+and a **four-pair red eye cluster**. Per-seed (all sub13):
+
+| seed | read | verdict |
+|---|---|---|
+| s3 | single-mass body; tiny compact red eyes, hard to count; fangs ok | weak eye cluster |
+| s7 | single-mass body; a pair of larger reds, no clear cluster | misses two-segment |
+| s11 | legs spread well; red cluster reads but body is one mass | runner-up (no abdomen) |
+| **s17** | **distinct round abdomen above the cephalothorax; legible 4+ red-eye cluster; eight hairy legs spread; pale fangs; most menace** | **WINNER — clear win** |
+| s23 | single round body; smaller pair of reds; less feature-rich | midpack |
+| s42 (old pick) | competent but single-mass body and a red *pair*, not a clustered 8-eye arrangement — **misses both manifest key features** | superseded |
+
+Imported s17 → `monsters.json`. Eye_pulse region re-measured on frame a (red
+indices 25/26 cluster at x41–54,y27–36): `frame_regions.eye` updated from the old
+s42-fitted `x28,y22,w40,h14` to **`x40,y26,w16,h12`**. Verified frame b brightens
+only the eye box (185 px, all inside x40–55,y26–37). Confidence: clear win on
+subject fidelity.

@@ -924,7 +924,7 @@
         23,
         42
       ],
-      "chosen_seed": 42,
+      "chosen_seed": 17,
       "frame_effects": {
         "b": [
           "eye_pulse"
@@ -932,10 +932,10 @@
       },
       "frame_regions": {
         "eye": {
-          "x": 28,
-          "y": 22,
-          "w": 40,
-          "h": 14
+          "x": 40,
+          "y": 26,
+          "w": 16,
+          "h": 12
         }
       },
       "frame_ms": {
@@ -944,7 +944,7 @@
       },
       "status": "imported",
       "verdict": "replace",
-      "notes": "Brown body; 4-pair red eye cluster is key feature. Keep purely brown-red."
+      "notes": "Brown body; 4-pair red eye cluster is key feature. Keep purely brown-red. W2 re-adjudication 2026-06-11: flipped s42->s17 (s42 missed the two-segment body and read as a red pair, not a clustered 8-eye arrangement; s17 delivers both manifest key reads). Eye region re-measured to x40,y26,w16,h12."
     },
     {
       "id": "mon_snake",
