@@ -428,3 +428,35 @@ defect. Imported s13 → `monsters3.json`. Eyes located spatially (bright blues
 Verified eye_pulse on frames b and c brightens only the eye box (176 px, inside
 x35–58,y22–30); c double-pulses brighter than b. Closes the showpiece review's
 sole SHIP-WITH-NOTES reservation on this boss.
+
+### W5 — Set-B spot re-judge (seed-vs-seed; ghost already confirmed, moth regenerated)
+
+The 7 remaining Set-B families the original pass awarded to s42 on thin
+(AI-vs-procedural) reasoning, re-judged as real contests from crushed sub
+candidates at ~2× game scale (montages `art-review/w5/<id>-w5.png`). **No imports
+made — per W5 protocol, any seed that beats s42 is FLAGGED for review, not flipped
+silently.** Result: **6 of 7 uphold s42; 1 flagged (mon_golem).**
+
+| family | key read | per-seed summary | verdict |
+|---|---|---|---|
+| **mon_sorcerer** | hood, knotted staff, blood-red eyes, bony hands | all 6 are strong hooded skull-mages; every key read lands on s42. s17 marginally richer (layered robe, both hands gripping). | **s42 holds** (close w/ s17) |
+| **mon_bird** | outstretched wings, hooked beak, ember eyes, talons | consistent family; s42 has spread wings, glowing ember eyes, talons. s17 has the most body mass; s3/s7/s23 widest wingspan. | **s42 holds** (close w/ s17) |
+| **mon_hag** | warty green skin, honey matted hair, hooked nose, claws, rotten teeth | s42 complete and menacing. *Family-wide note:* all 6 read as muscular green brutes, not a wizened "ancient" crone — a subject gap that needs a regen, not a re-pick (applies to every seed equally). | **s42 holds** |
+| **mon_knight** | violet visor slit, kite shield, broadsword, plate | clean family; s42 among the strongest — prominent notched broadsword, shield, gold-dark decoration, commanding stance. | **s42 holds** (clear) |
+| **mon_choir** | three singers wide, center taller, mouths open O, hollow eyes | s42 shows three clearly-open mouths, good three-wide spacing, center taller. s3/s11 equally good. | **s42 holds** |
+| **mon_gargoyle** | two horns, ember eyes, fanged grin, spread stone wings | s42 lands all reads (horns, ember eyes, grin, warm umber wing membranes, crouch). s11 marginally more striking. | **s42 holds** (close w/ s11) |
+| **mon_golem** | **sky-blue glowing chest rune** + eye slits, blocky head, wide shoulders | s42 has eye slits + blocky head + shoulders, but its **chest rune — the defining key read — is a modest small glyph**, while **s11 and s17 carry markedly larger, bolder geometric runes** that read better at game scale. | **⚑ FLAGGED — review s11/s17** |
+
+**Flag detail (mon_golem):** not a miss (s42 has all reads present), but the
+named defining feature (chest rune) is delivered more weakly by s42 than by s11
+(bold circular rune) or s17 (large geometric rune). Recommend Dan/advisor review
+the three side by side (`art-review/w5/mon_golem-w5.png`); if a flip is approved,
+import via the W2/W3 protocol (re-measure the eye-slit region — s42's box was
+fitted to its eye slits). Confidence: close call — s42 is acceptable, but the key
+read is stronger elsewhere. **STOPPED here; no import.**
+
+*Net W5 outcome: the s42 table largely stands for Set B (6/7), with one soft flag.
+This is a materially better evidentiary basis than the original "replace"
+rationale, and it does not vindicate blanket trust in s42 (spider and mock_king
+flipped outright in W2/W3) — the seed won where the field was even and lost where
+a specific key read was contested.*
