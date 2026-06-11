@@ -3,3 +3,8 @@ __pycache__/
 .mcp.json
 dev/pixel-art/candidates/
 dev/pixel-art/gen_request.json
+dev/pixel-art/candidates-*/
+dev/pixel-art/gen_request_*.json
+dev/pixel-art/tiling-test/
+art-review/feral-eye-*.png
+dev/original-amiga-screenshots/
