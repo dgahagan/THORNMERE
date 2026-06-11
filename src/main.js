@@ -4,8 +4,10 @@ import { loadAll, DB } from './core/db.js';
 import { Rng, rollDice } from './core/rng.js';
 import {
   newGame, gameToJSON, gameFromJSON, currentMap, partyChars, realParty,
-  aliveParty, charById, mapStateFor, partyHasItem, isNight, partySlotsFree
+  aliveParty, charById, mapStateFor, partyHasItem, isNight, partySlotsFree,
+  automapFor
 } from './core/gamestate.js';
+import { TOGGLES, newSettings } from './core/settings.js';
 import {
   createCharacter, rollStats, statMod, clsOf, isAlive, equipItem, unequipSlot,
   equipped, addToInventory, removeFromInventory, invItem, effectiveAC,
@@ -38,8 +40,11 @@ import {
   loadAudio, unlockAudio, updateMusic, sfx, flourish, audioCfg, setAudio
 } from './audio/director.js';
 
-const SAVE_KEY = 'thornmere.save';
-const AUTO_KEY = 'thornmere.autosave';
+const SAVE_KEY = 'thornmere.save';       // Adventurers' Hall save (all modes)
+const AUTO_KEY = 'thornmere.autosave';   // autosave on quit / level transition
+const SLOT_KEYS = [                       // 3 manual slots (Remastered save-anywhere)
+  'thornmere.slot1', 'thornmere.slot2', 'thornmere.slot3'
+];
 
 const $ = id => document.getElementById(id);
 const els = {};
@@ -48,6 +53,7 @@ let mode = null;
 let highlightId = null;
 let narrating = false;
 let sceneFlash = null;   // transient portrait-window scene: {id, label, until}
+let mapViewCycle = 0;    // 0=off 1=corner-overlay 2=full-screen (Remastered automap)
 
 // one entry point for keys, shared by keyboard and mouse (full parity)
 function pressKey(key) {
@@ -74,7 +80,14 @@ function drawView() {
     if (Date.now() < sceneFlash.until) { renderer.special(sceneFlash.id, sceneFlash.label); return; }
     sceneFlash = null;
   }
+  if (game.settings?.automap && mapViewCycle === 2) {
+    renderer.parchmentMap(game, automapFor(game, game.pos.map), true);
+    return;
+  }
   renderer.draw(game);
+  if (game.settings?.automap && mapViewCycle === 1) {
+    renderer.parchmentMap(game, automapFor(game, game.pos.map), false);
+  }
 }
 
 // ------------------------------------------------------------------ helpers
@@ -125,7 +138,9 @@ function render() {
   if (mode === exploreMode) setMenu(exploreContext());
   renderStatus(game, els.status);
   renderRoster(game, els.roster, highlightId);
-  els.loc.textContent = game.debugMap ? `(${game.pos.x},${game.pos.y}) ${FACING_NAMES[game.pos.facing]}` : '';
+  const showCoords = game.debugMap
+    || (game.settings?.automap && game.effects?.some(e => e.kind === 'compass'));
+  els.loc.textContent = showCoords ? `(${game.pos.x},${game.pos.y}) ${FACING_NAMES[game.pos.facing]}` : '';
 }
 
 // never an empty box: describe the square and what the party faces
@@ -304,7 +319,14 @@ let narrateFlush = null;
 // ================================================================== EXPLORE
 const exploreMode = {
   menu: '',
-  hint: '↑/W forward  ←→/A·D turn  ↓/S about-face  E search  C cast  P song  U use  T torch  L look  1-6 party  Q quit  ? help',
+  get hint() {
+    const base = '↑/W forward  ←→/A·D turn  ↓/S about-face  E search  C cast  P song  U use  T torch  L look  1-6 party  Q quit  ? help';
+    if (!game) return base;
+    const extras = [];
+    if (game.settings?.automap) extras.push('M map');
+    if (game.settings?.saveAnywhere) extras.push('V save');
+    return extras.length ? base + '  ' + extras.join('  ') : base;
+  },
   bar: [
     { k: 'ArrowUp', label: 'Forward' }, { k: 'ArrowLeft', label: 'Turn' }, { k: 'ArrowRight', label: 'Turn' },
     { k: 'ArrowDown', label: 'About-face' }, { k: 'e', label: 'Search' }, { k: 'c', label: 'Cast' },
@@ -328,7 +350,12 @@ const exploreMode = {
     if (k === 'u') return useFlow();
     if (k === 't') return torchFlow();
     if (k === 'l') return lookHere();
-    if (k === 'm') { if (debugAllowed()) { game.debugMap = !game.debugMap; render(); } return; }
+    if (k === 'm') {
+      if (game.settings?.automap) { mapViewCycle = (mapViewCycle + 1) % 3; render(); }
+      else if (debugAllowed()) { game.debugMap = !game.debugMap; render(); }
+      return;
+    }
+    if (k === 'v') return campFlow();
     if (k === 'o') return optionsMode(() => setMode(exploreMode));
     if (k === 'q') return quitFlow();
     if (k === '?') return helpMode();
@@ -341,18 +368,29 @@ function optionsMode(back) {
   const cfg = audioCfg();
   const pct = v => `${Math.round(v * 100)}%`;
   const adj = (key, d) => { setAudio(key, Math.max(0, Math.min(1, cfg[key] + d))); optionsMode(back); };
+  const featureOpts = game ? TOGGLES.map((t, i) => {
+    const on = game.settings[t.id];
+    const locked = t.lockedAtCreation;
+    return {
+      k: String(i + 1),
+      label: `${t.label}: ${on ? 'ON' : 'off'}${locked ? ' [locked]' : ''}`,
+      dim: locked,
+      fn: () => { if (!locked) { game.settings[t.id] = !on; optionsMode(back); } }
+    };
+  }) : [];
   setMode(menuMode({
-    title: 'Options — sound',
+    title: game ? 'Options — sound & features' : 'Options — sound',
     body: `Master ${pct(cfg.master)}${cfg.mute ? ' (MUTED)' : ''} · Music ${pct(cfg.music)} · Effects ${pct(cfg.sfx)}`,
     options: [
-      { k: '1', label: 'Master softer', fn: () => adj('master', -0.1) },
-      { k: '2', label: 'Master louder', fn: () => adj('master', 0.1) },
-      { k: '3', label: 'Music softer', fn: () => adj('music', -0.1) },
-      { k: '4', label: 'Music louder', fn: () => adj('music', 0.1) },
-      { k: '5', label: 'Effects softer', fn: () => adj('sfx', -0.1) },
-      { k: '6', label: 'Effects louder', fn: () => adj('sfx', 0.1) },
-      { k: 'm', label: cfg.mute ? 'Unmute everything' : 'Mute everything', fn: () => { setAudio('mute', !cfg.mute); optionsMode(back); } },
-      { k: 'l', label: 'Done', fn: back }
+      { k: 'a', label: 'Master softer', fn: () => adj('master', -0.1) },
+      { k: 'b', label: 'Master louder', fn: () => adj('master', 0.1) },
+      { k: 'c', label: 'Music softer',  fn: () => adj('music', -0.1) },
+      { k: 'd', label: 'Music louder',  fn: () => adj('music', 0.1) },
+      { k: 'e', label: 'Effects softer', fn: () => adj('sfx', -0.1) },
+      { k: 'f', label: 'Effects louder', fn: () => adj('sfx', 0.1) },
+      { k: 'x', label: cfg.mute ? 'Unmute everything' : 'Mute everything', fn: () => { setAudio('mute', !cfg.mute); optionsMode(back); } },
+      ...featureOpts,
+      { k: 'z', label: 'Done', fn: back }
     ],
     onEsc: back, draw: mode?.draw
   }));
@@ -438,6 +476,7 @@ function travel(to, announce = true) {
   stopSong(game);
   sfx('stairs');
   if (announce) msg(`— ${currentMap(game).name} —`, 'mouth');
+  if (game.settings?.saveAnywhere) saveTo(AUTO_KEY);
   setMode(exploreMode);
 }
 
@@ -669,14 +708,24 @@ function quitFlow() {
 }
 
 function helpMode() {
+  const remLines = game?.settings ? [
+    '',
+    'Remastered features active:',
+    ...(game.settings.automap     ? ['  M — cycle map off → corner overlay → full-screen parchment'] : []),
+    ...(game.settings.saveAnywhere ? ['  V — make camp (save to a named slot)'] : []),
+    ...(game.settings.charges      ? ['  Items show exact charges remaining in inventory.'] : []),
+    ...(game.settings.seventhSlot  ? ['  Summons appear in a 7th slot above the roster.'] : []),
+    ...(game.settings.sharedInventory ? ['  Inventory is a 40-slot party pool; any member may equip from it.'] : []),
+    ...(game.settings.reducedXp   ? ['  XP requirements are reduced ~40% (see README for exact multiplier).'] : []),
+  ] : [];
   setMode({
     menu: esc([
       'THORNMERE — keys & mouse',
       '  ↑/W forward · ←→/A·D turn · ↓/S about-face',
       '  E search walls · L look (re-read the cell, use stairs)',
       '  C cast · P play/stop song · U use item · T light a torch',
-      '  1-6 character sheet (equip/trade/drop) · O options (audio)',
-      '  Q quit+autosave · ?debug=1 in URL, then M = automap',
+      '  1-6 character sheet (equip/trade/drop) · O options',
+      '  Q quit+autosave',
       '',
       'In combat: A attack · D defend · C cast · S sing · H hide (Knave)',
       '  U use · V party advance · R run. Space hurries the narration.',
@@ -686,9 +735,11 @@ function helpMode() {
       'click. The wheel scrolls the event log. Clicking the viewport',
       'hurries narration, like Space.',
       '',
-      'Save properly at the Adventurers\' Hall. Heal at the Temple.',
+      'Save at the Adventurers\' Hall. Heal at the Temple.',
       'SP recharges at the Spark House (or slowly, outdoors by day).',
       'A Skald\'s songs come back with tavern wine.',
+      ...remLines,
+      '',
       'Esc returns.'
     ].join('\n')),
     hint: 'Esc to return.',
@@ -1256,11 +1307,22 @@ function mainMenu() {
   setMusic('title');
   const hasSave = !!localStorage.getItem(SAVE_KEY);
   const hasAuto = !!localStorage.getItem(AUTO_KEY);
+  const slotLabel = (key, idx) => {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    try { const g = JSON.parse(raw); return `Load slot ${idx + 1} — ${g.pos?.map ?? '?'}, ${g.gold ?? 0} gold`; }
+    catch { return null; }
+  };
+  const slotOpts = SLOT_KEYS.map((key, i) => {
+    const label = slotLabel(key, i);
+    return label ? { k: String(i + 1), label, fn: () => { if (loadFrom(key)) { msg('You wake where you left off.'); setMode(exploreMode); } } } : null;
+  }).filter(Boolean);
   const options = [
     { k: 'n', label: 'New game', fn: newGameFlow },
     { k: 'o', label: 'Options (sound)', fn: () => optionsMode(() => setMode(mainMenu())) },
     ...(hasSave ? [{ k: 'c', label: 'Continue (Hall save)', fn: () => { if (loadFrom(SAVE_KEY)) { msg('The clerk finds your page. Welcome back.'); setMode(exploreMode); } } }] : []),
-    ...(hasAuto ? [{ k: 'a', label: 'Continue (autosave — modern mercy)', fn: () => { if (loadFrom(AUTO_KEY)) { msg('You wake where you fell asleep.'); setMode(exploreMode); } } }] : [])
+    ...(hasAuto ? [{ k: 'a', label: 'Continue (autosave — modern mercy)', fn: () => { if (loadFrom(AUTO_KEY)) { msg('You wake where you fell asleep.'); setMode(exploreMode); } } }] : []),
+    ...slotOpts
   ];
   return menuMode({
     title: 'THORNMERE — The Founding Song',
@@ -1279,7 +1341,86 @@ function newGameFlow() {
   msg('THORNMERE, a walled market town on a cold fen. For three hundred years the Founding Song in the bell tower kept the fen-wights from the gates.', 'mouth');
   msg('Last winter the hedge-wizard MALDREC THE UNSUNG stole its Three Verses. The wards are failing. The Magistrate posts notices. The taverns talk.', 'mouth');
   msg('You stand before the ADVENTURERS\' HALL. Walk forward (↑) to enter and muster a party.');
+  modeSelectFlow();
+}
+
+function modeSelectFlow() {
+  setMode(menuMode({
+    title: 'Choose your experience',
+    body: [
+      'REMASTERED — automap, save anywhere, 7th-slot summons, item charges,',
+      '             shared inventory, reduced XP. All modern comforts on.',
+      '',
+      'LEGACY      — the 1985 experience, unmodified.',
+      '',
+      'CUSTOM      — pick individually which comforts to enable.'
+    ].join('\n'),
+    options: [
+      { k: 'r', label: 'Remastered (all modern comforts)', fn: () => { game.settings = newSettings('remastered'); startNewGame(); } },
+      { k: 'l', label: 'Legacy (classic, unmodified)',     fn: () => { game.settings = newSettings('legacy');     startNewGame(); } },
+      { k: 'c', label: 'Custom…',                         fn: customModeFlow },
+    ],
+    onEsc: () => { game = null; setMode(mainMenu()); },
+    draw: () => renderer.splash('THORNMERE', 'The Founding Song')
+  }));
+}
+
+function customModeFlow() {
+  const s = game.settings;
+  const body = TOGGLES.map((t, i) => {
+    const lock = t.lockedAtCreation ? ' [locked at creation]' : '';
+    return `  ${i + 1}. [${s[t.id] ? 'X' : ' '}] ${t.label}${lock} — ${t.desc}`;
+  }).join('\n');
+  setMode(menuMode({
+    title: 'Custom mode — toggle features',
+    body,
+    options: [
+      ...TOGGLES.map((t, i) => ({
+        k: String(i + 1),
+        label: `${t.label}: ${s[t.id] ? 'ON  → turn off' : 'OFF → turn on'}`,
+        fn: () => { s[t.id] = !s[t.id]; customModeFlow(); }
+      })),
+      { k: 's', label: 'Start game with these settings', fn: startNewGame },
+      { k: 'b', label: 'Back',                           fn: modeSelectFlow },
+    ],
+    onEsc: modeSelectFlow,
+    draw: () => renderer.splash('THORNMERE', 'The Founding Song')
+  }));
+}
+
+function startNewGame() {
+  if (game.settings.sharedInventory && !game.pool) game.pool = { items: [] };
   setMode(exploreMode);
+}
+
+function campFlow() {
+  if (!game.settings?.saveAnywhere) return;
+  const slotLabel = (key) => {
+    const raw = localStorage.getItem(key);
+    if (!raw) return '(empty)';
+    try {
+      const g = JSON.parse(raw);
+      return `${g.pos?.map ?? '?'} — ${g.gold ?? 0} gold`;
+    } catch { return '(corrupt)'; }
+  };
+  setMode(menuMode({
+    title: 'Make camp — save to a slot',
+    body: SLOT_KEYS.map((k, i) => `  Slot ${i + 1}: ${slotLabel(k)}`).join('\n'),
+    options: [
+      ...SLOT_KEYS.map((key, i) => ({
+        k: String(i + 1),
+        label: `Save to slot ${i + 1} — ${slotLabel(key)}`,
+        fn: () => { saveTo(key); sfx('save'); msg(`Game saved to slot ${i + 1}.`, 'good'); setMode(exploreMode); }
+      })),
+      { k: 'escape', label: 'Cancel', fn: () => setMode(exploreMode) }
+    ],
+    onEsc: () => setMode(exploreMode),
+    draw: mode?.draw
+  }));
+}
+
+function updateAutomap(_game, _events) {
+  // Phase 2: full automap cursor tracking and visited-cell recording
 }
 
 function gameOverMode() {

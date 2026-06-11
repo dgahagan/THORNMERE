@@ -5,7 +5,7 @@ import { DB } from './db.js';
 import { rollDice } from './rng.js';
 import { addEffect, removeEffect, hasEffect } from './effects.js';
 import {
-  currentMap, inZone, partySlotsFree, realParty
+  currentMap, inZone, partySlotsFree, summonSlotFree, realParty
 } from './gamestate.js';
 import { zapTrapAhead } from './maze.js';
 import { healChar, isAlive } from './character.js';
@@ -125,7 +125,8 @@ export function castExplore(game, rng, ch, spell, target = null) {
       break;
     }
     case 'summon': {
-      if (partySlotsFree(game) <= 0) { say('There is no room in the marching order.'); break; }
+      if (!summonSlotFree(game)) { say('There is no room in the marching order.'); break; }
+      if (game.settings?.seventhSlot && game.summons.length > 0) game.summons = [];
       const s = makeSummon(rng, eff.monster, eff.illusion);
       game.summons.push(s);
       say(`${s.name} takes its place in the marching order.`);

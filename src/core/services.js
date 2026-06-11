@@ -137,9 +137,26 @@ export function buyWine(game, ch) {
   return { ok: true, msg: `${ch.name} drains the skin and hums. The old songs are back. (${cost} gold)` };
 }
 
+// ---- Shared pool helpers -------------------------------------------------------
+export function poolAdd(game, itemId, ident = true) {
+  if (!game.pool) return false;
+  if (game.pool.items.length >= 40) return false;
+  game.pool.items.push({ id: itemId, ident });
+  return true;
+}
+
+export function poolRemove(game, idx) {
+  if (!game.pool) return null;
+  const [en] = game.pool.items.splice(idx, 1);
+  return en || null;
+}
+
 // ---- Adventurers' Hall --------------------------------------------------------
 export function addToParty(game, charId) {
-  if (game.partyIds.length + game.summons.length >= 6) return { ok: false, msg: 'The marching order is full.' };
+  // In 7th-slot mode summons don't count; only roster chars occupy the 6 slots.
+  const cap = game.settings?.seventhSlot ? 6 - game.partyIds.length
+    : 6 - game.partyIds.length - game.summons.length;
+  if (cap <= 0) return { ok: false, msg: 'The marching order is full.' };
   if (game.partyIds.includes(charId)) return { ok: false, msg: 'Already in the party.' };
   game.partyIds.push(charId);
   return { ok: true, msg: `${charById(game, charId).name} joins the party.` };

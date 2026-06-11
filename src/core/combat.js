@@ -6,7 +6,7 @@
 import { DB } from './db.js';
 import { rollDice } from './rng.js';
 import {
-  partyChars, realParty, partySlotsFree, inZone, currentMap
+  partyChars, realParty, partySlotsFree, summonSlotFree, inZone, currentMap
 } from './gamestate.js';
 import {
   statMod, effectiveAC, attackBonus, damageBonus, attacksPerRound, critChance,
@@ -365,7 +365,8 @@ export function castCombatSpell(c, ch, spell, target, ev) {
       ev('Light blooms.');
       break;
     case 'summon': {
-      if (partySlotsFree(game) <= 0) { ev('No room in the marching order!'); break; }
+      if (!summonSlotFree(game)) { ev('No room in the marching order!'); break; }
+      if (game.settings?.seventhSlot && game.summons.length > 0) game.summons = [];
       const s = makeSummon(c.rng, eff.monster, eff.illusion);
       game.summons.push(s);
       ev(`${s.name} answers the call!`);

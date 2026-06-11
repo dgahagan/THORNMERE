@@ -4,22 +4,22 @@ import { DB } from './db.js';
 import { statMod } from './character.js';
 import { rollDice } from './rng.js';
 
-// XP needed to go from level L to L+1 (soft-capped geometric curve).
-export function xpIncrement(classId, level) {
+// XP needed to go from level L to L+1.  xpMult defaults to 1.0 (Legacy).
+export function xpIncrement(classId, level, xpMult = 1.0) {
   const f = DB.cls(classId).xpFactor;
   const l = Math.min(level, 10);
-  return Math.round(f * 100 * Math.pow(1.6, l - 1));
+  return Math.round(f * 100 * Math.pow(1.6, l - 1) * xpMult);
 }
 
 // Total XP required to BE the given level.
-export function xpForLevel(classId, level) {
+export function xpForLevel(classId, level, xpMult = 1.0) {
   let total = 0;
-  for (let l = 1; l < level; l++) total += xpIncrement(classId, l);
+  for (let l = 1; l < level; l++) total += xpIncrement(classId, l, xpMult);
   return total;
 }
 
-export function canLevelUp(ch) {
-  return ch.xp >= xpForLevel(ch.cls, ch.level + 1);
+export function canLevelUp(ch, xpMult = 1.0) {
+  return ch.xp >= xpForLevel(ch.cls, ch.level + 1, xpMult);
 }
 
 export function levelUp(rng, ch) {
