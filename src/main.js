@@ -956,18 +956,22 @@ function openBuilding(id, name) {
 }
 
 function hallMode(name, draws) {
+  const opts = [
+    { k: 'c', label: 'Create a character', fn: () => createFlow(name, draws) },
+    { k: 'a', label: 'Add to party', fn: () => addFlow(name, draws) },
+    { k: 'r', label: 'Remove from party', fn: () => removeFlow(name, draws) },
+    { k: 'o', label: 'Marching order', fn: () => orderFlow(name, draws) },
+    { k: 'x', label: 'Strike a name from the ledger (delete)', fn: () => deleteFlow(name, draws) },
+    { k: 's', label: 'SAVE the game', fn: () => { saveTo(SAVE_KEY); sfx('save'); msg('The clerk records everything in a fair hand. Game saved.', 'good'); hallMode(name, draws); } },
+    { k: 'l', label: 'Leave', fn: () => leaveBuilding() }
+  ];
+  if (game.roster.length === 0 && DB.starters) {
+    opts.unshift({ k: 'p', label: `Load the ${DB.starters.partyName} (pre-built party)`, fn: () => loadFenPact(name, draws) });
+  }
   setMode(menuMode({
     title: `${name} — the roster ledger lies open.`,
     body: `Roster: ${game.roster.length} souls. Party: ${game.partyIds.length}/6.`,
-    options: [
-      { k: 'c', label: 'Create a character', fn: () => createFlow(name, draws) },
-      { k: 'a', label: 'Add to party', fn: () => addFlow(name, draws) },
-      { k: 'r', label: 'Remove from party', fn: () => removeFlow(name, draws) },
-      { k: 'o', label: 'Marching order', fn: () => orderFlow(name, draws) },
-      { k: 'x', label: 'Strike a name from the ledger (delete)', fn: () => deleteFlow(name, draws) },
-      { k: 's', label: 'SAVE the game', fn: () => { saveTo(SAVE_KEY); sfx('save'); msg('The clerk records everything in a fair hand. Game saved.', 'good'); hallMode(name, draws); } },
-      { k: 'l', label: 'Leave', fn: () => leaveBuilding() }
-    ],
+    options: opts,
     onEsc: () => leaveBuilding(),
     ...draws
   }));
@@ -978,6 +982,15 @@ function leaveBuilding() {
   setMode(exploreMode);
 }
 
+function raceModLine(race) {
+  const parts = [];
+  for (const [stat, val] of Object.entries(race.mods)) {
+    if (val > 0) parts.push(`+${val} ${stat}`);
+    else if (val < 0) parts.push(`${val} ${stat}`);
+  }
+  return parts.length ? parts.join('  ') : 'no modifiers';
+}
+
 function createFlow(hall, draws) {
   if (game.roster.length >= 20) { msg('The ledger is full (20 souls).'); return hallMode(hall, draws); }
   const suggestName = () => FEN_NAMES[(nameIdx++) % FEN_NAMES.length];
@@ -986,7 +999,7 @@ function createFlow(hall, draws) {
     if (!nameTrim) return hallMode(hall, draws);
     const raceOpts = DB.races.map((r, i) => ({
       k: String(i + 1),
-      label: `${r.name} — ${r.desc}`,
+      label: `${r.name}  [${raceModLine(r)}]  — ${r.desc}`,
       fn: () => pickClass(r)
     }));
     setMode(menuMode({ title: `${nameTrim}, of what folk?`, options: raceOpts, onEsc: () => hallMode(hall, draws), ...draws }));
@@ -994,10 +1007,11 @@ function createFlow(hall, draws) {
     const pickClass = (race) => {
       const clsOpts = DB.classes.filter(c => c.starting).map((c, i) => ({
         k: String(i + 1),
-        label: `${c.name} — ${c.desc}`,
+        label: `${c.name}  [prime: ${c.primeStat}]  — ${c.desc}`,
         fn: () => rollLoop(race, c)
       }));
-      setMode(menuMode({ title: `${nameTrim} the ${race.name} — what trade?`, options: clsOpts, onEsc: () => hallMode(hall, draws), ...draws }));
+      const body = 'Prime stat drives the class strength. Higher is better.';
+      setMode(menuMode({ title: `${nameTrim} the ${race.name} — what trade?`, body, options: clsOpts, onEsc: () => hallMode(hall, draws), ...draws }));
     };
 
     const rollLoop = (race, cls) => {
@@ -1086,6 +1100,33 @@ function deleteFlow(hall, draws) {
       hallMode(hall, draws);
     }, () => hallMode(hall, draws));
   }, () => hallMode(hall, draws));
+}
+
+function loadFenPact(hall, draws) {
+  const s = DB.starters;
+  if (!s) { msg('No pre-built party data found.'); return hallMode(hall, draws); }
+  const SLOTS_MAP = { weapon: 0, armor: 1, shield: 2, helm: 3, gauntlets: 4, instrument: 5 };
+  for (const spec of s.members) {
+    const ch = createCharacter(rng, {
+      name: spec.name,
+      raceId: spec.race,
+      classId: spec.cls,
+      stats: rollStats(rng, spec.race)
+    });
+    ch.portrait = `pc_${spec.race}_${archetypeOf(spec.cls)}_a`;
+    addToInventory(ch, 'torch');
+    for (const slotKey of ['weapon', 'armor', 'shield', 'helm', 'gauntlets', 'instrument']) {
+      if (spec[slotKey]) {
+        const idx = ch.inventory.length;
+        if (addToInventory(ch, spec[slotKey])) equipItem(ch, idx);
+      }
+    }
+    game.roster.push(ch);
+    game.partyIds.push(ch.id);
+  }
+  game.gold += s.gold;
+  msg(`The ${s.partyName} take up their packs. ${s.partyDesc}`, 'good');
+  hallMode(hall, draws);
 }
 
 // ---- Greta's ---------------------------------------------------------------

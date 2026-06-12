@@ -6,7 +6,11 @@
   "scripts": {
     "start": "python3 -m http.server 8377 --bind 127.0.0.1",
     "test": "node --test 'test/**/*.test.js'",
-    "genmaps": "node tools/genmaps.js"
+    "genmaps": "node tools/genmaps.js",
+    "build-feelies": "node scripts/build-feelies.js"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "pdfkit": "^0.19.1"
+  }
 }

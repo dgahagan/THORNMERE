@@ -317,11 +317,37 @@ scenarios, uses the globally-installed @playwright/mcp's browser),
 `test/smoke.html` (in-page scripted run under headless Chrome),
 `node tools/artcheck.js` (sprite validation), `/dev.html` (sprite preview).
 
+## Feelies
+
+Three printable documents are included, modeled on the paper inserts that shipped with boxed games in 1985:
+
+```sh
+npm run build-feelies
+# Output: feelies/thornmere-map.pdf
+#         feelies/thornmere-manual.pdf
+#         feelies/thornmere-command-card.pdf
+```
+
+PDFs are generated deterministically from game data — no binary assets, no hand-typed numbers. The PDFs themselves are `.gitignore`d; the generator scripts and source data are version-controlled.
+
+| File | Contents | Format |
+|------|----------|--------|
+| `thornmere-map.pdf` | "Cloth map" of Thornmere: street grid, named buildings, gates, guardian statues, Maldrec's Needle, legend, compass rose | Landscape A4 |
+| `thornmere-manual.pdf` | ~25-page manual: races (with stat modifiers), classes (prime stats), places, exploration, combat, magic, spell tables (all 84 spells from data), song list, items (Greta's stock), tips, reference | Portrait A4 |
+| `thornmere-command-card.pdf` | All keybindings, new-game flow, roster abbreviations, Remastered vs Legacy toggle table | Landscape A4, fold in half |
+
+**Printing tips:**
+- The map looks best printed in color and folded to A5 or smaller — crease lines add authenticity.
+- The command card can be folded in half or taped to the monitor.
+- The manual can be stapled on the left spine or ring-bound.
+
+All numeric data in the PDFs (spell SP costs, race stat modifiers, item prices) is read from `data/` at build time. A test in `test/feelies.test.js` verifies that mutating a spell's SP cost in the DB is reflected in the manual's collected text.
+
 ## Tests
 
-`npm test` covers three suites:
+`npm test` covers four suites:
 
-- **Logic** (original 27 tests + 11 Remastered tests): combat resolution and
+- **Logic** (original 27 tests + 11 Remastered tests, 53 total): combat resolution and
   boss phases, leveling math and the class-change chain to Riddlemaster,
   save/load round-tripping the entire game state mid-delve, map traversal
   (walls both sides, spinners, teleporters, riddle gating, perimeter
@@ -338,3 +364,7 @@ scenarios, uses the globally-installed @playwright/mcp's browser),
   pattern agree on length (loops can't drift), all 7 bard songs have distinct
   loops plus flourishes and match `data/songs.json`, all themes exist, and the
   full SFX set is well-formed.
+- **Feelies** (`test/feelies.test.js`): map legend entries validate against town
+  cell data; streets array is well-formed; spoiler lint (no forbidden strings in
+  generated text); SP cost propagation (mutate DB, verify collectManualText reflects
+  it); class primeStat fields are present and valid for all starting classes.

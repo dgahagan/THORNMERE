@@ -3,7 +3,7 @@
 // dead dark red. Portrait chips and class icons come from the art registry.
 
 import { DB } from '../core/db.js';
-import { currentMap, partyChars, timeOfDay, isNight } from '../core/gamestate.js';
+import { currentMap, partyChars, timeOfDay, isNight, streetAt } from '../core/gamestate.js';
 import { lightRadius, partyAcBonus, getEffect, hasEffect } from '../core/effects.js';
 import { effectiveAC, clsOf } from '../core/character.js';
 import { FACING_NAMES } from '../core/maze.js';
@@ -74,10 +74,12 @@ export function renderStatus(game, el) {
   if (hasEffect(game, 'battlecry')) bits.push('FURY');
   if (hasEffect(game, 'phase')) bits.push('PHAS');
   if (getEffect(game, 'compass')) bits.push(`LOC ${game.pos.x},${game.pos.y}`);
+  const street = streetAt(game);
+  const mapLine = street ? `${esc(map.name)} — ${esc(street)}` : esc(map.name);
   statusText.innerHTML =
     `${FACING_NAMES[game.pos.facing]}  ·  light: ${lightTxt}  ·  ${timeOfDay(game)}  ·  <span class="gold">${game.gold} gold</span>\n` +
     `<span class="songname">${game.song ? '♪ ' + esc(game.song.name) : '♪ —'}</span>  <span class="effects">${bits.join(' ')}</span>\n` +
-    `${esc(map.name)}`;
+    mapLine;
   drawCompass(game.pos.facing);
   noteCv.dataset.on = game.song ? '1' : '';
   noteCv.title = game.song ? game.song.name : '';

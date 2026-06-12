@@ -1,0 +1,52 @@
+{
+  "partyName": "The Fen-Pact",
+  "partyDesc": "Six who answered the summons on the Magistrate's notice-board — strangers the morning they signed, something else by the third level.",
+  "gold": 220,
+  "members": [
+    {
+      "name": "Hroth",
+      "race": "korrun",
+      "cls": "blade",
+      "weapon": "broadsword",
+      "armor": "padded_jack",
+      "helm": "leather_cap"
+    },
+    {
+      "name": "Aldwyn",
+      "race": "vael",
+      "cls": "warden",
+      "weapon": "shortsword",
+      "armor": "padded_jack",
+      "shield": "buckler"
+    },
+    {
+      "name": "Pip",
+      "race": "fennick",
+      "cls": "knave",
+      "weapon": "dagger",
+      "armor": "leather_armor"
+    },
+    {
+      "name": "Tamsin",
+      "race": "vael",
+      "cls": "skald",
+      "weapon": "hand_axe",
+      "armor": "padded_jack",
+      "instrument": "reed_pipe"
+    },
+    {
+      "name": "Morrigan",
+      "race": "aldari",
+      "cls": "hexen",
+      "weapon": "quarterstaff",
+      "armor": "robes"
+    },
+    {
+      "name": "Elspeth",
+      "race": "aldari",
+      "cls": "lorist",
+      "weapon": "quarterstaff",
+      "armor": "robes"
+    }
+  ]
+}
