@@ -1,5 +1,35 @@
 /* THORNMERE chrome — colors drawn from data/art/palette.json */
+
+/* Period typography (OFL fonts bundled under assets/fonts/, licenses alongside):
+   Pirata One — blackletter display, HEADERS ONLY (plaques, data-titles, keycaps).
+   IM Fell English — old-style serif body for prose (log, status, hints).
+   Monospace stays on column-aligned surfaces (menu, roster). */
+@font-face {
+  font-family: 'Pirata One';
+  src: url('assets/fonts/PirataOne-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IM Fell English';
+  src: url('assets/fonts/IMFellEnglish-Regular.ttf') format('truetype');
+  font-weight: normal; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'IM Fell English';
+  src: url('assets/fonts/IMFellEnglish-Italic.ttf') format('truetype');
+  font-weight: normal; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'MedievalSharp';
+  src: url('assets/fonts/MedievalSharp-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
 :root {
+  --font-display: 'Pirata One', 'MedievalSharp', 'Times New Roman', serif;
+  --font-body: 'IM Fell English', Georgia, 'Times New Roman', serif;
+  --font-mono: 'Courier New', ui-monospace, monospace;
+
   --black: #000000;
   --night: #16121e;
   --shadow: #2c2836;
@@ -34,8 +64,8 @@ html, body {
   margin: 0;
   background: var(--night);
   color: var(--parchment);
-  font-family: "Courier New", ui-monospace, monospace;
-  font-size: 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
   height: 100%;
 }
 
@@ -100,11 +130,13 @@ body { display: flex; align-items: center; justify-content: center; }
 .panel::before {
   content: attr(data-title);
   position: absolute;
-  top: -8px;
+  top: -10px;
   left: 10px;
   background: var(--black);
   color: var(--gold);
-  font-size: 10px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1;
   letter-spacing: 1px;
   padding: 0 6px;
 }
@@ -129,6 +161,9 @@ body { display: flex; align-items: center; justify-content: center; }
 #menu {
   padding: 6px 8px;
   margin-top: 10px;
+  /* monospace: character sheets, stat rolls and the victory company table
+     align their columns with space-padding */
+  font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.45;
   white-space: pre-wrap;
@@ -147,12 +182,14 @@ body { display: flex; align-items: center; justify-content: center; }
 #menu .opt.dim:hover { background: none; }
 
 #log {
-  margin-top: 10px;
+  margin-top: 16px;   /* clearance for the taller display-font EVENTS plaque tab */
   padding: 6px 8px;
   flex: 1;
   overflow-y: auto;
-  font-size: 13px;
-  line-height: 1.45;
+  /* serif prose narration — the most period-feeling text surface */
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.4;
   min-height: 90px;
   max-height: 330px;
   color: var(--bone);
@@ -167,6 +204,8 @@ body { display: flex; align-items: center; justify-content: center; }
 #roster {
   margin-top: 12px;
   padding: 6px 8px;
+  /* monospace: roster cells pad names/numbers to fixed widths for column alignment */
+  font-family: var(--font-mono);
   font-size: 14px;
   line-height: 1.0;
   min-height: 158px;
@@ -208,8 +247,8 @@ body { display: flex; align-items: center; justify-content: center; }
   background: var(--night);
   color: var(--parchment);
   border: 1px solid var(--slate-dark);
-  font-family: inherit;
-  font-size: 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
   padding: 4px 10px;
   cursor: pointer;
 }
@@ -218,10 +257,11 @@ body { display: flex; align-items: center; justify-content: center; }
   background: var(--shadow);
   border: 1px solid var(--slate-dark);
   border-radius: 2px;
-  padding: 0 4px;
+  padding: 0 5px;
   margin-right: 6px;
   color: var(--gold);
-  font-family: inherit;
+  font-family: var(--font-display);
+  font-size: 13px;
 }
 
 #hint {
