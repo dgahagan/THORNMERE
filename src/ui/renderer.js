@@ -15,7 +15,9 @@ import { Fb, FBW, FBH } from './fb.js';
 const W = FBW, H = FBH;
 const CX = W / 2, CY = H / 2;
 const K = 92;                                 // focal constant
-const DEPTHS = [0.45, 1.45, 2.45, 3.45, 4.45]; // far-edge plane of cell k
+// far-edge plane of cell k. 7 planes (1-tile spacing) so bright daylight can
+// see ~6 cells out; dungeons/torchlight still clamp to the near few.
+const DEPTHS = [0.45, 1.45, 2.45, 3.45, 4.45, 5.45, 6.45];
 const NEAR = 0.16;
 
 const C = {                                   // palette indices for chrome
@@ -30,6 +32,15 @@ function px(u, d) { return CX + (u * 2 * K) / d; }
 // distance -> fractional shade level (dithered between integer ramp steps)
 function shadeLevel(d, boost) {
   return Math.max(0, Math.min(4, (d - 1.0) * 0.85 + boost));
+}
+
+// Outdoor haze: how strongly a pixel at depth d dithers toward the horizon
+// colour (0 = none, 1 = full). Only the farthest planes of a bright daylight
+// scene get one; dungeons pass haze=null and are unaffected (still darken to
+// black via shadeLevel). Returns 0 when no haze so callers can skip the mix.
+function hazeFrac(d, haze) {
+  if (!haze || d <= haze.start) return 0;
+  return Math.min(0.9, (d - haze.start) / (haze.full - haze.start));
 }
 
 export class Renderer {
@@ -54,14 +65,23 @@ export class Renderer {
       return;
     }
 
+    const town = map.kind === 'town';
+    const bright = town && !isNight(game);     // daylit streets: the only deep-view context
     const noLight = map.kind === 'dungeon' && radius === 0;
-    const maxDepth = noLight ? 1 : Math.min(3, Math.max(1, radius));
-    const boost = map.kind === 'town'
-      ? (isNight(game) ? 0.8 : 0)
+    // Light radius still governs. Only genuinely bright daylight reaches plane 6;
+    // dungeon torch/spell radii and moonlit town keep their old short clamp, so
+    // those screens render byte-for-byte as before.
+    const maxDepth = noLight ? 1 : bright ? 6 : Math.min(3, Math.max(1, radius));
+    const boost = bright ? -1.1                // daylight: near walls stay bright, distance reads as haze not gloom
+      : town ? (isNight(game) ? 0.8 : 0)
       : Math.max(0, 2.0 - radius * 0.65);
+    // farthest ~3 planes dissolve into the sky horizon colour outdoors
+    const haze = bright
+      ? { color: style.sky.day.horizon, start: DEPTHS[maxDepth] - 3.0, full: DEPTHS[maxDepth] + 0.6 }
+      : null;
 
-    this.backdrop(game, map, style, maxDepth, boost);
-    this.walls(game, map, style, maxDepth, boost);
+    this.backdrop(game, map, style, maxDepth, boost, haze);
+    this.walls(game, map, style, maxDepth, boost, haze);
     this.frame();
     if (game.debugMap) this.automap(game);
     fb.flush();
@@ -74,7 +94,7 @@ export class Renderer {
   }
 
   // ---- floor / ceiling / sky ------------------------------------------------
-  backdrop(game, map, style, maxDepth, boost) {
+  backdrop(game, map, style, maxDepth, boost, haze) {
     const fb = this.fb;
     const dMax = DEPTHS[maxDepth];
     const town = map.kind === 'town';
@@ -101,6 +121,7 @@ export class Renderer {
       if (town) d = Math.min(d, dMax);         // streets haze out, never go black
       const t = Math.min(1, d / Math.max(dMax, 3));
       const lvl = town ? Math.min(shadeLevel(d, boost), 1.0 + boost) : shadeLevel(d, boost);
+      const hf = hazeFrac(d, haze);            // far cobbles dissolve into the horizon
       for (let x = 0; x < W; x++) {
         let base;
         if (town) {
@@ -121,7 +142,9 @@ export class Renderer {
           if (floor.sheen != null && (y % 5 === 2) && ((x * 29 + y * 53) % 23) < 3) base = floor.sheen;
           if (floor.fleck != null && ((x * 37 + y * 71) % 311) === 0) base = floor.fleck;
         }
-        fb.px[row + x] = fb.shaded(base, lvl, x, y);
+        let s = fb.shaded(base, lvl, x, y);
+        if (hf > 0) s = fb.mix(s, haze.color, hf, x, y);
+        fb.px[row + x] = s;
       }
     }
   }
@@ -153,7 +176,7 @@ export class Renderer {
   }
 
   // ---- the maze -------------------------------------------------------------
-  walls(game, map, style, maxDepth, boost) {
+  walls(game, map, style, maxDepth, boost, haze) {
     const f = game.pos.facing;
     const rf = (f + 1) % 4;
     const town = map.kind === 'town';
@@ -189,20 +212,20 @@ export class Renderer {
       for (const o of [-1, 1]) {
         if (edgeTex(k, 0, o === -1 ? 3 : 1)) continue;     // can't see in
         const outer = edgeTex(k, o, o === -1 ? 3 : 1);
-        if (outer) this.sideWall(o === -1 ? -1.5 : 1.5, dNear, dFar, outer.tex, boost, outer.roof);
+        if (outer) this.sideWall(o === -1 ? -1.5 : 1.5, dNear, dFar, outer.tex, boost, outer.roof, haze);
         const sideFront = edgeTex(k, o, 0);
-        if (sideFront) this.frontWall(o - 0.5, o + 0.5, dFar, sideFront, lvlFar);
+        if (sideFront) this.frontWall(o - 0.5, o + 0.5, dFar, sideFront, lvlFar, haze);
       }
 
       // center column side walls
       const left = edgeTex(k, 0, 3);
       const right = edgeTex(k, 0, 1);
-      if (left) this.sideWall(-0.5, dNear, dFar, left.tex, boost, left.roof);
-      if (right) this.sideWall(0.5, dNear, dFar, right.tex, boost, right.roof);
+      if (left) this.sideWall(-0.5, dNear, dFar, left.tex, boost, left.roof, haze);
+      if (right) this.sideWall(0.5, dNear, dFar, right.tex, boost, right.roof, haze);
 
       // center front wall
       const front = edgeTex(k, 0, 0);
-      if (front) this.frontWall(-0.5, 0.5, dFar, front, lvlFar);
+      if (front) this.frontWall(-0.5, 0.5, dFar, front, lvlFar, haze);
 
       // furniture sprite in the center cell at this depth
       const c = cellAt(k, 0);
@@ -212,20 +235,26 @@ export class Renderer {
   }
 
   // wall facing the party at depth d, spanning lateral uL..uR
-  frontWall(uL, uR, d, edge, lvl) {
+  frontWall(uL, uR, d, edge, lvl, haze) {
     const fb = this.fb;
     const tex = sprite(edge.tex);
     const x1 = Math.round(px(uL, d)), x2 = Math.round(px(uR, d));
     const t = Math.round(py(d, 't')), b = Math.round(py(d, 'b'));
+    if (x2 <= x1 || b <= t) return;            // degenerate far rect — nothing to draw
+    const denom = x2 - x1, vden = b - t;       // guarded non-zero spans
     const cells = Math.max(1, Math.round(uR - uL));
+    const hf = hazeFrac(d, haze);              // whole facing wall sits at one depth
     const xs = Math.max(1, x1), xe = Math.min(W - 1, x2);
     const ys = Math.max(1, t), ye = Math.min(H - 1, b);
     for (let x = xs; x < xe; x++) {
-      const tu = (((x - x1) * tex.w * cells / (x2 - x1)) | 0) % tex.w;
+      const tu = (((x - x1) * tex.w * cells / denom) | 0) % tex.w;
       for (let y = ys; y < ye; y++) {
-        const tv = Math.min(tex.h - 1, ((y - t) * tex.h / (b - t)) | 0);
+        const tv = Math.min(tex.h - 1, ((y - t) * tex.h / vden) | 0);
         const v = tex.data[tv * tex.w + tu];
-        if (v >= 0) fb.px[y * W + x] = fb.shaded(v, lvl, x, y);
+        if (v < 0) continue;
+        let s = fb.shaded(v, lvl, x, y);
+        if (hf > 0) s = fb.mix(s, haze.color, hf, x, y);
+        fb.px[y * W + x] = s;
       }
     }
     // gable roof: a slate triangle peaking over the facing wall
@@ -239,7 +268,9 @@ export class Renderer {
         const yTop = Math.round(t - roofH * frac);
         for (let y = Math.max(1, yTop); y < yb; y++) {
           const rc = y < yTop + 2 ? 5 : (((x + y) & 3) === 0 ? 4 : 3); // ridge / fleck / slate
-          fb.px[y * W + x] = fb.shaded(rc, lvl, x, y);
+          let s = fb.shaded(rc, lvl, x, y);
+          if (hf > 0) s = fb.mix(s, haze.color, hf, x, y);
+          fb.px[y * W + x] = s;
         }
       }
     }
@@ -247,7 +278,7 @@ export class Renderer {
   }
 
   // wall parallel to the view at lateral u, spanning depths dNear..dFar
-  sideWall(u, dNear, dFar, texName, boost, roof) {
+  sideWall(u, dNear, dFar, texName, boost, roof, haze) {
     const fb = this.fb;
     const tex = sprite(texName);
     const xn = Math.round(px(u, dNear)), xf = Math.round(px(u, dFar));
@@ -258,20 +289,27 @@ export class Renderer {
       if (!Number.isFinite(d)) continue;
       d = Math.max(dNear, Math.min(dFar, d));
       const t = Math.round(py(d, 't')), b = Math.round(py(d, 'b'));
+      if (b <= t) continue;                    // degenerate column at the far edge
       const tu = Math.min(tex.w - 1, (((d - dNear) / (dFar - dNear)) * tex.w) | 0);
       const lvl = shadeLevel(d, boost);
+      const hf = hazeFrac(d, haze);            // this column recedes, so haze grows with depth
       const ys = Math.max(1, t), ye = Math.min(H - 1, b);
       for (let y = ys; y < ye; y++) {
         const tv = Math.min(tex.h - 1, (((y - t) * tex.h) / (b - t)) | 0);
         const v = tex.data[tv * tex.w + tu];
-        if (v >= 0) fb.px[y * W + x] = fb.shaded(v, lvl, x, y);
+        if (v < 0) continue;
+        let s = fb.shaded(v, lvl, x, y);
+        if (hf > 0) s = fb.mix(s, haze.color, hf, x, y);
+        fb.px[y * W + x] = s;
       }
       // slate cornice/roofline above the eave (tapers with depth)
       if (roof && t > 1) {
         const yTop = Math.max(1, t - Math.max(2, Math.round((b - t) * 0.26)));
         for (let y = yTop; y < t; y++) {
           const rc = y < yTop + 2 ? 5 : (((x + y) & 3) === 0 ? 4 : 3);
-          fb.px[y * W + x] = fb.shaded(rc, lvl, x, y);
+          let s = fb.shaded(rc, lvl, x, y);
+          if (hf > 0) s = fb.mix(s, haze.color, hf, x, y);
+          fb.px[y * W + x] = s;
         }
       }
     }

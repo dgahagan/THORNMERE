@@ -731,3 +731,24 @@ Chromium clung to stale ES modules from the pre-`no-store` server.
 Before = the Phase-1 commit (flat 1px borders, Courier). All acceptance points
 for the chrome pass met: ornate frame, plaque, period type, dark Thornmere
 palette; no flat-modern borders/buttons remain.
+
+---
+
+## Bright-light view distance (2026-06-12)
+
+`src/ui/renderer.js`: DEPTHS extended 5→7 planes ([0.45 … 6.45]); bright daylight
+town reaches plane 6, with the farthest ~3 planes dithering toward the day-sky
+horizon colour (mist-blue) via the existing Bayer mix — no new palette entries.
+Dungeon torch/spell radii, no-light, and the darkness zone keep the old short
+clamp and render unchanged.
+
+- **Town at noon** — PASS. `art-review/viewdist-town-noon.png`: buildings recede
+  ~6 cells down the daylit street and dissolve into a dithered haze at the limit.
+- **Dungeon pixel-identity** — PASS (rigorous). Framebuffer hash of undercroft1
+  at (2,2) with the pre-change vs post-change renderer, fixed animation clock:
+  torchlit `2565138546` == `2565138546`, no-light `1066362181` == `1066362181`.
+  Byte-for-byte identical → the change is fully isolated to bright daylight.
+  Darkness zone (radius < 0) takes the unchanged one-step branch (haze undefined
+  → mix never runs).
+- Degenerate far rects guarded in frontWall/sideWall (`x2<=x1 || b<=t`); these
+  guards never fire at dungeon depths, preserving identity.
