@@ -285,6 +285,7 @@ function loadFrom(key) {
   const s = localStorage.getItem(key);
   if (!s) return false;
   game = gameFromJSON(s);
+  mapViewCycle = game.settings?.automap ? 1 : 0;  // show the overlay by default when automap is on
   return true;
 }
 
@@ -399,7 +400,12 @@ function optionsMode(back) {
       k: String(i + 1),
       label: `${t.label}: ${on ? 'ON' : 'off'}${locked ? ' [locked]' : ''}`,
       dim: locked,
-      fn: () => { if (!locked) { game.settings[t.id] = !on; optionsMode(back); } }
+      fn: () => {
+        if (locked) return;
+        game.settings[t.id] = !on;
+        if (t.id === 'automap') mapViewCycle = !on ? 1 : 0;  // reveal/hide the overlay to match the toggle
+        optionsMode(back);
+      }
     };
   }) : [];
   setMode(menuMode({
@@ -1717,6 +1723,7 @@ function customModeFlow() {
 
 function startNewGame() {
   if (game.settings.sharedInventory && !game.pool) game.pool = { items: [] };
+  mapViewCycle = game.settings?.automap ? 1 : 0;  // overlay visible from the first step in Remastered
   updateAutomap(game, [], {});
   setMode(exploreMode);
 }

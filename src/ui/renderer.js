@@ -401,30 +401,22 @@ export class Renderer {
 
   // ---- player automap (Remastered) ------------------------------------------
   parchmentMap(game, am, fullscreen) {
+    if (!fullscreen) return this.miniMap(game, am);
     const fb = this.fb;
     const map = currentMap(game);
-    const CS = fullscreen
-      ? Math.max(3, Math.floor(Math.min((W - 44) / map.w, (H - 50) / map.h)))
-      : Math.max(2, Math.floor(Math.min(110 / map.w, 110 / map.h)));
+    const CS = Math.max(3, Math.floor(Math.min((W - 44) / map.w, (H - 50) / map.h)));
     const mapW = map.w * CS, mapH = map.h * CS;
-    let ox, oy;
-    if (fullscreen) {
-      ox = ((W - mapW) >> 1);
-      oy = ((H - mapH) >> 1) + 8;
-      fb.fillRect(0, 0, W, H, C.bone);
-      fb.textCentered(map.name || 'MAP', W >> 1, 3, C.gold);
-      if (am && !am.synced) fb.textCentered('~ DESYNC ~', W >> 1, H - 10, C.dim);
-    } else {
-      ox = W - mapW - 14;
-      oy = 10;
-      fb.fillRect(ox - 3, oy - 3, mapW + 6, mapH + 6, C.black);
-    }
+    const ox = ((W - mapW) >> 1);
+    const oy = ((H - mapH) >> 1) + 8;
+    fb.fillRect(0, 0, W, H, C.bone);
+    fb.textCentered(map.name || 'MAP', W >> 1, 3, C.gold);
+    if (am && !am.synced) fb.textCentered('~ DESYNC ~', W >> 1, H - 10, C.dim);
     const visited = new Set(am ? am.visited : []);
     for (let y = 0; y < map.h; y++) {
       for (let x = 0; x < map.w; x++) {
         if (!visited.has(x + ',' + y)) continue;
         const sx = ox + x * CS, sy = oy + (map.h - 1 - y) * CS;
-        if (fullscreen) fb.fillRect(sx, sy, CS, CS, C.chalk);
+        fb.fillRect(sx, sy, CS, CS, C.chalk);
         if (edgeAt(map, x, y, 0) !== '0') fb.fillRect(sx, sy, CS + 1, 1, C.dim);
         if (edgeAt(map, x, y, 2) !== '0') fb.fillRect(sx, sy + CS, CS + 1, 1, C.dim);
         if (edgeAt(map, x, y, 3) !== '0') fb.fillRect(sx, sy, 1, CS + 1, C.dim);
@@ -432,14 +424,72 @@ export class Renderer {
       }
     }
     const cursor = am?.cursor || { x: game.pos.x, y: game.pos.y, facing: game.pos.facing };
-    const axc = ox + cursor.x * CS + (CS >> 1);
-    const ayc = oy + (map.h - 1 - cursor.y) * CS + (CS >> 1);
-    const f = cursor.facing;
-    const vx = [0, 1, 0, -1][f], vy = [-1, 0, 1, 0][f];
     const col = (am && !am.synced) ? C.candle : C.gold;
-    fb.line(axc - vx * CS * 0.3, ayc - vy * CS * 0.3, axc + vx * CS * 0.4, ayc + vy * CS * 0.4, col);
-    fb.pset(axc + vx, ayc + vy, col);
+    this._mapArrow(ox + cursor.x * CS + (CS >> 1),
+                   oy + (map.h - 1 - cursor.y) * CS + (CS >> 1),
+                   cursor.facing, col, Math.max(3, CS >> 1));
     fb.flush();
+  }
+
+  // Compact, see-through, party-centred local map for the corner overlay.
+  // Shows only an 8x8 window of discovered cells that scrolls with the party,
+  // drawn as a small solid "parchment scrap" so it reads cleanly on any scene
+  // (the indexed framebuffer has no alpha, so true transparency isn't viable).
+  miniMap(game, am) {
+    const fb = this.fb;
+    const map = currentMap(game);
+    const cursor = am?.cursor || { x: game.pos.x, y: game.pos.y, facing: game.pos.facing };
+    const VIEW = 8, CS = 11, half = VIEW >> 1, span = VIEW * CS;
+    const ox = W - span - 6, oy = 6;
+    fb.fillRect(ox - 3, oy - 3, span + 6, span + 6, C.black);   // thin dark edge
+    fb.fillRect(ox - 2, oy - 2, span + 4, span + 4, C.bone);    // parchment ground
+    const x0 = cursor.x - half, y0 = cursor.y - half;   // bottom-left map cell of the window
+    const visited = am ? new Set(am.visited) : new Set();
+    for (let wy = 0; wy < VIEW; wy++) {
+      for (let wx = 0; wx < VIEW; wx++) {
+        const mx = x0 + wx, my = y0 + wy;
+        if (mx < 0 || my < 0 || mx >= map.w || my >= map.h) continue;
+        if (!visited.has(mx + ',' + my)) continue;
+        const sx = ox + wx * CS, sy = oy + (VIEW - 1 - wy) * CS;  // map y grows up; invert for screen
+        fb.fillRect(sx, sy, CS, CS, C.chalk);                    // explored floor
+        if (edgeAt(map, mx, my, 0) !== '0') fb.fillRect(sx, sy, CS + 1, 1, C.dim);
+        if (edgeAt(map, mx, my, 2) !== '0') fb.fillRect(sx, sy + CS, CS + 1, 1, C.dim);
+        if (edgeAt(map, mx, my, 3) !== '0') fb.fillRect(sx, sy, 1, CS + 1, C.dim);
+        if (edgeAt(map, mx, my, 1) !== '0') fb.fillRect(sx + CS, sy, 1, CS + 1, C.dim);
+      }
+    }
+    const col = (am && !am.synced) ? C.candle : C.gold;
+    this._mapArrow(ox + half * CS + (CS >> 1), oy + (VIEW - 1 - half) * CS + (CS >> 1),
+                   cursor.facing, col, 4);
+    fb.flush();
+  }
+
+  // Small filled facing-arrow (triangle) centred on (cx,cy), pointing the way
+  // the party faces, with a dark outline so it reads on any background.
+  // facing: 0=N 1=E 2=S 3=W.
+  _mapArrow(cx, cy, facing, col, r) {
+    const fb = this.fb;
+    const vx = [0, 1, 0, -1][facing], vy = [-1, 0, 1, 0][facing];
+    const px = -vy, py = vx;                            // perpendicular -> arrowhead width
+    const tri = (rr, color) => {
+      const ax = cx + vx * rr,          ay = cy + vy * rr;            // tip
+      const bx = cx - vx * rr + px * rr, by = cy - vy * rr + py * rr; // back-left
+      const dx = cx - vx * rr - px * rr, dy = cy - vy * rr - py * rr; // back-right
+      const minx = Math.min(ax, bx, dx) | 0, maxx = Math.max(ax, bx, dx) | 0;
+      const miny = Math.min(ay, by, dy) | 0, maxy = Math.max(ay, by, dy) | 0;
+      const edge = (x, y, x0, y0, x1, y1) => (x - x0) * (y1 - y0) - (y - y0) * (x1 - x0);
+      for (let y = miny; y <= maxy; y++) {
+        for (let x = minx; x <= maxx; x++) {
+          const e1 = edge(x + 0.5, y + 0.5, ax, ay, bx, by);
+          const e2 = edge(x + 0.5, y + 0.5, bx, by, dx, dy);
+          const e3 = edge(x + 0.5, y + 0.5, dx, dy, ax, ay);
+          if ((e1 >= 0 && e2 >= 0 && e3 >= 0) || (e1 <= 0 && e2 <= 0 && e3 <= 0))
+            fb.pset(x, y, color);
+        }
+      }
+    };
+    tri(r + 1, C.black);   // outline
+    tri(r, col);           // body
   }
 
   // ---- debug automap ----------------------------------------------------------
