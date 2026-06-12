@@ -74,9 +74,11 @@ body { display: flex; align-items: center; justify-content: center; }
 #game {
   width: 1100px;
   background: var(--black);
-  border: 2px solid var(--gold-dark);
-  outline: 1px solid var(--umber);
-  padding: 10px;
+  /* ornate thorn-vine frame (assets/chrome/chrome_frame.png, 72×72 9-slice) */
+  border: 24px solid transparent;
+  border-image: url('assets/chrome/chrome_frame.png') 24 round;
+  image-rendering: pixelated;
+  padding: 12px;
   box-shadow: 0 0 50px rgba(216, 162, 36, 0.12);
 }
 
@@ -91,47 +93,69 @@ body { display: flex; align-items: center; justify-content: center; }
   width: 640px;
   height: 480px;
   image-rendering: pixelated;
-  border: 1px solid var(--slate-dark);
+  border: 2px solid var(--gold-dark);
 }
 
 /* viewport movement arrows: mouse parity for ↑ ← → ↓ */
 .nav {
   position: absolute;
   color: var(--candle);
-  background: rgba(22, 18, 30, 0.55);
-  border: 1px solid var(--slate-dark);
-  padding: 2px 10px;
+  background: var(--umber);
+  /* carved button bevel (assets/chrome/chrome_button.png) */
+  border: 8px solid transparent;
+  border-image: url('assets/chrome/chrome_button.png') 8 stretch;
+  image-rendering: pixelated;
+  padding: 1px 8px;
   cursor: pointer;
   user-select: none;
   opacity: 0;
   transition: opacity 0.12s;
   font-size: 16px;
 }
-#viewwrap:hover .nav { opacity: 0.75; }
-.nav:hover { opacity: 1 !important; background: var(--shadow); border-color: var(--gold); }
+#viewwrap:hover .nav { opacity: 0.8; }
+.nav:hover { opacity: 1 !important; color: var(--chalk); }
+.nav:active { border-image: url('assets/chrome/chrome_button_down.png') 8 stretch; }
 #nav-up    { top: 8px; left: 50%; transform: translateX(-50%); }
 #nav-down  { bottom: 28px; left: 50%; transform: translateX(-50%); }
 #nav-left  { left: 8px; top: 50%; transform: translateY(-50%); }
 #nav-right { right: 8px; top: 50%; transform: translateY(-50%); }
 
+/* carved nameplate plaque under the viewport (assets/chrome/chrome_plaque.png) */
 #loc {
-  margin-top: 2px;
-  color: var(--slate);
-  font-size: 12px;
-  height: 16px;
+  margin: 8px auto 0;
+  width: max-content;
+  max-width: 90%;
+  min-width: 140px;
+  text-align: center;
+  color: var(--candle);
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 1px;
+  line-height: 1;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 6px 22px;
+  border: 8px solid transparent;
+  border-image: url('assets/chrome/chrome_plaque.png') 8 fill repeat;
+  image-rendering: pixelated;
 }
+#loc:empty { display: none; }
 
 #right { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
-/* titled panels */
-.panel { position: relative; border: 1px solid var(--slate-dark); }
+/* titled panels — slim carved bevel border (assets/chrome/chrome_panel.png) */
+.panel {
+  position: relative;
+  border: 8px solid transparent;
+  border-image: url('assets/chrome/chrome_panel.png') 8 stretch;
+  image-rendering: pixelated;
+}
 .panel::before {
   content: attr(data-title);
   position: absolute;
-  top: -10px;
-  left: 10px;
+  top: -13px;
+  left: 8px;
   background: var(--black);
   color: var(--gold);
   font-family: var(--font-display);
@@ -139,6 +163,7 @@ body { display: flex; align-items: center; justify-content: center; }
   line-height: 1;
   letter-spacing: 1px;
   padding: 0 6px;
+  z-index: 1;
 }
 .panel[data-title="·"]::before { content: none; }
 
@@ -244,24 +269,26 @@ body { display: flex; align-items: center; justify-content: center; }
   min-height: 30px;
 }
 #cmdbar button {
-  background: var(--night);
+  background: var(--umber);
   color: var(--parchment);
-  border: 1px solid var(--slate-dark);
+  /* carved-wood button bevel (assets/chrome/chrome_button.png) */
+  border: 8px solid transparent;
+  border-image: url('assets/chrome/chrome_button.png') 8 stretch;
+  image-rendering: pixelated;
   font-family: var(--font-body);
   font-size: 14px;
-  padding: 4px 10px;
+  padding: 2px 9px;
   cursor: pointer;
 }
-#cmdbar button:hover { border-color: var(--gold); color: var(--candle); background: var(--shadow); }
+/* hover = candle-glow text, never a background swap */
+#cmdbar button:hover { color: var(--candle); }
+#cmdbar button:active { border-image: url('assets/chrome/chrome_button_down.png') 8 stretch; }
 #cmdbar button kbd {
-  background: var(--shadow);
-  border: 1px solid var(--slate-dark);
-  border-radius: 2px;
-  padding: 0 5px;
-  margin-right: 6px;
+  padding: 0 4px;
+  margin-right: 5px;
   color: var(--gold);
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #hint {

@@ -372,16 +372,55 @@ export class Renderer {
     this.fb.flush();
   }
 
+  // Copy a CW×CH cell from sprite sp's (sx,sy) to the framebuffer at (dx,dy),
+  // 1:1, honouring transparency and clipping to the viewport. Used to tile the
+  // ornate thorn-vine chrome (data/art/chrome.json) around framebuffer screens.
+  _blitCell(sp, sx, sy, cw, ch, dx, dy) {
+    const fb = this.fb;
+    for (let y = 0; y < ch; y++) {
+      const py2 = dy + y; if (py2 < 0 || py2 >= H) continue;
+      for (let x = 0; x < cw; x++) {
+        const px2 = dx + x; if (px2 < 0 || px2 >= W) continue;
+        const v = sp.data[(sy + y) * sp.w + (sx + x)];
+        if (v >= 0) fb.px[py2 * W + px2] = v;
+      }
+    }
+  }
+
+  // Tile the chrome_frame 9-slice (36×36, 12px cells) around the whole screen:
+  // fixed corners, edge cells repeated (clipped on the final partial tile).
+  ornateScreenBorder() {
+    const sp = ART.sprites.chrome_frame;
+    if (!sp) { this.fb.rect(6, 6, W - 12, H - 12, C.gold); return; }
+    const C12 = 12;
+    // corners
+    this._blitCell(sp, 0, 0, C12, C12, 0, 0);
+    this._blitCell(sp, 24, 0, C12, C12, W - C12, 0);
+    this._blitCell(sp, 0, 24, C12, C12, 0, H - C12);
+    this._blitCell(sp, 24, 24, C12, C12, W - C12, H - C12);
+    // top & bottom edges
+    for (let x = C12; x < W - C12; x += C12) {
+      const cw = Math.min(C12, W - C12 - x);
+      this._blitCell(sp, 12, 0, cw, C12, x, 0);
+      this._blitCell(sp, 12, 24, cw, C12, x, H - C12);
+    }
+    // left & right edges
+    for (let y = C12; y < H - C12; y += C12) {
+      const ch = Math.min(C12, H - C12 - y);
+      this._blitCell(sp, 0, 12, C12, ch, 0, y);
+      this._blitCell(sp, 24, 12, C12, ch, W - C12, y);
+    }
+  }
+
   splash(title, sub) {
     const fb = this.fb;
     fb.clear(0);
-    // starfield night-sky flourish
+    // starfield night-sky flourish (kept clear of the ornate border band)
     for (let i = 0; i < 90; i++) {
-      const x = (i * 97 + 31) % W, y = (i * 61 + 7) % H;
+      const x = 14 + (i * 97 + 31) % (W - 28), y = 14 + (i * 61 + 7) % (H - 28);
       fb.pset(x, y, (i % 5 === 0) ? C.bone : 2);
     }
-    fb.rect(6, 6, W - 12, H - 12, C.gold);
-    fb.rect(8, 8, W - 16, H - 16, C.frame);
+    this.ornateScreenBorder();
     const big = ART.sprites.scene_title;
     if (big && /THORNMERE/i.test(title)) {
       fb.blit(big, CX - big.w, CY - big.h - 18, big.w * 2, big.h * 2);

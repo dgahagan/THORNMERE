@@ -1,0 +1,167 @@
+{
+  "comment": "Ornate DOM-chrome 9-slice border-image sources (gen_chrome.js). Brass thorn-vine on umber, dark Thornmere palette. -1 = transparent.",
+  "sprites": {
+    "chrome_frame": {
+      "w": 36,
+      "h": 36,
+      "legend": {
+        ".": -1,
+        "A": 8,
+        "B": 9,
+        "C": 11,
+        "D": 28,
+        "E": 29,
+        "F": 30
+      },
+      "rows": [
+        "ADEBBBBBBBDAAAAAAAAAAAAAAEDBBBBBBBDA",
+        "ADEBBBBBBBDADDDDDDDDDDDDAEDBBBBBBBDA",
+        "ADEBBBBBBBDAEEEEEEDEEEEEAEDBBBBBBBDA",
+        "ADEDDDDDBBDABBBBBDCDBBBBAEDBDDDDDBDA",
+        "ADEDECEDBBDABBBBDCCCDBBBAEDBDECEDBDA",
+        "ADEDCFCDBBDAEEEDCEFECDEEAEDBDCFCDBDA",
+        "ADEDCCCDBBDADDDDCEEECDDDAEDBDCCCDBDA",
+        "ADEDDDDDBBDABBBBDCCCDBBBAEDBDDDDDBDA",
+        "ADEBBBBBBBDABBBBBDCDBBBBAEDBBBBBBBDA",
+        "ADEBBBBBBBDABBBBBBDBBBBBAEDBBBBBBBDA",
+        "ADEBBBBBBBDADDDDDDDDDDDDAEDBBBBBBBDA",
+        "ADEBBBBBBBDAAAAAAAAAAAAAAEDBBBBBBBDA",
+        "ADEBBEDBBBDA............AEDBBDEBBBDA",
+        "ADEBBEDBBBDA............AEDBBDEBBBDA",
+        "ADEBBEDBBBDA............AEDBBDEBBBDA",
+        "ADEBBDDBBBDA............AEDBBDDDBBDA",
+        "ADEBDCCDBBDA............AEDBBDCCDBDA",
+        "ADEDCEECDBDA............AEDBDCEECDDA",
+        "ADDCCFECCDDA............AEDDCCFECCDA",
+        "ADEDCEECDBDA............AEDBDCEECDDA",
+        "ADEBDCCDBBDA............AEDBBDCCDBDA",
+        "ADEBBDDBBBDA............AEDBBDDDBBDA",
+        "ADEBBEDBBBDA............AEDBBDEBBBDA",
+        "ADEBBEDBBBDA............AEDBBDEBBBDA",
+        "ADEBBBBBBBDAAAAAAAAAAAAAAEDBBBBBBBDA",
+        "ADEBBBBBBBDAEEEEEEEEEEEEAEDBBBBBBBDA",
+        "ADEBBBBBBBDADDDDDDDDDDDDAEDBBBBBBBDA",
+        "ADEBBBBBBBDABBBBBBDBBBBBAEDBBBBBBBDA",
+        "ADEDDDDDBBDABBBBBDCDBBBBAEDBDDDDDBDA",
+        "ADEDECEDBBDADDDDDCCCDDDDAEDBDECEDBDA",
+        "ADEDCFCDBBDAEEEDCEFECDEEAEDBDCFCDBDA",
+        "ADEDCCCDBBDABBBDCEEECDBBAEDBDCCCDBDA",
+        "ADEDDDDDBBDABBBBDCCCDBBBAEDBDDDDDBDA",
+        "ADEBBBBBBBDABBBBBDCDBBBBAEDBBBBBBBDA",
+        "ADEBBBBBBBDADDDDDDDDDDDDAEDBBBBBBBDA",
+        "ADEBBBBBBBDAAAAAAAAAAAAAAEDBBBBBBBDA"
+      ]
+    },
+    "chrome_panel": {
+      "w": 12,
+      "h": 12,
+      "legend": {
+        ".": -1,
+        "A": 2,
+        "B": 3,
+        "C": 5,
+        "D": 6,
+        "E": 9,
+        "F": 28
+      },
+      "rows": [
+        "FDCEFFFFEBAF",
+        "FDCEDDDDEBAF",
+        "FDCECCCCEBAF",
+        "FDCEEEEEEBAF",
+        "FDCE....EBAF",
+        "FDCE....EBAF",
+        "FDCE....EBAF",
+        "FDCE....EBAF",
+        "EEEEEEEEEBAF",
+        "BBBBBBBBEBAF",
+        "AAAAAAAAEBAF",
+        "FFFFFFFFEBAF"
+      ]
+    },
+    "chrome_plaque": {
+      "w": 32,
+      "h": 16,
+      "legend": {
+        "A": 8,
+        "B": 10,
+        "C": 11,
+        "D": 28,
+        "E": 29,
+        "F": 30
+      },
+      "rows": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "ADAAEEEEEEEEEEEEEEEEEEEEEEEEAADA",
+        "ADEADDDDDDDDDDDDDDDDDDDDDDDDAEDA",
+        "ADEACCCCCCCCCCCCCCCCCCCCCCCCAEDA",
+        "ADECCBBBBBBBBBBBBBBBBBBBBBBCCEDA",
+        "ADECCBBBBBBBBBBBBBBBBBBBBBBCCEDA",
+        "ADECCBBBBBBBBBBBBBBBBBBBBBBCCEDA",
+        "ADFCCBBBBBBBBBBBBBBBBBBBBBBCCFDA",
+        "ADFCCBBBBBBBBBBBBBBBBBBBBBBCCFDA",
+        "ADECCBBBBBBBBBBBBBBBBBBBBBBCCEDA",
+        "ADECCBBBBBBBBBBBBBBBBBBBBBBCCEDA",
+        "ADECCBBBBBBBBBBBBBBBBBBBBBBCCEDA",
+        "ADEABBBBBBBBBBBBBBBBBBBBBBBBAEDA",
+        "ADEABBBBBBBBBBBBBBBBBBBBBBBBAEDA",
+        "ADAADDDDDDDDDDDDDDDDDDDDDDDDAADA",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      ]
+    },
+    "chrome_button": {
+      "w": 12,
+      "h": 12,
+      "legend": {
+        ".": -1,
+        "A": 8,
+        "B": 9,
+        "C": 10,
+        "D": 12,
+        "E": 28,
+        "F": 30
+      },
+      "rows": [
+        "EEEEEEEEEEEE",
+        "EFDCFFFFCBAE",
+        "EDDCDDDDCBAE",
+        "ECCCCCCCCBAE",
+        "EFDC....CBAE",
+        "EFDC....CBAE",
+        "EFDC....CBAE",
+        "EFDC....CBAE",
+        "ECCCCCCCCBAE",
+        "EBBBBBBBBBAE",
+        "EAAAAAAAAAAE",
+        "EEEEEEEEEEEE"
+      ]
+    },
+    "chrome_button_down": {
+      "w": 12,
+      "h": 12,
+      "legend": {
+        ".": -1,
+        "A": 8,
+        "B": 9,
+        "C": 10,
+        "D": 12,
+        "E": 28,
+        "F": 30
+      },
+      "rows": [
+        "EEEEEEEEEEEE",
+        "EBAEBBBBCDFE",
+        "EAAEAAAACDFE",
+        "EEEEEEEECDFE",
+        "EBAE....CDFE",
+        "EBAE....CDFE",
+        "EBAE....CDFE",
+        "EBAE....CDFE",
+        "ECCCCCCCCDFE",
+        "EDDDDDDDDDFE",
+        "EFFFFFFFFFFE",
+        "EEEEEEEEEEEE"
+      ]
+    }
+  }
+}

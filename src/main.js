@@ -5,7 +5,7 @@ import { Rng, rollDice } from './core/rng.js';
 import {
   newGame, gameToJSON, gameFromJSON, currentMap, partyChars, realParty,
   aliveParty, charById, mapStateFor, partyHasItem, isNight, partySlotsFree,
-  automapFor
+  automapFor, streetAt
 } from './core/gamestate.js';
 import { TOGGLES, newSettings } from './core/settings.js';
 import {
@@ -161,9 +161,14 @@ function render() {
   if (mode === exploreMode) setMenu(exploreContext());
   renderStatus(game, els.status);
   renderRoster(game, els.roster, highlightId);
+  // carved nameplate under the viewport: the place you stand (street or map),
+  // with coords appended only when a compass/debug reveals them
   const showCoords = game.debugMap
     || (game.settings?.automap && game.effects?.some(e => e.kind === 'compass'));
-  els.loc.textContent = showCoords ? `(${game.pos.x},${game.pos.y}) ${FACING_NAMES[game.pos.facing]}` : '';
+  const place = streetAt(game) || currentMap(game).name || '';
+  els.loc.textContent = showCoords
+    ? `${place}  (${game.pos.x},${game.pos.y}) ${FACING_NAMES[game.pos.facing]}`
+    : place;
 }
 
 // never an empty box: describe the square and what the party faces

@@ -668,3 +668,66 @@ from `candidates/`. `combatPortrait` cap raised to 224 so 112-wide monsters
 display at a crisp 2× (224px), matching interiors. Verified eye_pulse lands on
 the eyes/visor for spider/golem/mock_king/candleking/knight; 42/42 tests.
 Batch script: `dev/pixel-art/recrush_monsters_112.py`.
+
+---
+
+## Ornate DOM chrome — period UI pass (2026-06-12)
+
+Hand-pixeled in `tools/gen_chrome.js` → `data/art/chrome.json`, rendered with
+`tools/artrender.js`, judged from PNGs at scale 8–16. Brass thorn-vine on
+umber/peat (dark Thornmere palette), 9-slice `border-image` sources for CSS plus
+a title-screen thorn-vine the framebuffer tiles. Stolen-in-spirit from the Amiga
+ornate frame in `dev/original-amiga-screenshots/`, never its cream colours.
+
+- **chrome_frame** (36×36, slice 12) — PASS. `art-review/chrome_frame.png`.
+  Corner brass bosses, winged clasps on top/bottom edges, four-point diamonds on
+  the sides, gold rules in/out over umber. Tiling cells verified seamless: top
+  edge cable runs y5/6 full-width so clasps chain; side cable x5/6 full-height.
+  Caveat: corner bosses are square-blocky (acceptable studs, not filigree).
+- **chrome_panel** (12×12, slice 4) — PASS. Slim carved bevel: gold-dark outer
+  rule, bone/stone light on top-left, slate/shadow dark on bottom-right, umber
+  inner. Replaces the flat 1px slate panel borders.
+- **chrome_plaque** (32×16, 9-slice caps 4 / middle tiles) — PASS w/ caveat.
+  `art-review/chrome_plaque.png`. Gold-rimmed wooden nameplate, scroll caps with
+  candle highlight. Caps are simple (4px) — readable as a plaque; revisit if it
+  looks thin behind the location text in-browser.
+- **chrome_button** (12×12, slice 4) — PASS. Raised carved bevel, candle/gold
+  light top-left, leather/peat shadow bottom-right, gold-dark outer rule.
+- **chrome_button_down** (12×12, slice 4) — PASS. `art-review/chrome_button_down.png`.
+  Inverted bevel (light bottom-right) reads as pressed/inset. First draft was
+  too uniformly bright; ramp split into peat top-left / candle bottom-right fixed
+  it.
+
+In-browser border-image judging (the true test of tiling/scale) recorded below
+as screens are wired.
+
+### In-browser border-image verdicts (2026-06-12)
+
+Wired into `style.css` as `border-image` (assets/chrome/*.png at 2×, displayed
+1:1, `image-rendering: pixelated`). Judged live via Playwright. Cache note: the
+dev server (`tools/devserver.py`) gained a `/vN/` cache-bust prefix because
+Chromium clung to stale ES modules from the pre-`no-store` server.
+
+- **Outer frame** on `#game` — PASS. `art-review/chrome-after-title.png`. Brass
+  thorn-vine reads ornate and period at the container scale; `round` repeat tiles
+  the clasps with no seams; corners crisp.
+- **Title-screen framebuffer border** (`renderer.ornateScreenBorder`) — PASS.
+  Same `chrome_frame` tiled into the 320×240 framebuffer; nests inside the DOM
+  frame like the Amiga's layered borders. First fix needed: `chrome` was missing
+  from `art.js` SPRITE_DOCS, so the sprite was undefined and it fell back to a
+  plain gold rect — added and re-verified.
+- **Panel bevels** on `.panel` — PASS. `art-review/chrome-after-explore.png`.
+  Slim carved frame replaces the flat 1px slate; gold blackletter data-title
+  tabs sit on the top rail.
+- **Location plaque** (`#loc`) — PASS. Carved nameplate centred under the
+  viewport ("Bellward"), gold-on-umber, display font — the Amiga "The guild"
+  nameplate equivalent. `#loc` is now populated with the street/map name
+  (`src/main.js`), previously empty outside debug.
+- **Carved buttons** (`#cmdbar button`, `.nav`) — PASS. Raised bevel + umber
+  fill + gold blackletter keycap; hover = candle-glow text (no bg swap);
+  `:active` swaps to the inset `chrome_button_down` bevel. No flat-modern hover
+  remains.
+
+Before = the Phase-1 commit (flat 1px borders, Courier). All acceptance points
+for the chrome pass met: ornate frame, plaque, period type, dark Thornmere
+palette; no flat-modern borders/buttons remain.
