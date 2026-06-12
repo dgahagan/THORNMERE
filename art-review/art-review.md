@@ -752,3 +752,27 @@ clamp and render unchanged.
   → mix never runs).
 - Degenerate far rects guarded in frontWall/sideWall (`x2<=x1 || b<=t`); these
   guards never fire at dungeon depths, preserving identity.
+
+---
+
+## Smooth step (2026-06-12)
+
+`src/ui/slide.js` (pure, unit-tested in `test/slide.test.js`) + `renderer.camOffset`
+threaded through draw/backdrop/walls. A forward/backward move applies instantly;
+the camera then glides one cell (eased, 140ms) via requestAnimationFrame.
+
+- **Glide** — PASS. Real ArrowUp keydown: camOffset swept −1 → 0 over ~50 frames,
+  landed exactly on 0, party advanced one cell.
+- **Mid-glide render** — PASS. `art-review/smoothstep-{rest,mid}.png`: at
+  camOffset −0.5 the near walls slide past the edges and the next plane grows —
+  correct single-point-perspective in-between, not a duplicated frame.
+- **Held-key chaining** — PASS. Holding forward ~650ms walked 5 cells back-to-back
+  at glide pace (no dead time, no queue: repeats are ignored mid-glide and the
+  slide auto-chains on landing while the key is held).
+- **Turning instant** — PASS. A turn keeps camOffset at 0 (no slide) and snaps any
+  in-flight glide first.
+- **Interrupts snap** — by construction: bumps, spinner/teleport desync, and any
+  building/gate/stairs/riddle/combat/mapchange event set canSlide=false →
+  snapSlide(), so the camera is parked on the true cell before the new mode draws.
+- At rest camOffset=0 the renderer math is byte-identical to before (max(NEAR,…)
+  and the −co terms are no-ops), so no non-walking screen changed.

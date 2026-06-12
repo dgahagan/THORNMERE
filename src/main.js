@@ -35,6 +35,7 @@ import {
   poolAdd, poolRemove
 } from './core/services.js';
 import { Renderer } from './ui/renderer.js';
+import { slideOffset, SLIDE_MS } from './ui/slide.js';
 import { loadArt } from './ui/art.js';
 import { renderStatus, renderRoster, tickNote } from './ui/panels.js';
 import {
@@ -55,6 +56,11 @@ let highlightId = null;
 let narrating = false;
 let sceneFlash = null;   // transient portrait-window scene: {id, label, until}
 let mapViewCycle = 0;    // 0=off 1=corner-overlay 2=full-screen (Remastered automap)
+// Smooth-step: a forward/backward move applies instantly, then the camera glides
+// one cell via requestAnimationFrame. Turning, bumps and mode changes never slide.
+let slideActive = false;  // a glide is currently animating
+let slideRAF = null;      // its rAF handle
+let walkHeld = false;     // forward key physically held — chains glides at walk pace
 
 // Reduced XP: multiplier from balance.json, applied when game.settings.reducedXp is on.
 function getXpMult() { return game.settings?.reducedXp ? DB.balance.remasteredXpMultiplier : 1.0; }
@@ -365,7 +371,10 @@ const exploreMode = {
   enter() { setMenu(exploreContext()); setMusic('explore'); },
   onKey(e) {
     const k = e.key.toLowerCase();
-    if (k === 'arrowup' || k === 'w') return doStep(false);
+    // forward: ignore key-repeat while a glide is mid-flight (no queue deeper than
+    // one step); the slide chains itself if the key is still held when it lands.
+    if (k === 'arrowup' || k === 'w') { if (slideActive) return; return doStep(false); }
+    if (slideActive) snapSlide();   // any other action lands the camera first
     if (k === 'arrowdown' || k === 's') { turn(game, 2); updateAutomap(game, [], { isTurn: true }); return render(); }
     if (k === 'arrowleft' || k === 'a') { turn(game, -1); updateAutomap(game, [], { isTurn: true }); return render(); }
     if (k === 'arrowright' || k === 'd') { turn(game, 1); updateAutomap(game, [], { isTurn: true }); return render(); }
@@ -444,15 +453,51 @@ function archetypeOf(clsId) { return ARCHETYPES[clsId] || 'caster'; }
 // breathe/eye_pulse ever played in-engine.
 function portraitOf(ch) { return ch.portrait || `pc_${ch.race}_${archetypeOf(ch.cls)}`; }
 
+// events that change mode/area — never animate a slide into them, just snap
+const SLIDE_BREAK = new Set(['building', 'gate', 'riddlePrompt', 'stairsPrompt', 'combat', 'mapchange']);
+
+// Land any in-progress glide immediately (camera back at the true cell). Called
+// before turns, menus, and any mode change so the next frame is drawn correctly.
+function snapSlide() {
+  if (slideRAF) { cancelAnimationFrame(slideRAF); slideRAF = null; }
+  slideActive = false;
+  if (renderer) renderer.camOffset = 0;
+}
+
+// Glide the camera one cell home (from -1 forward / +1 backward → 0), eased.
+// Logic has already applied; this is purely the camera. On finish, if the
+// forward key is still held we chain the next step so walking has no dead time.
+function startSlide(backward) {
+  const from = backward ? 1 : -1;
+  const t0 = performance.now();
+  slideActive = true;
+  if (slideRAF) cancelAnimationFrame(slideRAF);
+  const tick = (now) => {
+    const t = (now - t0) / SLIDE_MS;
+    if (t >= 1) {
+      renderer.camOffset = 0; slideRAF = null; slideActive = false;
+      drawView();
+      if (walkHeld && mode === exploreMode && game) doStep(false);  // chain at glide pace
+      return;
+    }
+    renderer.camOffset = slideOffset(from, t);
+    drawView();
+    slideRAF = requestAnimationFrame(tick);
+  };
+  renderer.camOffset = from;
+  slideRAF = requestAnimationFrame(tick);
+}
+
 function doStep(backward) {
   const preFacing = game.pos.facing;
   const stepDir = backward ? (preFacing + 2) % 4 : preFacing;
   const intX = game.pos.x + DX[stepDir];
   const intY = game.pos.y + DY[stepDir];
 
-  const events = step(game, rng, { backward });
+  const events = step(game, rng, { backward });   // logic applies instantly, as always
 
-  if (events.some(e => e.type === 'bump')) {
+  const bumped = events.some(e => e.type === 'bump');
+  if (bumped) {
     sfx('bump');
   } else {
     sfx(['undercroft', 'barrow'].some(p => game.pos.map.startsWith(p)) ? 'footstep_dirt' : 'footstep_stone');
@@ -463,7 +508,17 @@ function doStep(backward) {
       teleportDesync: game.pos.x !== intX || game.pos.y !== intY,
     });
   }
-  handleEvents(events);
+  // Slide only a clean one-cell move that stays in exploration. Bumps, spinners,
+  // teleports and anything that opens a building/combat/stairs snap instead, so
+  // the camera never animates a misleading path.
+  const moved = !bumped && game.pos.facing === preFacing
+    && game.pos.x === intX && game.pos.y === intY;
+  const canSlide = moved && !events.some(e => SLIDE_BREAK.has(e.type));
+
+  handleEvents(events);                              // may change mode (instant)
+
+  if (canSlide && mode === exploreMode) startSlide(backward);
+  else snapSlide();
 }
 
 function lookHere() {
@@ -1872,10 +1927,14 @@ async function boot() {
   renderer = new Renderer(els.view);
   renderer.splash('THORNMERE', 'loading the fen…');
   await Promise.all([loadAll(fetchJson), loadAudio(fetchJson)]);
+  const isForwardKey = (key) => key === 'ArrowUp' || key === 'w' || key === 'W';
   window.addEventListener('keydown', (e) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Tab'].includes(e.key)) e.preventDefault();
+    if (isForwardKey(e.key)) walkHeld = true;   // chain glides while held
     pressKey(e.key);
   });
+  window.addEventListener('keyup', (e) => { if (isForwardKey(e.key)) walkHeld = false; });
+  window.addEventListener('blur', () => { walkHeld = false; });
   // animation tick: repaint the viewport at idle-loop speed (input never waits)
   setInterval(() => { drawView(); tickNote(); }, 130);
   setMode(mainMenu());

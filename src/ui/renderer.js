@@ -47,6 +47,7 @@ export class Renderer {
   constructor(canvas) {
     this.fb = new Fb(canvas);
     this.now = 0;          // animation clock (ms), set by the UI loop
+    this.camOffset = 0;    // fractional forward camera glide for smooth-step (0 = at rest)
   }
 
   // ---- main exploration view ----------------------------------------------
@@ -80,8 +81,9 @@ export class Renderer {
       ? { color: style.sky.day.horizon, start: DEPTHS[maxDepth] - 3.0, full: DEPTHS[maxDepth] + 0.6 }
       : null;
 
-    this.backdrop(game, map, style, maxDepth, boost, haze);
-    this.walls(game, map, style, maxDepth, boost, haze);
+    const co = this.camOffset || 0;            // smooth-step: camera glides forward by `co` cells
+    this.backdrop(game, map, style, maxDepth, boost, haze, co);
+    this.walls(game, map, style, maxDepth, boost, haze, co);
     this.frame();
     if (game.debugMap) this.automap(game);
     fb.flush();
@@ -94,7 +96,7 @@ export class Renderer {
   }
 
   // ---- floor / ceiling / sky ------------------------------------------------
-  backdrop(game, map, style, maxDepth, boost, haze) {
+  backdrop(game, map, style, maxDepth, boost, haze, co = 0) {
     const fb = this.fb;
     const dMax = DEPTHS[maxDepth];
     const town = map.kind === 'town';
@@ -128,7 +130,8 @@ export class Renderer {
           // perspective cobblestone street: running-bond grid in world space,
           // dark mortar at the seams, a few stone shades per cobble
           const wu = (x - CX) * d / (2 * K);
-          const rowF = d * 2.6, rowI = Math.floor(rowF);
+          // +co scrolls the cobbles toward the camera as the smooth-step glides
+          const rowF = (d + co) * 2.6, rowI = Math.floor(rowF);
           const colF = wu * 4.0 + (rowI & 1 ? 0.5 : 0);
           const su = ((colF % 1) + 1) % 1, sv = ((rowF % 1) + 1) % 1;
           if (su < 0.11 || sv < 0.13) base = 3;          // mortar (slate-dark)
@@ -176,7 +179,7 @@ export class Renderer {
   }
 
   // ---- the maze -------------------------------------------------------------
-  walls(game, map, style, maxDepth, boost, haze) {
+  walls(game, map, style, maxDepth, boost, haze, co = 0) {
     const f = game.pos.facing;
     const rf = (f + 1) % 4;
     const town = map.kind === 'town';
@@ -204,8 +207,9 @@ export class Renderer {
     };
 
     for (let k = maxDepth; k >= 0; k--) {
-      const dFar = planeDist(k);
-      const dNear = planeDist(k - 1);
+      const dFar = planeDist(k) - co;          // smooth-step: glide every plane toward the camera
+      if (dFar <= NEAR) continue;              // plane has passed behind the camera mid-slide
+      const dNear = Math.max(NEAR, planeDist(k - 1) - co);
       const lvlFar = shadeLevel(dFar, boost);
 
       // side columns
