@@ -37,9 +37,10 @@ npm test           # logic + art + audio data integrity suites
 ```
 
 No accounts, no network access, no downloads — everything is in this repo.
-**All audio is synthesized in code; all art is text-grid pixel data. Nothing
-is downloaded, and there are no binary assets to credit — every sprite and
-melody is original to this repo.**
+**All audio is synthesized in code; all art (including the ornate UI chrome) is
+text-grid pixel data — every sprite and melody is original to this repo.** The
+only bundled binaries are four OFL-licensed period fonts under `assets/fonts/`,
+each committed beside its license (Pirata One, IM Fell English, MedievalSharp).
 
 ## Screenshots (what you should see)
 
@@ -55,6 +56,27 @@ melody is original to this repo.**
 - **The roster**: a portrait chip and class icon beside every name, with
   condition colors — wounded yellow, critical red, poisoned green, stoned
   grey, dead dark-red.
+
+## Presentation polish (global — both modes)
+
+A period-interface pass over the original engine, applied to Remastered and
+Legacy alike (no new toggles):
+
+- **Ornate chrome & period type.** An ornate thorn-vine frame (hand-pixeled
+  9-slice `border-image` from `data/art/chrome.json`) surrounds the game; panels
+  carry carved bevels with blackletter nameplate tabs, the viewport sits over a
+  carved location plaque, and buttons are carved wood with gold keycaps. Headers
+  are blackletter (**Pirata One**); narration is an old-style serif (**IM Fell
+  English**); columnar text (menus, roster) stays monospace for alignment. Fonts
+  are OFL, bundled with their licenses under `assets/fonts/`.
+- **Bright-light view distance.** Outdoors at noon the party sees ~6 tiles down
+  the street, the farthest planes dithering into a sky-coloured haze. Dungeon
+  torchlight and the magical-darkness zones keep their short, claustrophobic
+  radius — underground vision is byte-for-byte unchanged.
+- **Smooth step.** Forward/backward moves apply instantly (events, traps, the
+  automap), then the camera glides one cell (~140ms, eased) instead of warping.
+  Turning stays instant; bumps, teleporters and combat snap the camera to the
+  true cell.
 
 ## Keys
 

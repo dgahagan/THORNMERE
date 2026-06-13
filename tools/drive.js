@@ -42,6 +42,8 @@ async function main() {
 
   const newPartyAtHall = async () => {
     await key('n');
+    await waitMenu(/experience/i);   // new-game now opens the Remastered/Legacy/Custom chooser
+    await key('r');                  // Remastered, then walk into the Hall
     await key('ArrowUp');
     await waitMenu(/Adventurers' Hall/);
     const create = async (name, race, cls) => {

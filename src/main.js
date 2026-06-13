@@ -589,6 +589,7 @@ function grantTreasure(e, pending) {
 }
 
 function travel(to, announce = true) {
+  snapSlide();   // a teleport/stairs/gate must not leave a glide animating a false path
   game.pos = { map: to.map, x: to.x, y: to.y, facing: to.facing ?? game.pos.facing };
   stopSong(game);
   sfx('stairs');
