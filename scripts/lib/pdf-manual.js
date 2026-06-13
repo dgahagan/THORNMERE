@@ -390,6 +390,41 @@ export async function generateManual(outPath, db) {
   y = h2('Summons', y);
   y = body(`Several spells summon creatures to fight for the party. In Legacy mode, a summon occupies a party slot — so a six-person party can only summon if someone sits out. In Remastered 7th-Slot mode, summons occupy a dedicated slot and do not crowd the roster. Press 7 to see the summon’s status.`, y);
 
+  // ---- Area spells & group targeting ----
+  if (y > PAGE_H - MB - 90) y = newPage('Combat — Area Spells');
+  y = h2('Area Spells and Group Targeting', y);
+  y = body(`Most attack spells strike a single foe. Others engulf a whole group, and a handful fall on every group in the room at once. Each combat spell reaches its target in one of three ways:`, y);
+  y = body(`• One foe — a single creature within the targeted group.`, y);
+  y = body(`• One group — all members of a single group. When more than one group faces you, the game asks “Against which group?” You choose (the rats or the wolves, say), and the spell engulfs every member of that one group. Damage is rolled once and dealt in full to each member, which makes group spells brutal against numerous, fragile foes. If only one group survives, it is targeted automatically.`, y);
+  y = body(`• All groups — every group within range at once, with no choosing. These are the room-enders, and they are priced like it.`, y);
+  y = body(`Range still applies. Enemy groups stand from 10 to 90 feet away, and a spell reaches only groups within its listed range: a 30-foot group spell cannot touch a rank lurking at 90 feet, and even an all-groups spell skips any group beyond its reach. The 90-foot spells span the whole battlefield. Spells listed below show their range in feet; none are unlimited.`, y) + 4;
+
+  const areaColW = [30, 120, 58, 20, 42, BODY_W - 30 - 120 - 58 - 20 - 42];
+  const sortArea = (a, b) =>
+    a.school.localeCompare(b.school) || a.tier - b.tier || a.sp - b.sp;
+  const areaTable = (title, list) => {
+    if (y > PAGE_H - MB - 45) y = newPage('Combat — Area Spells');
+    doc.font('Times-Bold').fontSize(9).fillColor(ACCENT);
+    doc.text(title, ML, y); y += 13;
+    const hdr = ['Code', 'Name', 'School / Tier', 'SP', 'Range', 'Effect'];
+    y = tableRow(hdr, areaColW, ML, y, true);
+    for (const [i, sp] of list.entries()) {
+      if (y > PAGE_H - MB - 14) {
+        y = newPage('Combat — Area Spells (continued)');
+        y = tableRow(hdr, areaColW, ML, y, true);
+      }
+      const st  = `${sp.school.charAt(0).toUpperCase()+sp.school.slice(1)} ${sp.tier}`;
+      const rng = sp.range ? `${sp.range} ft` : 'self';
+      y = tableRow([sp.code, sp.name, st, sp.sp, rng, effectDesc(sp)], areaColW, ML, y, false, i%2===1);
+    }
+    y += 8;
+  };
+
+  const oneGroup = db.spells.filter(s => s.combat && s.target === 'group').sort(sortArea);
+  const allGroup = db.spells.filter(s => s.combat && s.target === 'allgroups').sort(sortArea);
+  areaTable('One Group — all members of a single group you choose', oneGroup);
+  areaTable('All Groups — every group within range, no choosing', allGroup);
+
   // ================================================================ MAGIC
   y = newPage('The Magic System');
   y = h1('VII. The Magic System', y);
