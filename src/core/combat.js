@@ -45,6 +45,13 @@ export function makeCombat(game, rng, spec) {
     const dist = spec.fixed ? 30 : (map.kind === 'town' ? 10 * rng.range(1, 3) : 10 * rng.range(1, 9));
     groups.push(makeGroup(rng, g.monster, Math.max(1, count), dist));
   }
+  // Random encounters always open with a foe in reach — never a string of
+  // dead "advance" turns. Pull the nearest group to melee if none rolled there.
+  if (!spec.fixed && groups.length && !groups.some(g => g.dist <= 10)) {
+    let nearest = groups[0];
+    for (const g of groups) if (g.dist < nearest.dist) nearest = g;
+    nearest.dist = 10;
+  }
   // an exploration song dies the moment swords come out
   const songEnded = !!game.song;
   game.song = null;

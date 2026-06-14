@@ -56,6 +56,26 @@ test('groups advance from range until melee distance', () => {
   }
 });
 
+test('random encounters always open with a group in melee range', () => {
+  // No fight should start with every group out of reach — that strands a
+  // melee-only party in dead "advance" turns. Sweep many seeds to be sure.
+  for (let i = 0; i < 200; i++) {
+    const { game } = makeParty(2000 + i);
+    game.pos = { map: 'undercroft1', x: 2, y: 2, facing: 0 };
+    const c = makeCombat(game, new Rng(i), {
+      groups: [{ monster: 'fen_rat', count: 2 }, { monster: 'mirefang', count: 1 }]
+    });
+    assert.ok(c.groups.some(g => g.dist <= 10), `seed ${i}: a group must be in melee range`);
+  }
+});
+
+test('the melee floor leaves fixed-encounter distances untouched', () => {
+  const { game } = makeParty(2500);
+  game.pos = { map: 'undercroft1', x: 2, y: 2, facing: 0 };
+  const c = makeCombat(game, new Rng(7), { groups: [{ monster: 'mirefang', count: 1 }], fixed: {} });
+  assert.equal(c.groups[0].dist, 30, 'scripted encounters stay at their placed distance');
+});
+
 test('combat ends an exploration song', () => {
   const { game } = makeParty(13);
   const skald = realParty(game).find(ch => ch.cls === 'skald');
