@@ -1655,11 +1655,34 @@ function resolveFlow(combat) {
     if (combat.state === 'orders') return ordersFlow(combat, 0);
     if (combat.state === 'victory') {
       sfx('gold');
-      if (combat.result?.chest) return chestFlow(combat);
-      return combat.onEnd('victory');
+      return victoryScreen(combat);
     }
     if (combat.state === 'fled') return combat.onEnd('fled');
     if (combat.state === 'defeat') return gameOverMode();
+  });
+}
+
+// ---- victory ----------------------------------------------------------------
+// A win always earns its own screen — treasure follows, but even a bare field
+// gets the banner.
+function victoryScreen(combat) {
+  const r = combat.result || {};
+  const proceed = () => (r.chest ? chestFlow(combat) : combat.onEnd('victory'));
+  const lines = [
+    'The last of them falls. The fen goes quiet.',
+    '',
+    `Experience: ${r.xpEach || 0} each`,
+    r.gold ? `Gold gathered: ${r.gold}` : 'No coin among the fallen.',
+    ...(r.chest ? ['', 'Something glints among the bodies…'] : []),
+    '',
+    '(any key — to continue)'
+  ];
+  setMode({
+    menu: `<span class="title">VICTORY</span>\n${esc(lines.join('\n'))}`,
+    hint: 'Any key continues.',
+    bar: [{ k: ' ', label: 'Continue' }],
+    draw: () => renderer.battleVictory(r),
+    onKey() { proceed(); }
   });
 }
 

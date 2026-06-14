@@ -480,6 +480,39 @@ export class Renderer {
     this.fb.flush();
   }
 
+  // After-battle banner — shown on every win, treasure or not. Prefers a
+  // generated scene in the art-box (mirrors the finale victory()); falls back
+  // to a text banner when scene_battle_victory hasn't been imported yet.
+  battleVictory(result = {}) {
+    const fb = this.fb;
+    const scene = resolveVariant('scene_battle_victory');
+    if (scene) {
+      this.panel(null);
+      this.artBox(scene, 'THE FIELD IS YOURS');
+      // Bold banner in the clear sky band above the party's raised arms.
+      const fr = frameAt(scene, this.now);
+      const sp = fr && ART.sprites[fr.name];
+      const dh = sp ? sp.h * Math.max(1, Math.floor(192 / Math.max(sp.w, sp.h))) : 96;
+      const bh = Math.max(dh + 16, 120);
+      const topY = CY - (bh >> 1) - 12 + ((bh - dh) >> 1) + 6;   // sprite top + 6px
+      for (const [ox, oy] of [[-2, 0], [2, 0], [0, -2], [0, 2], [-2, -2], [2, 2], [-2, 2], [2, -2]])
+        fb.textCentered('VICTORY!', CX + ox, topY + oy, C.black, 2);
+      fb.textCentered('VICTORY!', CX, topY, C.gold, 2);
+      this.fb.flush();
+      return;
+    }
+    this.panel(null);
+    fb.textCentered('✦ VICTORY ✦', CX, CY - 48, C.gold, 2);
+    fb.textCentered('The field is yours.', CX, CY - 14, C.text);
+    let y = CY + 8;
+    fb.textCentered(`EXPERIENCE  ${result.xpEach || 0} EACH`, CX, y, C.bone); y += 12;
+    if (result.gold) fb.textCentered(`GOLD  ${result.gold}`, CX, y, C.candle);
+    else fb.textCentered('NO COIN AMONG THE FALLEN', CX, y, C.dim);
+    y += 12;
+    if (result.chest) fb.textCentered('SOMETHING GLINTS IN THE DARK', CX, y, C.gold);
+    this.fb.flush();
+  }
+
   // ---- player automap (Remastered) ------------------------------------------
   parchmentMap(game, am, fullscreen) {
     if (!fullscreen) return this.miniMap(game, am);

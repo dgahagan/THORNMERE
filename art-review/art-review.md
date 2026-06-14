@@ -776,3 +776,30 @@ the camera then glides one cell (eased, 140ms) via requestAnimationFrame.
   snapSlide(), so the camera is parked on the true cell before the new mode draws.
 - At rest camOffset=0 the renderer math is byte-identical to before (max(NEAR,…)
   and the −co terms are no-ops), so no non-walking screen changed.
+
+## scene_battle_victory — after-battle banner (2026-06-13)
+
+New showpiece scene shown on EVERY combat win (treasure or not). 160×120, sub22
+palette, scene_wide gen dims (640×480). Generated 10 showpiece seeds on the host
+GPU, crushed locally via `generate.py --id scene_battle_victory`. Judged at TRUE
+game scale (160×120 native, shown 2× for inspection) — the art-box renders scenes
+at 1× under the 192 cap, so small-scale readability is the deciding test.
+
+- **seed 3 — CHOSEN.** Bold central two-figure triumph, golden-edged light shaft,
+  cleanest silhouettes; reads instantly at native scale. The most celebratory of
+  the set.
+- **seed 1 — runner-up.** Clear "standing over the slain beast" storytelling, lute
+  legible, balanced. Slightly less punch than 3.
+- **seed 42 — runner-up.** Warm golden water-reflection path, fuller party. Good,
+  but the reflected light competes with the central shaft at small size.
+- **seed 5** — FAIL (busy). Four figures + cluttered treeline muddy the read at 1×.
+- **seed 7** — FAIL (weak). Figures too small/distant; triumph doesn't register.
+- **seed 11** — borderline; hooded figure on the right reads as an enemy, not party.
+- **seed 13** — FAIL. Lute floats detached to the right; dark, unclear.
+- **seed 17** — FAIL. Over-saturated golden tint on the corpses; mirror-ish.
+- **seed 23** — FAIL (artifact). Near-perfect left/right mirror symmetry — looks
+  synthetically flipped, not a real composition.
+- **seed 31** — borderline; off-center grouping, flatter blue sky, less mood.
+
+Renderer falls back to a text banner when the sprite is absent, so the game shipped
+working before this import.
