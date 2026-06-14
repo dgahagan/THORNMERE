@@ -33,11 +33,11 @@ function drawCompass(facing) {
   ctx.clearRect(0, 0, 32, 32);
   const sp = ART.sprites.ui_compass;
   if (sp) drawSpriteToCtx(ctx, sp, 2);
-  // needle: gold toward facing (screen-up = the way you face)
+  // needle points the cardinal you face: N=up, E=right, S=down, W=left
   ctx.strokeStyle = '#d8a224';
   ctx.lineWidth = 2;
   const cx = 16, cy = 16, r = 9;
-  const ang = [-Math.PI / 2, 0, Math.PI / 2, Math.PI][0]; // needle always up: view-relative
+  const ang = [-Math.PI / 2, 0, Math.PI / 2, Math.PI][facing]; // 0=N 1=E 2=S 3=W
   ctx.beginPath();
   ctx.moveTo(cx - Math.cos(ang) * 3, cy - Math.sin(ang) * 3);
   ctx.lineTo(cx + Math.cos(ang) * r, cy + Math.sin(ang) * r);
