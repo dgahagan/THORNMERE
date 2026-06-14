@@ -1764,18 +1764,11 @@ function newGameFlow() {
 function modeSelectFlow() {
   setMode(menuMode({
     title: 'Choose your experience',
-    body: [
-      'REMASTERED — automap, save anywhere, 7th-slot summons, item charges,',
-      '             shared inventory, reduced XP. All modern comforts on.',
-      '',
-      'LEGACY      — the 1985 experience, unmodified.',
-      '',
-      'CUSTOM      — pick individually which comforts to enable.'
-    ].join('\n'),
+    body: 'Remastered turns on every modern comfort. Legacy is the pure 1985\nexperience. Custom lets you pick each one.\n',
     options: [
-      { k: 'r', label: 'Remastered (all modern comforts)', fn: () => { game.settings = newSettings('remastered'); startNewGame(); } },
-      { k: 'l', label: 'Legacy (classic, unmodified)',     fn: () => { game.settings = newSettings('legacy');     startNewGame(); } },
-      { k: 'c', label: 'Custom…',                         fn: customModeFlow },
+      { k: 'r', label: 'Remastered — automap, save anywhere, shared bag, charges, summon slot, easier XP', fn: () => { game.settings = newSettings('remastered'); startNewGame(); } },
+      { k: 'l', label: 'Legacy — the 1985 experience, unmodified',                                          fn: () => { game.settings = newSettings('legacy');     startNewGame(); } },
+      { k: 'c', label: 'Custom — choose comforts one by one…',                                              fn: customModeFlow },
     ],
     onEsc: () => { game = null; setMode(mainMenu()); },
     draw: () => renderer.splash('THORNMERE', 'The Founding Song')
@@ -1784,17 +1777,15 @@ function modeSelectFlow() {
 
 function customModeFlow() {
   const s = game.settings;
-  const body = TOGGLES.map((t, i) => {
-    const lock = t.lockedAtCreation ? ' [locked at creation]' : '';
-    return `  ${i + 1}. [${s[t.id] ? 'X' : ' '}] ${t.label}${lock} — ${t.desc}`;
-  }).join('\n');
   setMode(menuMode({
-    title: 'Custom mode — toggle features',
-    body,
+    title: 'Custom mode — click or press a number to toggle',
     options: [
+      // checkbox state lives on the clickable line itself, so nothing is ever
+      // pushed out of view by a separate description block
       ...TOGGLES.map((t, i) => ({
         k: String(i + 1),
-        label: `${t.label}: ${s[t.id] ? 'ON  → turn off' : 'OFF → turn on'}`,
+        // short label so every toggle + Start/Back stays on one screen (no clip)
+        label: `[${s[t.id] ? 'X' : ' '}] ${t.label}${t.shortDesc ? ' — ' + t.shortDesc : ''}`,
         fn: () => { s[t.id] = !s[t.id]; customModeFlow(); }
       })),
       { k: 's', label: 'Start game with these settings', fn: startNewGame },
