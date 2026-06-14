@@ -777,6 +777,29 @@ the camera then glides one cell (eased, 140ms) via requestAnimationFrame.
 - At rest camOffset=0 the renderer math is byte-identical to before (max(NEAR,…)
   and the −co terms are no-ops), so no non-walking screen changed.
 
+## PC portraits — re-crush to 80×100 (2026-06-13)
+
+Old PCs were crushed to 32×40 (4× display = chunky) while monsters/interiors are
+112px (2× display). The 256×320 seed-42 raws were still on disk, so re-crushed via
+`dev/pixel-art/recrush_pc.py` — NO GPU. (90×112 was tried first but overflowed the
+240px scene framebuffer at 2×, clipping the head and name plate; 80×100 is the
+tallest that shows at full 2× with the plate intact.)
+
+- **Resolution** — PASS. warrior/rogue/caster/skald re-imported at 80×100, shown
+  via new `renderer.portrait()` at cap 224 → 2× (160×200), same pixel density as
+  the monster window. Faces/armour read crisply (judged from candidates-pc-80/ and
+  in-game `?p=` renders).
+- **Eye boxes RE-MEASURED** — PASS. The linearly-scaled 32×40 eye boxes landed on
+  the brow (a "forehead pulse"). Re-measured onto the actual eyes per portrait;
+  overlay render `/tmp` confirmed placement (warrior y38-48, rogue y41-49,
+  caster y35-43, skald y22-29).
+- **Black-line artifact** — FIXED. The `breathe` effect shifted the torso box down
+  1px and left its top row transparent → a black line across the chest on frame b
+  (panel behind is black). Dropped breathe; PCs now eye_pulse only, like monsters.
+- **Animation confinement** — PASS. Live-canvas frame-a vs frame-b diff bbox =
+  x[144,183] y[52,65] = the eye region only; 0 pixels turned transparent. Data-level
+  diff: changes only inside the eye box for all four.
+
 ## scene_battle_victory — after-battle banner (2026-06-13)
 
 New showpiece scene shown on EVERY combat win (treasure or not). 160×120, sub22
