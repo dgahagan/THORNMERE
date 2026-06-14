@@ -194,13 +194,19 @@ body { display: flex; align-items: center; justify-content: center; }
   white-space: pre-wrap;
   color: var(--parchment);
   min-height: 30px;
-  max-height: 230px;
+  /* don't let the EVENTS log squeeze the menu below its own cap: a clipped
+     menu hides clickable options (the Options/Custom screens once did this) */
+  flex-shrink: 0;
+  max-height: 320px;
   overflow-y: auto;
 }
 #menu:empty { display: none; }
 #menu .title { color: var(--gold); }
 #menu .ctx { color: var(--stone); }
 #menu .opt { cursor: pointer; display: inline; }
+#menu .opt.eq    { color: var(--chalk); }   /* equipped — bright white, scans first */
+#menu .opt.held  { color: var(--stone); }   /* carried but not readied — muted grey */
+#menu .grouphead { color: var(--amberwood); letter-spacing: 1px; }  /* Equipped / Pack labels */
 #menu .opt:hover { color: var(--candle); background: var(--shadow); }
 #menu .opt .key { color: var(--gold); }
 #menu .opt.dim { color: var(--slate); cursor: default; }
@@ -225,6 +231,12 @@ body { display: flex; align-items: center; justify-content: center; }
 #log .party { color: var(--mist-blue); }
 #log .loot { color: var(--candle); }
 #log p { margin: 0 0 2px 0; }
+/* each narrated line eases in as it scrolls into the log */
+#log p.reveal { animation: logreveal 200ms ease-out; }
+@keyframes logreveal {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: none; }
+}
 
 #roster {
   margin-top: 12px;
@@ -260,6 +272,11 @@ body { display: flex; align-items: center; justify-content: center; }
 #roster .summon   { color: var(--mist-blue); font-style: italic; }
 #roster .sp       { color: var(--sky-blue); }
 #roster .flags    { color: var(--ember); font-size: 11px; }
+/* steady edge bar for an ongoing affliction (the transient hit flash is a row
+   background set inline by the renderer; box-shadow keeps the two from clashing) */
+#roster .row.st-poison { box-shadow: inset 3px 0 0 var(--fen-green); }
+#roster .row.st-stone  { box-shadow: inset 3px 0 0 #5a6c8a; }
+#roster .row.st-fear   { box-shadow: inset 3px 0 0 var(--gold); }
 
 #cmdbar {
   margin-top: 10px;

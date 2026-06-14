@@ -54,6 +54,8 @@ let renderer, game = null, rng = new Rng((Date.now() & 0xffffffff) >>> 0);
 let mode = null;
 let highlightId = null;
 let narrating = false;
+let narrateBoost = false;  // Space held during narration — runs lines at the fast pace
+let spaceDownAt = 0;       // ms timestamp of the held Space, to tell a tap from a hold
 let sceneFlash = null;   // transient portrait-window scene: {id, label, until}
 let mapViewCycle = 0;    // 0=off 1=corner-overlay 2=full-screen (Remastered automap)
 // Smooth-step: a forward/backward move applies instantly, then the camera glides
@@ -88,8 +90,19 @@ function invRemoveItem(ch, idx) {
 function pressKey(key) {
   unlockAudio();                       // browsers want a gesture first
   if (musicCtx) updateMusic(game, musicCtx);
-  if (narrating) { if (narrateFlush) narrateFlush(); return; }
+  // narration swallows keystrokes so a stray 'a' can't queue an attack mid-scroll;
+  // its pacing (hold Space = faster, tap = skip) lives in the keydown/keyup handlers
+  if (narrating) return;
+  if (typeof key === 'string' && key.startsWith('view:')) return rosterClick(parseInt(key.slice(5), 10) - 1);
   mode?.onKey?.({ key });
+}
+
+// clicking a party member in the roster: open their sheet, or flip to them while
+// already reading one. Honoured only where it's safe — never in combat, menus, or
+// prompts, where a stray character pick would hijack the keyboard's number keys.
+function rosterClick(slot) {
+  if (!game) return;
+  if (mode === exploreMode || mode?.sheet) sheetFlow(slot);
 }
 
 let musicCtx = 'title';
@@ -322,34 +335,87 @@ function sfxForLine(e) {
   return null;
 }
 
+// Combat (and other) narration scrolls one line at a time on a readable beat,
+// the way the original printed it. Holding Space drops to NARRATE_FAST; a quick
+// tap (or any other key / a click) skips straight to the end of the batch.
+const NARRATE_SLOW = 600;
+const NARRATE_FAST = 150;
 function narrate(lines, then) {
   narrating = true;
+  narrateBoost = false;
   setMenu('');
   let i = 0;
+  let timer = null;
+  const finish = () => { narrating = false; narrateBoost = false; then?.(); };
+  const fire = (e) => {
+    if (e.fx) { if (e.fx.who === 'party') flashParty(e.fx.kind); else if (e.fx.who != null) flashChar(e.fx.who, e.fx.kind); }
+  };
   const tick = () => {
-    if (i >= lines.length) { narrating = false; then?.(); return; }
+    if (i >= lines.length) { finish(); return; }
     const e = lines[i++];
     if (e.type === 'msg' || e.text) {
       msg(e.text, e.mouth ? 'mouth' : /falls!|succumbs|dies|drained|poisoned|stone/i.test(e.text || '') ? 'hurt' : '');
+      els.log.lastChild?.classList.add('reveal');  // gentle fade-in per line
       const s = sfxForLine(e);
       if (s) sfx(s);
+      fire(e);
     }
     render();
-    timer = setTimeout(tick, 240);
+    timer = setTimeout(tick, narrateBoost ? NARRATE_FAST : NARRATE_SLOW);
   };
-  let timer = setTimeout(tick, 10);
+  timer = setTimeout(tick, 10);
   narrateFlush = () => {
-    clearTimeout(timer);
+    if (timer) clearTimeout(timer);
     while (i < lines.length) {
       const e = lines[i++];
       if (e.text) msg(e.text, e.mouth ? 'mouth' : '');
+      fire(e);
     }
-    narrating = false;
     render();
-    then?.();
+    finish();
   };
 }
 let narrateFlush = null;
+
+// ---- party status-line flashes ----------------------------------------------
+// A hit, heal or status change pulses the struck character's roster line in a
+// colour that reads the affect at a glance. Persistent statuses (poison/stone/
+// fear) get a steady edge bar in renderRoster; this is the transient flash.
+const FX_RGB = {
+  hp:     '200,64,50',    // ember — HP damage
+  heal:   '114,192,76',   // leaf — healed or cured
+  drain:  '138,82,200',   // violet — life/mind drain
+  poison: '62,132,52',    // fen-green — poison takes hold
+  stone:  '90,108,138',   // grey-blue — petrified
+  fear:   '216,162,36'    // gold — gripped by fear
+};
+const FX_DUR = 520;
+const rosterFx = new Map();   // String(charId) -> { kind, until }
+let fxRaf = 0;
+function flashChar(id, kind) {
+  if (id == null || !FX_RGB[kind]) return;
+  rosterFx.set(String(id), { kind, until: Date.now() + FX_DUR });
+  if (!fxRaf) fxRaf = requestAnimationFrame(paintRosterFx);
+}
+function flashParty(kind) {
+  if (!game) return;
+  for (const ch of realParty(game)) if (isAlive(ch)) flashChar(ch.id, kind);
+}
+function paintRosterFx() {
+  fxRaf = 0;
+  if (!els.roster) return;
+  const now = Date.now();
+  let active = false;
+  for (const row of els.roster.querySelectorAll('.row[data-cid]')) {
+    const fx = rosterFx.get(row.dataset.cid);
+    if (!fx) { if (row.style.background) row.style.background = ''; continue; }
+    const t = (fx.until - now) / FX_DUR;
+    if (t <= 0) { rosterFx.delete(row.dataset.cid); row.style.background = ''; continue; }
+    active = true;
+    row.style.background = `rgba(${FX_RGB[fx.kind]},${(t * 0.6).toFixed(3)})`;
+  }
+  if (active) fxRaf = requestAnimationFrame(paintRosterFx);
+}
 
 // ================================================================== EXPLORE
 const exploreMode = {
@@ -785,6 +851,7 @@ function sheetFlow(slot) {
         'Esc to return.'
       ].join('\n')),
       hint: 'Esc to return.',
+      sheet: true,
       onKey(e) { if (e.key === 'Escape') { highlightId = null; setMode(exploreMode); } }
     });
     return;
@@ -806,26 +873,37 @@ function sheetFlow(slot) {
     // Shared mode: show pool; equipping claims item from pool into ch.inventory
     const pool = game.pool?.items ?? [];
     const chargesTag = (en) => game.settings?.charges && en.charges != null ? ` (${en.charges} ch)` : '';
-    const packLines = ch.inventory.map((en, i) => {
+    const isEquipped = (i) => Object.values(ch.equip).includes(i);
+    // carried items are clickable (1-8) and split equipped/bright from held/grey
+    const carriedRow = (en, i) => {
       const item = DB.item(en.id);
-      const eq = Object.values(ch.equip).includes(i) ? '*' : ' ';
-      return `  ${i + 1}${eq} ${en.ident ? item.name : item.generic}${chargesTag(en)}`;
-    });
+      const name = en.ident ? item.name : item.generic;
+      return `<span class="opt ${isEquipped(i) ? 'eq' : 'held'}" data-key="${i + 1}"> ${i + 1}  ${esc(name)}${esc(chargesTag(en))}</span>`;
+    };
+    const cEntries = ch.inventory.map((en, i) => ({ en, i }));
+    const wornRows = cEntries.filter(({ i }) => isEquipped(i)).map(({ en, i }) => carriedRow(en, i));
+    const heldRows = cEntries.filter(({ i }) => !isEquipped(i)).map(({ en, i }) => carriedRow(en, i));
+    const carriedSection = [
+      '<span class="grouphead">— Equipped —</span>',
+      wornRows.length ? wornRows.join('\n') : '<span class="ctx"> (nothing readied)</span>',
+      '<span class="grouphead">— Carried —</span>',
+      heldRows.length ? heldRows.join('\n') : '<span class="ctx"> (none)</span>'
+    ].join('\n');
     const poolLines = pool.map((en, i) => {
       const item = DB.item(en.id);
       const ok = classAllowed(ch, item) ? '' : ' (not your trade)';
-      return `<span class="opt" data-key="p${i + 1}">  [P${i + 1}] ${esc(en.ident ? item.name : item.generic)}${esc(chargesTag(en))}${esc(ok)}</span>`;
+      return `<span class="opt held" data-key="p${i + 1}">  [P${i + 1}] ${esc(en.ident ? item.name : item.generic)}${esc(chargesTag(en))}${esc(ok)}</span>`;
     });
-    const packSection = packLines.length ? packLines.join('\n') : '  (no items equipped/held)';
-    const poolSection = poolLines.length ? poolLines.join('\n') : '  (pool empty)';
+    const poolSection = poolLines.length ? poolLines.join('\n') : '<span class="ctx">  (pool empty)</span>';
     setMode({
       menu: esc(lines.join('\n'))
-        + '\n' + esc(`Carried/equipped (1-${ch.inventory.length || 8}):\n`) + esc(packSection)
-        + '\n' + esc(`\nParty pool (P1-P${Math.max(pool.length, 1)} to claim/equip):\n`) + poolSection
-        + '\n\n' + esc('1-8 equip/unequip carried · Pn claim from pool · (R)eturn carried to pool · (D)rop · Esc done'),
+        + '\n' + carriedSection
+        + '\n' + esc(`\nParty pool (P1-P${Math.max(pool.length, 1)} to claim/equip):`) + '\n' + poolSection
+        + '\n\n' + esc('1-8 equip/unequip carried · Pn claim from pool · (R)eturn carried · (D)rop · Esc done'),
       bar: [{ k: 'r', label: 'Return to pool' }, { k: 'd', label: 'Drop' }, { k: 'Escape', label: 'Done' }],
       hint: 'Pn = claim from pool. 1-8 equip/unequip. R = return to pool. Esc back.',
-      draw: () => renderer.special(portraitOf(ch), `${ch.name.toUpperCase()} — ${clsOf(ch).name.toUpperCase()}`),
+      sheet: true,
+      draw: () => renderer.portrait(portraitOf(ch), `${ch.name.toUpperCase()} — ${clsOf(ch).name.toUpperCase()}`),
       onKey(e) {
         const k = e.key.toLowerCase();
         if (k === 'escape') { highlightId = null; return setMode(exploreModeOrCurrent()); }
@@ -880,15 +958,26 @@ function sheetFlow(slot) {
     return;
   }
 
-  // Legacy mode — per-character inventory
+  // Legacy mode — per-character inventory.  Equipped gear is grouped and shown
+  // bright; the rest of the pack sits below in muted grey — quick to scan what a
+  // character is actually wielding, the way the 1985 sheet read.
   const chargesTagL = (en) => game.settings?.charges && en.charges != null ? ` (${en.charges} ch)` : '';
-  const invLines = ch.inventory.map((en, i) => {
+  const isEquipped = (i) => Object.values(ch.equip).includes(i);
+  const itemRow = (en, i) => {
     const item = DB.item(en.id);
-    const eq = Object.values(ch.equip).includes(i) ? '*' : ' ';
     const ok = classAllowed(ch, item) ? '' : ' (not your trade)';
-    return `<span class="opt" data-key="${i + 1}"> ${i + 1}${eq} ${esc(en.ident ? item.name : item.generic)}${esc(chargesTagL(en))}${esc(ok)}</span>`;
-  });
-  if (!ch.inventory.length) invLines.push(' (empty pack)');
+    const name = en.ident ? item.name : item.generic;
+    return `<span class="opt ${isEquipped(i) ? 'eq' : 'held'}" data-key="${i + 1}"> ${i + 1}  ${esc(name)}${esc(chargesTagL(en))}${esc(ok)}</span>`;
+  };
+  const entries = ch.inventory.map((en, i) => ({ en, i }));
+  const wornRows = entries.filter(({ i }) => isEquipped(i)).map(({ en, i }) => itemRow(en, i));
+  const packRows = entries.filter(({ i }) => !isEquipped(i)).map(({ en, i }) => itemRow(en, i));
+  const invBlock = [
+    '<span class="grouphead">— Equipped —</span>',
+    wornRows.length ? wornRows.join('\n') : '<span class="ctx"> (nothing readied)</span>',
+    '<span class="grouphead">— Pack —</span>',
+    packRows.length ? packRows.join('\n') : '<span class="ctx"> (pack empty)</span>'
+  ].join('\n');
 
   const inspectItem = (en) => {
     const item = DB.item(en.id);
@@ -901,11 +990,12 @@ function sheetFlow(slot) {
   };
 
   setMode({
-    menu: esc(lines.join('\n')) + '\n' + invLines.join('\n') +
-      '\n\n' + esc('* = equipped.  1-8 equip/unequip, (I)nspect, (T)rade, (D)rop, Esc done'),
+    menu: esc(lines.join('\n')) + '\n' + invBlock +
+      '\n\n' + esc('Bright = equipped.  1-8 equip/unequip, (I)nspect, (T)rade, (D)rop, Esc done'),
     bar: [{ k: 'i', label: 'Inspect' }, { k: 't', label: 'Trade' }, { k: 'd', label: 'Drop' }, { k: 'Escape', label: 'Done' }],
-    hint: 'Number keys equip/unequip. I inspect, T trade, D drop, Esc back.',
-    draw: () => renderer.special(portraitOf(ch), `${ch.name.toUpperCase()} — ${clsOf(ch).name.toUpperCase()}`),
+    hint: 'Number keys equip/unequip. I inspect, T trade, D drop, Esc back. Click a name to switch.',
+    sheet: true,
+    draw: () => renderer.portrait(portraitOf(ch), `${ch.name.toUpperCase()} — ${clsOf(ch).name.toUpperCase()}`),
     onKey(e) {
       const k = e.key.toLowerCase();
       if (k === 'escape') { highlightId = null; return setMode(exploreModeOrCurrent()); }
@@ -1105,7 +1195,7 @@ function createFlow(hall, draws) {
           { k: 'a', label: 'This one will do', fn: () => finish(race, cls, stats, pid) }
         ],
         onEsc: () => rollLoop(race, cls),
-        draw: () => renderer.special(pid, nameTrim.toUpperCase())
+        draw: () => renderer.portrait(pid, nameTrim.toUpperCase())
       }));
     };
 
@@ -1945,10 +2035,23 @@ async function boot() {
   const isForwardKey = (key) => key === 'ArrowUp' || key === 'w' || key === 'W';
   window.addEventListener('keydown', (e) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Tab'].includes(e.key)) e.preventDefault();
+    // during narration Space paces the scroll (hold = fast); any other key skips
+    if (narrating) {
+      if (e.key === ' ') { if (!e.repeat) { spaceDownAt = Date.now(); narrateBoost = true; } }
+      else narrateFlush?.();
+      return;
+    }
     if (isForwardKey(e.key)) walkHeld = true;   // chain glides while held
     pressKey(e.key);
   });
-  window.addEventListener('keyup', (e) => { if (isForwardKey(e.key)) walkHeld = false; });
+  window.addEventListener('keyup', (e) => {
+    if (isForwardKey(e.key)) walkHeld = false;
+    // a quick Space tap means "skip to the end"; a real hold just stops boosting
+    if (e.key === ' ' && narrating) {
+      if (Date.now() - spaceDownAt < 220) narrateFlush?.();
+      else narrateBoost = false;
+    }
+  });
   window.addEventListener('blur', () => { walkHeld = false; });
   // animation tick: repaint the viewport at idle-loop speed (input never waits)
   setInterval(() => { drawView(); tickNote(); }, 130);

@@ -137,7 +137,11 @@ export function renderRoster(game, el, highlightId = null) {
       el.append(row);
       continue;
     }
-    row.dataset.key = String(i + 1);
+    // a roster click means "show me this adventurer" — a dedicated key so it
+    // never doubles as the bare number key (which equips items in a sheet,
+    // picks orders in combat, etc.). Keyboard 1-6 still opens sheets in explore.
+    row.dataset.key = 'view:' + (i + 1);
+    row.dataset.cid = ch.id;   // lets the status-line flasher find this row
     if (ch.summon) {
       const def = DB.monster(ch.monsterId);
       row.className = `row summon${ch.id === highlightId ? ' pick' : ''}`;
@@ -157,7 +161,9 @@ export function renderRoster(game, el, highlightId = null) {
       continue;
     }
     const cond = conditionOf(ch);
-    row.className = `row${ch.id === highlightId ? ' pick' : ''}`;
+    // a steady edge bar for ongoing afflictions — distinct from the transient hit flash
+    const stCls = ch.status.stone ? ' st-stone' : ch.status.poison ? ' st-poison' : ch.status.fear ? ' st-fear' : '';
+    row.className = `row${ch.id === highlightId ? ' pick' : ''}${stCls}`;
     const flags = [ch.status.stone ? 'STONE' : '', ch.status.fear ? 'FEAR' : '',
       ch.status.poison ? 'PSN' : '', ch.drained ? 'DRAIN' : ''].filter(Boolean).join(' ');
     const clsName = clsOf(ch).name + (ch.cls === 'skald' ? ` ${ch.songsLeft}♪` : '');

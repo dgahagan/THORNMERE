@@ -414,6 +414,14 @@ export class Renderer {
     this.fb.flush();
   }
 
+  // character portraits are higher-res (90×112) — show them at the same 2× the
+  // monster window uses (cap 224) so they read crisp instead of shrinking to 1×.
+  portrait(id, label) {
+    this.panel(null);
+    this.artBox(resolveVariant(id), label, null, 224);
+    this.fb.flush();
+  }
+
   // Copy a CW×CH cell from sprite sp's (sx,sy) to the framebuffer at (dx,dy),
   // 1:1, honouring transparency and clipping to the viewport. Used to tile the
   // ornate thorn-vine chrome (data/art/chrome.json) around framebuffer screens.
