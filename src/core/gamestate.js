@@ -81,6 +81,20 @@ export function timeOfDay(game) { return isNight(game) ? 'NIGHT' : 'DAY'; }
 
 export function currentMap(game) { return DB.map(game.pos.map); }
 
+// Return the street name the player is standing on, or null.
+// Streets are defined in map data as { id, name, rects: [[x1,y1,x2,y2], ...] }.
+export function streetAt(game) {
+  const map = currentMap(game);
+  if (!map.streets) return null;
+  const { x, y } = game.pos;
+  for (const s of map.streets) {
+    for (const [x1, y1, x2, y2] of s.rects) {
+      if (x >= x1 && x <= x2 && y >= y1 && y <= y2) return s.name;
+    }
+  }
+  return null;
+}
+
 export function inZone(game, zone, x = game.pos.x, y = game.pos.y) {
   const rects = currentMap(game).zones?.[zone];
   if (!rects) return false;

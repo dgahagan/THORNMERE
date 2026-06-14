@@ -15,7 +15,9 @@ import { Fb, FBW, FBH } from './fb.js';
 const W = FBW, H = FBH;
 const CX = W / 2, CY = H / 2;
 const K = 92;                                 // focal constant
-const DEPTHS = [0.45, 1.45, 2.45, 3.45, 4.45]; // far-edge plane of cell k
+// far-edge plane of cell k. 7 planes (1-tile spacing) so bright daylight can
+// see ~6 cells out; dungeons/torchlight still clamp to the near few.
+const DEPTHS = [0.45, 1.45, 2.45, 3.45, 4.45, 5.45, 6.45];
 const NEAR = 0.16;
 
 const C = {                                   // palette indices for chrome
@@ -32,10 +34,20 @@ function shadeLevel(d, boost) {
   return Math.max(0, Math.min(4, (d - 1.0) * 0.85 + boost));
 }
 
+// Outdoor haze: how strongly a pixel at depth d dithers toward the horizon
+// colour (0 = none, 1 = full). Only the farthest planes of a bright daylight
+// scene get one; dungeons pass haze=null and are unaffected (still darken to
+// black via shadeLevel). Returns 0 when no haze so callers can skip the mix.
+function hazeFrac(d, haze) {
+  if (!haze || d <= haze.start) return 0;
+  return Math.min(0.9, (d - haze.start) / (haze.full - haze.start));
+}
+
 export class Renderer {
   constructor(canvas) {
     this.fb = new Fb(canvas);
     this.now = 0;          // animation clock (ms), set by the UI loop
+    this.camOffset = 0;    // fractional forward camera glide for smooth-step (0 = at rest)
   }
 
   // ---- main exploration view ----------------------------------------------
@@ -54,14 +66,24 @@ export class Renderer {
       return;
     }
 
+    const town = map.kind === 'town';
+    const bright = town && !isNight(game);     // daylit streets: the only deep-view context
     const noLight = map.kind === 'dungeon' && radius === 0;
-    const maxDepth = noLight ? 1 : Math.min(3, Math.max(1, radius));
-    const boost = map.kind === 'town'
-      ? (isNight(game) ? 0.8 : 0)
+    // Light radius still governs. Only genuinely bright daylight reaches plane 6;
+    // dungeon torch/spell radii and moonlit town keep their old short clamp, so
+    // those screens render byte-for-byte as before.
+    const maxDepth = noLight ? 1 : bright ? 6 : Math.min(3, Math.max(1, radius));
+    const boost = bright ? -1.1                // daylight: near walls stay bright, distance reads as haze not gloom
+      : town ? (isNight(game) ? 0.8 : 0)
       : Math.max(0, 2.0 - radius * 0.65);
+    // farthest ~3 planes dissolve into the sky horizon colour outdoors
+    const haze = bright
+      ? { color: style.sky.day.horizon, start: DEPTHS[maxDepth] - 3.0, full: DEPTHS[maxDepth] + 0.6 }
+      : null;
 
-    this.backdrop(game, map, style, maxDepth, boost);
-    this.walls(game, map, style, maxDepth, boost);
+    const co = this.camOffset || 0;            // smooth-step: camera glides forward by `co` cells
+    this.backdrop(game, map, style, maxDepth, boost, haze, co);
+    this.walls(game, map, style, maxDepth, boost, haze, co);
     this.frame();
     if (game.debugMap) this.automap(game);
     fb.flush();
@@ -74,7 +96,7 @@ export class Renderer {
   }
 
   // ---- floor / ceiling / sky ------------------------------------------------
-  backdrop(game, map, style, maxDepth, boost) {
+  backdrop(game, map, style, maxDepth, boost, haze, co = 0) {
     const fb = this.fb;
     const dMax = DEPTHS[maxDepth];
     const town = map.kind === 'town';
@@ -101,13 +123,15 @@ export class Renderer {
       if (town) d = Math.min(d, dMax);         // streets haze out, never go black
       const t = Math.min(1, d / Math.max(dMax, 3));
       const lvl = town ? Math.min(shadeLevel(d, boost), 1.0 + boost) : shadeLevel(d, boost);
+      const hf = hazeFrac(d, haze);            // far cobbles dissolve into the horizon
       for (let x = 0; x < W; x++) {
         let base;
         if (town) {
           // perspective cobblestone street: running-bond grid in world space,
           // dark mortar at the seams, a few stone shades per cobble
           const wu = (x - CX) * d / (2 * K);
-          const rowF = d * 2.6, rowI = Math.floor(rowF);
+          // +co scrolls the cobbles toward the camera as the smooth-step glides
+          const rowF = (d + co) * 2.6, rowI = Math.floor(rowF);
           const colF = wu * 4.0 + (rowI & 1 ? 0.5 : 0);
           const su = ((colF % 1) + 1) % 1, sv = ((rowF % 1) + 1) % 1;
           if (su < 0.11 || sv < 0.13) base = 3;          // mortar (slate-dark)
@@ -121,7 +145,9 @@ export class Renderer {
           if (floor.sheen != null && (y % 5 === 2) && ((x * 29 + y * 53) % 23) < 3) base = floor.sheen;
           if (floor.fleck != null && ((x * 37 + y * 71) % 311) === 0) base = floor.fleck;
         }
-        fb.px[row + x] = fb.shaded(base, lvl, x, y);
+        let s = fb.shaded(base, lvl, x, y);
+        if (hf > 0) s = fb.mix(s, haze.color, hf, x, y);
+        fb.px[row + x] = s;
       }
     }
   }
@@ -153,7 +179,7 @@ export class Renderer {
   }
 
   // ---- the maze -------------------------------------------------------------
-  walls(game, map, style, maxDepth, boost) {
+  walls(game, map, style, maxDepth, boost, haze, co = 0) {
     const f = game.pos.facing;
     const rf = (f + 1) % 4;
     const town = map.kind === 'town';
@@ -181,28 +207,29 @@ export class Renderer {
     };
 
     for (let k = maxDepth; k >= 0; k--) {
-      const dFar = planeDist(k);
-      const dNear = planeDist(k - 1);
+      const dFar = planeDist(k) - co;          // smooth-step: glide every plane toward the camera
+      if (dFar <= NEAR) continue;              // plane has passed behind the camera mid-slide
+      const dNear = Math.max(NEAR, planeDist(k - 1) - co);
       const lvlFar = shadeLevel(dFar, boost);
 
       // side columns
       for (const o of [-1, 1]) {
         if (edgeTex(k, 0, o === -1 ? 3 : 1)) continue;     // can't see in
         const outer = edgeTex(k, o, o === -1 ? 3 : 1);
-        if (outer) this.sideWall(o === -1 ? -1.5 : 1.5, dNear, dFar, outer.tex, boost, outer.roof);
+        if (outer) this.sideWall(o === -1 ? -1.5 : 1.5, dNear, dFar, outer.tex, boost, outer.roof, haze);
         const sideFront = edgeTex(k, o, 0);
-        if (sideFront) this.frontWall(o - 0.5, o + 0.5, dFar, sideFront, lvlFar);
+        if (sideFront) this.frontWall(o - 0.5, o + 0.5, dFar, sideFront, lvlFar, haze);
       }
 
       // center column side walls
       const left = edgeTex(k, 0, 3);
       const right = edgeTex(k, 0, 1);
-      if (left) this.sideWall(-0.5, dNear, dFar, left.tex, boost, left.roof);
-      if (right) this.sideWall(0.5, dNear, dFar, right.tex, boost, right.roof);
+      if (left) this.sideWall(-0.5, dNear, dFar, left.tex, boost, left.roof, haze);
+      if (right) this.sideWall(0.5, dNear, dFar, right.tex, boost, right.roof, haze);
 
       // center front wall
       const front = edgeTex(k, 0, 0);
-      if (front) this.frontWall(-0.5, 0.5, dFar, front, lvlFar);
+      if (front) this.frontWall(-0.5, 0.5, dFar, front, lvlFar, haze);
 
       // furniture sprite in the center cell at this depth
       const c = cellAt(k, 0);
@@ -212,20 +239,26 @@ export class Renderer {
   }
 
   // wall facing the party at depth d, spanning lateral uL..uR
-  frontWall(uL, uR, d, edge, lvl) {
+  frontWall(uL, uR, d, edge, lvl, haze) {
     const fb = this.fb;
     const tex = sprite(edge.tex);
     const x1 = Math.round(px(uL, d)), x2 = Math.round(px(uR, d));
     const t = Math.round(py(d, 't')), b = Math.round(py(d, 'b'));
+    if (x2 <= x1 || b <= t) return;            // degenerate far rect — nothing to draw
+    const denom = x2 - x1, vden = b - t;       // guarded non-zero spans
     const cells = Math.max(1, Math.round(uR - uL));
+    const hf = hazeFrac(d, haze);              // whole facing wall sits at one depth
     const xs = Math.max(1, x1), xe = Math.min(W - 1, x2);
     const ys = Math.max(1, t), ye = Math.min(H - 1, b);
     for (let x = xs; x < xe; x++) {
-      const tu = (((x - x1) * tex.w * cells / (x2 - x1)) | 0) % tex.w;
+      const tu = (((x - x1) * tex.w * cells / denom) | 0) % tex.w;
       for (let y = ys; y < ye; y++) {
-        const tv = Math.min(tex.h - 1, ((y - t) * tex.h / (b - t)) | 0);
+        const tv = Math.min(tex.h - 1, ((y - t) * tex.h / vden) | 0);
         const v = tex.data[tv * tex.w + tu];
-        if (v >= 0) fb.px[y * W + x] = fb.shaded(v, lvl, x, y);
+        if (v < 0) continue;
+        let s = fb.shaded(v, lvl, x, y);
+        if (hf > 0) s = fb.mix(s, haze.color, hf, x, y);
+        fb.px[y * W + x] = s;
       }
     }
     // gable roof: a slate triangle peaking over the facing wall
@@ -239,7 +272,9 @@ export class Renderer {
         const yTop = Math.round(t - roofH * frac);
         for (let y = Math.max(1, yTop); y < yb; y++) {
           const rc = y < yTop + 2 ? 5 : (((x + y) & 3) === 0 ? 4 : 3); // ridge / fleck / slate
-          fb.px[y * W + x] = fb.shaded(rc, lvl, x, y);
+          let s = fb.shaded(rc, lvl, x, y);
+          if (hf > 0) s = fb.mix(s, haze.color, hf, x, y);
+          fb.px[y * W + x] = s;
         }
       }
     }
@@ -247,7 +282,7 @@ export class Renderer {
   }
 
   // wall parallel to the view at lateral u, spanning depths dNear..dFar
-  sideWall(u, dNear, dFar, texName, boost, roof) {
+  sideWall(u, dNear, dFar, texName, boost, roof, haze) {
     const fb = this.fb;
     const tex = sprite(texName);
     const xn = Math.round(px(u, dNear)), xf = Math.round(px(u, dFar));
@@ -258,20 +293,27 @@ export class Renderer {
       if (!Number.isFinite(d)) continue;
       d = Math.max(dNear, Math.min(dFar, d));
       const t = Math.round(py(d, 't')), b = Math.round(py(d, 'b'));
+      if (b <= t) continue;                    // degenerate column at the far edge
       const tu = Math.min(tex.w - 1, (((d - dNear) / (dFar - dNear)) * tex.w) | 0);
       const lvl = shadeLevel(d, boost);
+      const hf = hazeFrac(d, haze);            // this column recedes, so haze grows with depth
       const ys = Math.max(1, t), ye = Math.min(H - 1, b);
       for (let y = ys; y < ye; y++) {
         const tv = Math.min(tex.h - 1, (((y - t) * tex.h) / (b - t)) | 0);
         const v = tex.data[tv * tex.w + tu];
-        if (v >= 0) fb.px[y * W + x] = fb.shaded(v, lvl, x, y);
+        if (v < 0) continue;
+        let s = fb.shaded(v, lvl, x, y);
+        if (hf > 0) s = fb.mix(s, haze.color, hf, x, y);
+        fb.px[y * W + x] = s;
       }
       // slate cornice/roofline above the eave (tapers with depth)
       if (roof && t > 1) {
         const yTop = Math.max(1, t - Math.max(2, Math.round((b - t) * 0.26)));
         for (let y = yTop; y < t; y++) {
           const rc = y < yTop + 2 ? 5 : (((x + y) & 3) === 0 ? 4 : 3);
-          fb.px[y * W + x] = fb.shaded(rc, lvl, x, y);
+          let s = fb.shaded(rc, lvl, x, y);
+          if (hf > 0) s = fb.mix(s, haze.color, hf, x, y);
+          fb.px[y * W + x] = s;
         }
       }
     }
@@ -372,16 +414,63 @@ export class Renderer {
     this.fb.flush();
   }
 
+  // character portraits are higher-res (90×112) — show them at the same 2× the
+  // monster window uses (cap 224) so they read crisp instead of shrinking to 1×.
+  portrait(id, label) {
+    this.panel(null);
+    this.artBox(resolveVariant(id), label, null, 224);
+    this.fb.flush();
+  }
+
+  // Copy a CW×CH cell from sprite sp's (sx,sy) to the framebuffer at (dx,dy),
+  // 1:1, honouring transparency and clipping to the viewport. Used to tile the
+  // ornate thorn-vine chrome (data/art/chrome.json) around framebuffer screens.
+  _blitCell(sp, sx, sy, cw, ch, dx, dy) {
+    const fb = this.fb;
+    for (let y = 0; y < ch; y++) {
+      const py2 = dy + y; if (py2 < 0 || py2 >= H) continue;
+      for (let x = 0; x < cw; x++) {
+        const px2 = dx + x; if (px2 < 0 || px2 >= W) continue;
+        const v = sp.data[(sy + y) * sp.w + (sx + x)];
+        if (v >= 0) fb.px[py2 * W + px2] = v;
+      }
+    }
+  }
+
+  // Tile the chrome_frame 9-slice (36×36, 12px cells) around the whole screen:
+  // fixed corners, edge cells repeated (clipped on the final partial tile).
+  ornateScreenBorder() {
+    const sp = ART.sprites.chrome_frame;
+    if (!sp) { this.fb.rect(6, 6, W - 12, H - 12, C.gold); return; }
+    const C12 = 12;
+    // corners
+    this._blitCell(sp, 0, 0, C12, C12, 0, 0);
+    this._blitCell(sp, 24, 0, C12, C12, W - C12, 0);
+    this._blitCell(sp, 0, 24, C12, C12, 0, H - C12);
+    this._blitCell(sp, 24, 24, C12, C12, W - C12, H - C12);
+    // top & bottom edges
+    for (let x = C12; x < W - C12; x += C12) {
+      const cw = Math.min(C12, W - C12 - x);
+      this._blitCell(sp, 12, 0, cw, C12, x, 0);
+      this._blitCell(sp, 12, 24, cw, C12, x, H - C12);
+    }
+    // left & right edges
+    for (let y = C12; y < H - C12; y += C12) {
+      const ch = Math.min(C12, H - C12 - y);
+      this._blitCell(sp, 0, 12, C12, ch, 0, y);
+      this._blitCell(sp, 24, 12, C12, ch, W - C12, y);
+    }
+  }
+
   splash(title, sub) {
     const fb = this.fb;
     fb.clear(0);
-    // starfield night-sky flourish
+    // starfield night-sky flourish (kept clear of the ornate border band)
     for (let i = 0; i < 90; i++) {
-      const x = (i * 97 + 31) % W, y = (i * 61 + 7) % H;
+      const x = 14 + (i * 97 + 31) % (W - 28), y = 14 + (i * 61 + 7) % (H - 28);
       fb.pset(x, y, (i % 5 === 0) ? C.bone : 2);
     }
-    fb.rect(6, 6, W - 12, H - 12, C.gold);
-    fb.rect(8, 8, W - 16, H - 16, C.frame);
+    this.ornateScreenBorder();
     const big = ART.sprites.scene_title;
     if (big && /THORNMERE/i.test(title)) {
       fb.blit(big, CX - big.w, CY - big.h - 18, big.w * 2, big.h * 2);
@@ -399,32 +488,57 @@ export class Renderer {
     this.fb.flush();
   }
 
+  // After-battle banner — shown on every win, treasure or not. Prefers a
+  // generated scene in the art-box (mirrors the finale victory()); falls back
+  // to a text banner when scene_battle_victory hasn't been imported yet.
+  battleVictory(result = {}) {
+    const fb = this.fb;
+    const scene = resolveVariant('scene_battle_victory');
+    if (scene) {
+      this.panel(null);
+      this.artBox(scene, 'THE FIELD IS YOURS');
+      // Bold banner in the clear sky band above the party's raised arms.
+      const fr = frameAt(scene, this.now);
+      const sp = fr && ART.sprites[fr.name];
+      const dh = sp ? sp.h * Math.max(1, Math.floor(192 / Math.max(sp.w, sp.h))) : 96;
+      const bh = Math.max(dh + 16, 120);
+      const topY = CY - (bh >> 1) - 12 + ((bh - dh) >> 1) + 6;   // sprite top + 6px
+      for (const [ox, oy] of [[-2, 0], [2, 0], [0, -2], [0, 2], [-2, -2], [2, 2], [-2, 2], [2, -2]])
+        fb.textCentered('VICTORY!', CX + ox, topY + oy, C.black, 2);
+      fb.textCentered('VICTORY!', CX, topY, C.gold, 2);
+      this.fb.flush();
+      return;
+    }
+    this.panel(null);
+    fb.textCentered('✦ VICTORY ✦', CX, CY - 48, C.gold, 2);
+    fb.textCentered('The field is yours.', CX, CY - 14, C.text);
+    let y = CY + 8;
+    fb.textCentered(`EXPERIENCE  ${result.xpEach || 0} EACH`, CX, y, C.bone); y += 12;
+    if (result.gold) fb.textCentered(`GOLD  ${result.gold}`, CX, y, C.candle);
+    else fb.textCentered('NO COIN AMONG THE FALLEN', CX, y, C.dim);
+    y += 12;
+    if (result.chest) fb.textCentered('SOMETHING GLINTS IN THE DARK', CX, y, C.gold);
+    this.fb.flush();
+  }
+
   // ---- player automap (Remastered) ------------------------------------------
   parchmentMap(game, am, fullscreen) {
+    if (!fullscreen) return this.miniMap(game, am);
     const fb = this.fb;
     const map = currentMap(game);
-    const CS = fullscreen
-      ? Math.max(3, Math.floor(Math.min((W - 44) / map.w, (H - 50) / map.h)))
-      : Math.max(2, Math.floor(Math.min(110 / map.w, 110 / map.h)));
+    const CS = Math.max(3, Math.floor(Math.min((W - 44) / map.w, (H - 50) / map.h)));
     const mapW = map.w * CS, mapH = map.h * CS;
-    let ox, oy;
-    if (fullscreen) {
-      ox = ((W - mapW) >> 1);
-      oy = ((H - mapH) >> 1) + 8;
-      fb.fillRect(0, 0, W, H, C.bone);
-      fb.textCentered(map.name || 'MAP', W >> 1, 3, C.gold);
-      if (am && !am.synced) fb.textCentered('~ DESYNC ~', W >> 1, H - 10, C.dim);
-    } else {
-      ox = W - mapW - 14;
-      oy = 10;
-      fb.fillRect(ox - 3, oy - 3, mapW + 6, mapH + 6, C.black);
-    }
+    const ox = ((W - mapW) >> 1);
+    const oy = ((H - mapH) >> 1) + 8;
+    fb.fillRect(0, 0, W, H, C.bone);
+    fb.textCentered(map.name || 'MAP', W >> 1, 3, C.gold);
+    if (am && !am.synced) fb.textCentered('~ DESYNC ~', W >> 1, H - 10, C.dim);
     const visited = new Set(am ? am.visited : []);
     for (let y = 0; y < map.h; y++) {
       for (let x = 0; x < map.w; x++) {
         if (!visited.has(x + ',' + y)) continue;
         const sx = ox + x * CS, sy = oy + (map.h - 1 - y) * CS;
-        if (fullscreen) fb.fillRect(sx, sy, CS, CS, C.chalk);
+        fb.fillRect(sx, sy, CS, CS, C.chalk);
         if (edgeAt(map, x, y, 0) !== '0') fb.fillRect(sx, sy, CS + 1, 1, C.dim);
         if (edgeAt(map, x, y, 2) !== '0') fb.fillRect(sx, sy + CS, CS + 1, 1, C.dim);
         if (edgeAt(map, x, y, 3) !== '0') fb.fillRect(sx, sy, 1, CS + 1, C.dim);
@@ -432,14 +546,72 @@ export class Renderer {
       }
     }
     const cursor = am?.cursor || { x: game.pos.x, y: game.pos.y, facing: game.pos.facing };
-    const axc = ox + cursor.x * CS + (CS >> 1);
-    const ayc = oy + (map.h - 1 - cursor.y) * CS + (CS >> 1);
-    const f = cursor.facing;
-    const vx = [0, 1, 0, -1][f], vy = [-1, 0, 1, 0][f];
     const col = (am && !am.synced) ? C.candle : C.gold;
-    fb.line(axc - vx * CS * 0.3, ayc - vy * CS * 0.3, axc + vx * CS * 0.4, ayc + vy * CS * 0.4, col);
-    fb.pset(axc + vx, ayc + vy, col);
+    this._mapArrow(ox + cursor.x * CS + (CS >> 1),
+                   oy + (map.h - 1 - cursor.y) * CS + (CS >> 1),
+                   cursor.facing, col, Math.max(3, CS >> 1));
     fb.flush();
+  }
+
+  // Compact, see-through, party-centred local map for the corner overlay.
+  // Shows only an 8x8 window of discovered cells that scrolls with the party,
+  // drawn as a small solid "parchment scrap" so it reads cleanly on any scene
+  // (the indexed framebuffer has no alpha, so true transparency isn't viable).
+  miniMap(game, am) {
+    const fb = this.fb;
+    const map = currentMap(game);
+    const cursor = am?.cursor || { x: game.pos.x, y: game.pos.y, facing: game.pos.facing };
+    const VIEW = 8, CS = 11, half = VIEW >> 1, span = VIEW * CS;
+    const ox = W - span - 6, oy = 6;
+    fb.fillRect(ox - 3, oy - 3, span + 6, span + 6, C.black);   // thin dark edge
+    fb.fillRect(ox - 2, oy - 2, span + 4, span + 4, C.bone);    // parchment ground
+    const x0 = cursor.x - half, y0 = cursor.y - half;   // bottom-left map cell of the window
+    const visited = am ? new Set(am.visited) : new Set();
+    for (let wy = 0; wy < VIEW; wy++) {
+      for (let wx = 0; wx < VIEW; wx++) {
+        const mx = x0 + wx, my = y0 + wy;
+        if (mx < 0 || my < 0 || mx >= map.w || my >= map.h) continue;
+        if (!visited.has(mx + ',' + my)) continue;
+        const sx = ox + wx * CS, sy = oy + (VIEW - 1 - wy) * CS;  // map y grows up; invert for screen
+        fb.fillRect(sx, sy, CS, CS, C.chalk);                    // explored floor
+        if (edgeAt(map, mx, my, 0) !== '0') fb.fillRect(sx, sy, CS + 1, 1, C.dim);
+        if (edgeAt(map, mx, my, 2) !== '0') fb.fillRect(sx, sy + CS, CS + 1, 1, C.dim);
+        if (edgeAt(map, mx, my, 3) !== '0') fb.fillRect(sx, sy, 1, CS + 1, C.dim);
+        if (edgeAt(map, mx, my, 1) !== '0') fb.fillRect(sx + CS, sy, 1, CS + 1, C.dim);
+      }
+    }
+    const col = (am && !am.synced) ? C.candle : C.gold;
+    this._mapArrow(ox + half * CS + (CS >> 1), oy + (VIEW - 1 - half) * CS + (CS >> 1),
+                   cursor.facing, col, 4);
+    fb.flush();
+  }
+
+  // Small filled facing-arrow (triangle) centred on (cx,cy), pointing the way
+  // the party faces, with a dark outline so it reads on any background.
+  // facing: 0=N 1=E 2=S 3=W.
+  _mapArrow(cx, cy, facing, col, r) {
+    const fb = this.fb;
+    const vx = [0, 1, 0, -1][facing], vy = [-1, 0, 1, 0][facing];
+    const px = -vy, py = vx;                            // perpendicular -> arrowhead width
+    const tri = (rr, color) => {
+      const ax = cx + vx * rr,          ay = cy + vy * rr;            // tip
+      const bx = cx - vx * rr + px * rr, by = cy - vy * rr + py * rr; // back-left
+      const dx = cx - vx * rr - px * rr, dy = cy - vy * rr - py * rr; // back-right
+      const minx = Math.min(ax, bx, dx) | 0, maxx = Math.max(ax, bx, dx) | 0;
+      const miny = Math.min(ay, by, dy) | 0, maxy = Math.max(ay, by, dy) | 0;
+      const edge = (x, y, x0, y0, x1, y1) => (x - x0) * (y1 - y0) - (y - y0) * (x1 - x0);
+      for (let y = miny; y <= maxy; y++) {
+        for (let x = minx; x <= maxx; x++) {
+          const e1 = edge(x + 0.5, y + 0.5, ax, ay, bx, by);
+          const e2 = edge(x + 0.5, y + 0.5, bx, by, dx, dy);
+          const e3 = edge(x + 0.5, y + 0.5, dx, dy, ax, ay);
+          if ((e1 >= 0 && e2 >= 0 && e3 >= 0) || (e1 <= 0 && e2 <= 0 && e3 <= 0))
+            fb.pset(x, y, color);
+        }
+      }
+    };
+    tri(r + 1, C.black);   // outline
+    tri(r, col);           // body
   }
 
   // ---- debug automap ----------------------------------------------------------

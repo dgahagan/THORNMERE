@@ -5,7 +5,7 @@ import { Rng, rollDice } from './core/rng.js';
 import {
   newGame, gameToJSON, gameFromJSON, currentMap, partyChars, realParty,
   aliveParty, charById, mapStateFor, partyHasItem, isNight, partySlotsFree,
-  automapFor
+  automapFor, streetAt
 } from './core/gamestate.js';
 import { TOGGLES, newSettings } from './core/settings.js';
 import {
@@ -35,6 +35,7 @@ import {
   poolAdd, poolRemove
 } from './core/services.js';
 import { Renderer } from './ui/renderer.js';
+import { slideOffset, SLIDE_MS } from './ui/slide.js';
 import { loadArt } from './ui/art.js';
 import { renderStatus, renderRoster, tickNote } from './ui/panels.js';
 import {
@@ -53,8 +54,15 @@ let renderer, game = null, rng = new Rng((Date.now() & 0xffffffff) >>> 0);
 let mode = null;
 let highlightId = null;
 let narrating = false;
+let narrateBoost = false;  // Space held during narration — runs lines at the fast pace
+let spaceDownAt = 0;       // ms timestamp of the held Space, to tell a tap from a hold
 let sceneFlash = null;   // transient portrait-window scene: {id, label, until}
 let mapViewCycle = 0;    // 0=off 1=corner-overlay 2=full-screen (Remastered automap)
+// Smooth-step: a forward/backward move applies instantly, then the camera glides
+// one cell via requestAnimationFrame. Turning, bumps and mode changes never slide.
+let slideActive = false;  // a glide is currently animating
+let slideRAF = null;      // its rAF handle
+let walkHeld = false;     // forward key physically held — chains glides at walk pace
 
 // Reduced XP: multiplier from balance.json, applied when game.settings.reducedXp is on.
 function getXpMult() { return game.settings?.reducedXp ? DB.balance.remasteredXpMultiplier : 1.0; }
@@ -82,8 +90,19 @@ function invRemoveItem(ch, idx) {
 function pressKey(key) {
   unlockAudio();                       // browsers want a gesture first
   if (musicCtx) updateMusic(game, musicCtx);
-  if (narrating) { if (narrateFlush) narrateFlush(); return; }
+  // narration swallows keystrokes so a stray 'a' can't queue an attack mid-scroll;
+  // its pacing (hold Space = faster, tap = skip) lives in the keydown/keyup handlers
+  if (narrating) return;
+  if (typeof key === 'string' && key.startsWith('view:')) return rosterClick(parseInt(key.slice(5), 10) - 1);
   mode?.onKey?.({ key });
+}
+
+// clicking a party member in the roster: open their sheet, or flip to them while
+// already reading one. Honoured only where it's safe — never in combat, menus, or
+// prompts, where a stray character pick would hijack the keyboard's number keys.
+function rosterClick(slot) {
+  if (!game) return;
+  if (mode === exploreMode || mode?.sheet) sheetFlow(slot);
 }
 
 let musicCtx = 'title';
@@ -161,9 +180,14 @@ function render() {
   if (mode === exploreMode) setMenu(exploreContext());
   renderStatus(game, els.status);
   renderRoster(game, els.roster, highlightId);
+  // carved nameplate under the viewport: the place you stand (street or map),
+  // with coords appended only when a compass/debug reveals them
   const showCoords = game.debugMap
     || (game.settings?.automap && game.effects?.some(e => e.kind === 'compass'));
-  els.loc.textContent = showCoords ? `(${game.pos.x},${game.pos.y}) ${FACING_NAMES[game.pos.facing]}` : '';
+  const place = streetAt(game) || currentMap(game).name || '';
+  els.loc.textContent = showCoords
+    ? `${place}  (${game.pos.x},${game.pos.y}) ${FACING_NAMES[game.pos.facing]}`
+    : place;
 }
 
 // never an empty box: describe the square and what the party faces
@@ -285,6 +309,7 @@ function loadFrom(key) {
   const s = localStorage.getItem(key);
   if (!s) return false;
   game = gameFromJSON(s);
+  mapViewCycle = game.settings?.automap ? 1 : 0;  // show the overlay by default when automap is on
   return true;
 }
 
@@ -310,34 +335,87 @@ function sfxForLine(e) {
   return null;
 }
 
+// Combat (and other) narration scrolls one line at a time on a readable beat,
+// the way the original printed it. Holding Space drops to NARRATE_FAST; a quick
+// tap (or any other key / a click) skips straight to the end of the batch.
+const NARRATE_SLOW = 600;
+const NARRATE_FAST = 150;
 function narrate(lines, then) {
   narrating = true;
+  narrateBoost = false;
   setMenu('');
   let i = 0;
+  let timer = null;
+  const finish = () => { narrating = false; narrateBoost = false; then?.(); };
+  const fire = (e) => {
+    if (e.fx) { if (e.fx.who === 'party') flashParty(e.fx.kind); else if (e.fx.who != null) flashChar(e.fx.who, e.fx.kind); }
+  };
   const tick = () => {
-    if (i >= lines.length) { narrating = false; then?.(); return; }
+    if (i >= lines.length) { finish(); return; }
     const e = lines[i++];
     if (e.type === 'msg' || e.text) {
       msg(e.text, e.mouth ? 'mouth' : /falls!|succumbs|dies|drained|poisoned|stone/i.test(e.text || '') ? 'hurt' : '');
+      els.log.lastChild?.classList.add('reveal');  // gentle fade-in per line
       const s = sfxForLine(e);
       if (s) sfx(s);
+      fire(e);
     }
     render();
-    timer = setTimeout(tick, 240);
+    timer = setTimeout(tick, narrateBoost ? NARRATE_FAST : NARRATE_SLOW);
   };
-  let timer = setTimeout(tick, 10);
+  timer = setTimeout(tick, 10);
   narrateFlush = () => {
-    clearTimeout(timer);
+    if (timer) clearTimeout(timer);
     while (i < lines.length) {
       const e = lines[i++];
       if (e.text) msg(e.text, e.mouth ? 'mouth' : '');
+      fire(e);
     }
-    narrating = false;
     render();
-    then?.();
+    finish();
   };
 }
 let narrateFlush = null;
+
+// ---- party status-line flashes ----------------------------------------------
+// A hit, heal or status change pulses the struck character's roster line in a
+// colour that reads the affect at a glance. Persistent statuses (poison/stone/
+// fear) get a steady edge bar in renderRoster; this is the transient flash.
+const FX_RGB = {
+  hp:     '200,64,50',    // ember — HP damage
+  heal:   '114,192,76',   // leaf — healed or cured
+  drain:  '138,82,200',   // violet — life/mind drain
+  poison: '62,132,52',    // fen-green — poison takes hold
+  stone:  '90,108,138',   // grey-blue — petrified
+  fear:   '216,162,36'    // gold — gripped by fear
+};
+const FX_DUR = 520;
+const rosterFx = new Map();   // String(charId) -> { kind, until }
+let fxRaf = 0;
+function flashChar(id, kind) {
+  if (id == null || !FX_RGB[kind]) return;
+  rosterFx.set(String(id), { kind, until: Date.now() + FX_DUR });
+  if (!fxRaf) fxRaf = requestAnimationFrame(paintRosterFx);
+}
+function flashParty(kind) {
+  if (!game) return;
+  for (const ch of realParty(game)) if (isAlive(ch)) flashChar(ch.id, kind);
+}
+function paintRosterFx() {
+  fxRaf = 0;
+  if (!els.roster) return;
+  const now = Date.now();
+  let active = false;
+  for (const row of els.roster.querySelectorAll('.row[data-cid]')) {
+    const fx = rosterFx.get(row.dataset.cid);
+    if (!fx) { if (row.style.background) row.style.background = ''; continue; }
+    const t = (fx.until - now) / FX_DUR;
+    if (t <= 0) { rosterFx.delete(row.dataset.cid); row.style.background = ''; continue; }
+    active = true;
+    row.style.background = `rgba(${FX_RGB[fx.kind]},${(t * 0.6).toFixed(3)})`;
+  }
+  if (active) fxRaf = requestAnimationFrame(paintRosterFx);
+}
 
 // ================================================================== EXPLORE
 const exploreMode = {
@@ -359,7 +437,10 @@ const exploreMode = {
   enter() { setMenu(exploreContext()); setMusic('explore'); },
   onKey(e) {
     const k = e.key.toLowerCase();
-    if (k === 'arrowup' || k === 'w') return doStep(false);
+    // forward: ignore key-repeat while a glide is mid-flight (no queue deeper than
+    // one step); the slide chains itself if the key is still held when it lands.
+    if (k === 'arrowup' || k === 'w') { if (slideActive) return; return doStep(false); }
+    if (slideActive) snapSlide();   // any other action lands the camera first
     if (k === 'arrowdown' || k === 's') { turn(game, 2); updateAutomap(game, [], { isTurn: true }); return render(); }
     if (k === 'arrowleft' || k === 'a') { turn(game, -1); updateAutomap(game, [], { isTurn: true }); return render(); }
     if (k === 'arrowright' || k === 'd') { turn(game, 1); updateAutomap(game, [], { isTurn: true }); return render(); }
@@ -399,7 +480,12 @@ function optionsMode(back) {
       k: String(i + 1),
       label: `${t.label}: ${on ? 'ON' : 'off'}${locked ? ' [locked]' : ''}`,
       dim: locked,
-      fn: () => { if (!locked) { game.settings[t.id] = !on; optionsMode(back); } }
+      fn: () => {
+        if (locked) return;
+        game.settings[t.id] = !on;
+        if (t.id === 'automap') mapViewCycle = !on ? 1 : 0;  // reveal/hide the overlay to match the toggle
+        optionsMode(back);
+      }
     };
   }) : [];
   setMode(menuMode({
@@ -433,15 +519,51 @@ function archetypeOf(clsId) { return ARCHETYPES[clsId] || 'caster'; }
 // breathe/eye_pulse ever played in-engine.
 function portraitOf(ch) { return ch.portrait || `pc_${ch.race}_${archetypeOf(ch.cls)}`; }
 
+// events that change mode/area — never animate a slide into them, just snap
+const SLIDE_BREAK = new Set(['building', 'gate', 'riddlePrompt', 'stairsPrompt', 'combat', 'mapchange']);
+
+// Land any in-progress glide immediately (camera back at the true cell). Called
+// before turns, menus, and any mode change so the next frame is drawn correctly.
+function snapSlide() {
+  if (slideRAF) { cancelAnimationFrame(slideRAF); slideRAF = null; }
+  slideActive = false;
+  if (renderer) renderer.camOffset = 0;
+}
+
+// Glide the camera one cell home (from -1 forward / +1 backward → 0), eased.
+// Logic has already applied; this is purely the camera. On finish, if the
+// forward key is still held we chain the next step so walking has no dead time.
+function startSlide(backward) {
+  const from = backward ? 1 : -1;
+  const t0 = performance.now();
+  slideActive = true;
+  if (slideRAF) cancelAnimationFrame(slideRAF);
+  const tick = (now) => {
+    const t = (now - t0) / SLIDE_MS;
+    if (t >= 1) {
+      renderer.camOffset = 0; slideRAF = null; slideActive = false;
+      drawView();
+      if (walkHeld && mode === exploreMode && game) doStep(false);  // chain at glide pace
+      return;
+    }
+    renderer.camOffset = slideOffset(from, t);
+    drawView();
+    slideRAF = requestAnimationFrame(tick);
+  };
+  renderer.camOffset = from;
+  slideRAF = requestAnimationFrame(tick);
+}
+
 function doStep(backward) {
   const preFacing = game.pos.facing;
   const stepDir = backward ? (preFacing + 2) % 4 : preFacing;
   const intX = game.pos.x + DX[stepDir];
   const intY = game.pos.y + DY[stepDir];
 
-  const events = step(game, rng, { backward });
+  const events = step(game, rng, { backward });   // logic applies instantly, as always
 
-  if (events.some(e => e.type === 'bump')) {
+  const bumped = events.some(e => e.type === 'bump');
+  if (bumped) {
     sfx('bump');
   } else {
     sfx(['undercroft', 'barrow'].some(p => game.pos.map.startsWith(p)) ? 'footstep_dirt' : 'footstep_stone');
@@ -452,7 +574,17 @@ function doStep(backward) {
       teleportDesync: game.pos.x !== intX || game.pos.y !== intY,
     });
   }
-  handleEvents(events);
+  // Slide only a clean one-cell move that stays in exploration. Bumps, spinners,
+  // teleports and anything that opens a building/combat/stairs snap instead, so
+  // the camera never animates a misleading path.
+  const moved = !bumped && game.pos.facing === preFacing
+    && game.pos.x === intX && game.pos.y === intY;
+  const canSlide = moved && !events.some(e => SLIDE_BREAK.has(e.type));
+
+  handleEvents(events);                              // may change mode (instant)
+
+  if (canSlide && mode === exploreMode) startSlide(backward);
+  else snapSlide();
 }
 
 function lookHere() {
@@ -523,6 +655,7 @@ function grantTreasure(e, pending) {
 }
 
 function travel(to, announce = true) {
+  snapSlide();   // a teleport/stairs/gate must not leave a glide animating a false path
   game.pos = { map: to.map, x: to.x, y: to.y, facing: to.facing ?? game.pos.facing };
   stopSong(game);
   sfx('stairs');
@@ -718,6 +851,7 @@ function sheetFlow(slot) {
         'Esc to return.'
       ].join('\n')),
       hint: 'Esc to return.',
+      sheet: true,
       onKey(e) { if (e.key === 'Escape') { highlightId = null; setMode(exploreMode); } }
     });
     return;
@@ -739,26 +873,37 @@ function sheetFlow(slot) {
     // Shared mode: show pool; equipping claims item from pool into ch.inventory
     const pool = game.pool?.items ?? [];
     const chargesTag = (en) => game.settings?.charges && en.charges != null ? ` (${en.charges} ch)` : '';
-    const packLines = ch.inventory.map((en, i) => {
+    const isEquipped = (i) => Object.values(ch.equip).includes(i);
+    // carried items are clickable (1-8) and split equipped/bright from held/grey
+    const carriedRow = (en, i) => {
       const item = DB.item(en.id);
-      const eq = Object.values(ch.equip).includes(i) ? '*' : ' ';
-      return `  ${i + 1}${eq} ${en.ident ? item.name : item.generic}${chargesTag(en)}`;
-    });
+      const name = en.ident ? item.name : item.generic;
+      return `<span class="opt ${isEquipped(i) ? 'eq' : 'held'}" data-key="${i + 1}"> ${i + 1}  ${esc(name)}${esc(chargesTag(en))}</span>`;
+    };
+    const cEntries = ch.inventory.map((en, i) => ({ en, i }));
+    const wornRows = cEntries.filter(({ i }) => isEquipped(i)).map(({ en, i }) => carriedRow(en, i));
+    const heldRows = cEntries.filter(({ i }) => !isEquipped(i)).map(({ en, i }) => carriedRow(en, i));
+    const carriedSection = [
+      '<span class="grouphead">— Equipped —</span>',
+      wornRows.length ? wornRows.join('\n') : '<span class="ctx"> (nothing readied)</span>',
+      '<span class="grouphead">— Carried —</span>',
+      heldRows.length ? heldRows.join('\n') : '<span class="ctx"> (none)</span>'
+    ].join('\n');
     const poolLines = pool.map((en, i) => {
       const item = DB.item(en.id);
       const ok = classAllowed(ch, item) ? '' : ' (not your trade)';
-      return `<span class="opt" data-key="p${i + 1}">  [P${i + 1}] ${esc(en.ident ? item.name : item.generic)}${esc(chargesTag(en))}${esc(ok)}</span>`;
+      return `<span class="opt held" data-key="p${i + 1}">  [P${i + 1}] ${esc(en.ident ? item.name : item.generic)}${esc(chargesTag(en))}${esc(ok)}</span>`;
     });
-    const packSection = packLines.length ? packLines.join('\n') : '  (no items equipped/held)';
-    const poolSection = poolLines.length ? poolLines.join('\n') : '  (pool empty)';
+    const poolSection = poolLines.length ? poolLines.join('\n') : '<span class="ctx">  (pool empty)</span>';
     setMode({
       menu: esc(lines.join('\n'))
-        + '\n' + esc(`Carried/equipped (1-${ch.inventory.length || 8}):\n`) + esc(packSection)
-        + '\n' + esc(`\nParty pool (P1-P${Math.max(pool.length, 1)} to claim/equip):\n`) + poolSection
-        + '\n\n' + esc('1-8 equip/unequip carried · Pn claim from pool · (R)eturn carried to pool · (D)rop · Esc done'),
+        + '\n' + carriedSection
+        + '\n' + esc(`\nParty pool (P1-P${Math.max(pool.length, 1)} to claim/equip):`) + '\n' + poolSection
+        + '\n\n' + esc('1-8 equip/unequip carried · Pn claim from pool · (R)eturn carried · (D)rop · Esc done'),
       bar: [{ k: 'r', label: 'Return to pool' }, { k: 'd', label: 'Drop' }, { k: 'Escape', label: 'Done' }],
       hint: 'Pn = claim from pool. 1-8 equip/unequip. R = return to pool. Esc back.',
-      draw: () => renderer.special(portraitOf(ch), `${ch.name.toUpperCase()} — ${clsOf(ch).name.toUpperCase()}`),
+      sheet: true,
+      draw: () => renderer.portrait(portraitOf(ch), `${ch.name.toUpperCase()} — ${clsOf(ch).name.toUpperCase()}`),
       onKey(e) {
         const k = e.key.toLowerCase();
         if (k === 'escape') { highlightId = null; return setMode(exploreModeOrCurrent()); }
@@ -813,15 +958,26 @@ function sheetFlow(slot) {
     return;
   }
 
-  // Legacy mode — per-character inventory
+  // Legacy mode — per-character inventory.  Equipped gear is grouped and shown
+  // bright; the rest of the pack sits below in muted grey — quick to scan what a
+  // character is actually wielding, the way the 1985 sheet read.
   const chargesTagL = (en) => game.settings?.charges && en.charges != null ? ` (${en.charges} ch)` : '';
-  const invLines = ch.inventory.map((en, i) => {
+  const isEquipped = (i) => Object.values(ch.equip).includes(i);
+  const itemRow = (en, i) => {
     const item = DB.item(en.id);
-    const eq = Object.values(ch.equip).includes(i) ? '*' : ' ';
     const ok = classAllowed(ch, item) ? '' : ' (not your trade)';
-    return `<span class="opt" data-key="${i + 1}"> ${i + 1}${eq} ${esc(en.ident ? item.name : item.generic)}${esc(chargesTagL(en))}${esc(ok)}</span>`;
-  });
-  if (!ch.inventory.length) invLines.push(' (empty pack)');
+    const name = en.ident ? item.name : item.generic;
+    return `<span class="opt ${isEquipped(i) ? 'eq' : 'held'}" data-key="${i + 1}"> ${i + 1}  ${esc(name)}${esc(chargesTagL(en))}${esc(ok)}</span>`;
+  };
+  const entries = ch.inventory.map((en, i) => ({ en, i }));
+  const wornRows = entries.filter(({ i }) => isEquipped(i)).map(({ en, i }) => itemRow(en, i));
+  const packRows = entries.filter(({ i }) => !isEquipped(i)).map(({ en, i }) => itemRow(en, i));
+  const invBlock = [
+    '<span class="grouphead">— Equipped —</span>',
+    wornRows.length ? wornRows.join('\n') : '<span class="ctx"> (nothing readied)</span>',
+    '<span class="grouphead">— Pack —</span>',
+    packRows.length ? packRows.join('\n') : '<span class="ctx"> (pack empty)</span>'
+  ].join('\n');
 
   const inspectItem = (en) => {
     const item = DB.item(en.id);
@@ -834,11 +990,12 @@ function sheetFlow(slot) {
   };
 
   setMode({
-    menu: esc(lines.join('\n')) + '\n' + invLines.join('\n') +
-      '\n\n' + esc('* = equipped.  1-8 equip/unequip, (I)nspect, (T)rade, (D)rop, Esc done'),
+    menu: esc(lines.join('\n')) + '\n' + invBlock +
+      '\n\n' + esc('Bright = equipped.  1-8 equip/unequip, (I)nspect, (T)rade, (D)rop, Esc done'),
     bar: [{ k: 'i', label: 'Inspect' }, { k: 't', label: 'Trade' }, { k: 'd', label: 'Drop' }, { k: 'Escape', label: 'Done' }],
-    hint: 'Number keys equip/unequip. I inspect, T trade, D drop, Esc back.',
-    draw: () => renderer.special(portraitOf(ch), `${ch.name.toUpperCase()} — ${clsOf(ch).name.toUpperCase()}`),
+    hint: 'Number keys equip/unequip. I inspect, T trade, D drop, Esc back. Click a name to switch.',
+    sheet: true,
+    draw: () => renderer.portrait(portraitOf(ch), `${ch.name.toUpperCase()} — ${clsOf(ch).name.toUpperCase()}`),
     onKey(e) {
       const k = e.key.toLowerCase();
       if (k === 'escape') { highlightId = null; return setMode(exploreModeOrCurrent()); }
@@ -956,18 +1113,22 @@ function openBuilding(id, name) {
 }
 
 function hallMode(name, draws) {
+  const opts = [
+    { k: 'c', label: 'Create a character', fn: () => createFlow(name, draws) },
+    { k: 'a', label: 'Add to party', fn: () => addFlow(name, draws) },
+    { k: 'r', label: 'Remove from party', fn: () => removeFlow(name, draws) },
+    { k: 'o', label: 'Marching order', fn: () => orderFlow(name, draws) },
+    { k: 'x', label: 'Strike a name from the ledger (delete)', fn: () => deleteFlow(name, draws) },
+    { k: 's', label: 'SAVE the game', fn: () => { saveTo(SAVE_KEY); sfx('save'); msg('The clerk records everything in a fair hand. Game saved.', 'good'); hallMode(name, draws); } },
+    { k: 'l', label: 'Leave', fn: () => leaveBuilding() }
+  ];
+  if (game.roster.length === 0 && DB.starters) {
+    opts.unshift({ k: 'p', label: `Load the ${DB.starters.partyName} (pre-built party)`, fn: () => loadFenPact(name, draws) });
+  }
   setMode(menuMode({
     title: `${name} — the roster ledger lies open.`,
     body: `Roster: ${game.roster.length} souls. Party: ${game.partyIds.length}/6.`,
-    options: [
-      { k: 'c', label: 'Create a character', fn: () => createFlow(name, draws) },
-      { k: 'a', label: 'Add to party', fn: () => addFlow(name, draws) },
-      { k: 'r', label: 'Remove from party', fn: () => removeFlow(name, draws) },
-      { k: 'o', label: 'Marching order', fn: () => orderFlow(name, draws) },
-      { k: 'x', label: 'Strike a name from the ledger (delete)', fn: () => deleteFlow(name, draws) },
-      { k: 's', label: 'SAVE the game', fn: () => { saveTo(SAVE_KEY); sfx('save'); msg('The clerk records everything in a fair hand. Game saved.', 'good'); hallMode(name, draws); } },
-      { k: 'l', label: 'Leave', fn: () => leaveBuilding() }
-    ],
+    options: opts,
     onEsc: () => leaveBuilding(),
     ...draws
   }));
@@ -978,6 +1139,15 @@ function leaveBuilding() {
   setMode(exploreMode);
 }
 
+function raceModLine(race) {
+  const parts = [];
+  for (const [stat, val] of Object.entries(race.mods)) {
+    if (val > 0) parts.push(`+${val} ${stat}`);
+    else if (val < 0) parts.push(`${val} ${stat}`);
+  }
+  return parts.length ? parts.join('  ') : 'no modifiers';
+}
+
 function createFlow(hall, draws) {
   if (game.roster.length >= 20) { msg('The ledger is full (20 souls).'); return hallMode(hall, draws); }
   const suggestName = () => FEN_NAMES[(nameIdx++) % FEN_NAMES.length];
@@ -986,7 +1156,7 @@ function createFlow(hall, draws) {
     if (!nameTrim) return hallMode(hall, draws);
     const raceOpts = DB.races.map((r, i) => ({
       k: String(i + 1),
-      label: `${r.name} — ${r.desc}`,
+      label: `${r.name}  [${raceModLine(r)}]  — ${r.desc}`,
       fn: () => pickClass(r)
     }));
     setMode(menuMode({ title: `${nameTrim}, of what folk?`, options: raceOpts, onEsc: () => hallMode(hall, draws), ...draws }));
@@ -994,10 +1164,11 @@ function createFlow(hall, draws) {
     const pickClass = (race) => {
       const clsOpts = DB.classes.filter(c => c.starting).map((c, i) => ({
         k: String(i + 1),
-        label: `${c.name} — ${c.desc}`,
+        label: `${c.name}  [prime: ${c.primeStat}]  — ${c.desc}`,
         fn: () => rollLoop(race, c)
       }));
-      setMode(menuMode({ title: `${nameTrim} the ${race.name} — what trade?`, options: clsOpts, onEsc: () => hallMode(hall, draws), ...draws }));
+      const body = 'Prime stat drives the class strength. Higher is better.';
+      setMode(menuMode({ title: `${nameTrim} the ${race.name} — what trade?`, body, options: clsOpts, onEsc: () => hallMode(hall, draws), ...draws }));
     };
 
     const rollLoop = (race, cls) => {
@@ -1024,7 +1195,7 @@ function createFlow(hall, draws) {
           { k: 'a', label: 'This one will do', fn: () => finish(race, cls, stats, pid) }
         ],
         onEsc: () => rollLoop(race, cls),
-        draw: () => renderer.special(pid, nameTrim.toUpperCase())
+        draw: () => renderer.portrait(pid, nameTrim.toUpperCase())
       }));
     };
 
@@ -1086,6 +1257,33 @@ function deleteFlow(hall, draws) {
       hallMode(hall, draws);
     }, () => hallMode(hall, draws));
   }, () => hallMode(hall, draws));
+}
+
+function loadFenPact(hall, draws) {
+  const s = DB.starters;
+  if (!s) { msg('No pre-built party data found.'); return hallMode(hall, draws); }
+  const SLOTS_MAP = { weapon: 0, armor: 1, shield: 2, helm: 3, gauntlets: 4, instrument: 5 };
+  for (const spec of s.members) {
+    const ch = createCharacter(rng, {
+      name: spec.name,
+      raceId: spec.race,
+      classId: spec.cls,
+      stats: rollStats(rng, spec.race)
+    });
+    ch.portrait = `pc_${spec.race}_${archetypeOf(spec.cls)}_a`;
+    addToInventory(ch, 'torch');
+    for (const slotKey of ['weapon', 'armor', 'shield', 'helm', 'gauntlets', 'instrument']) {
+      if (spec[slotKey]) {
+        const idx = ch.inventory.length;
+        if (addToInventory(ch, spec[slotKey])) equipItem(ch, idx);
+      }
+    }
+    game.roster.push(ch);
+    game.partyIds.push(ch.id);
+  }
+  game.gold += s.gold;
+  msg(`The ${s.partyName} take up their packs. ${s.partyDesc}`, 'good');
+  hallMode(hall, draws);
 }
 
 // ---- Greta's ---------------------------------------------------------------
@@ -1547,11 +1745,34 @@ function resolveFlow(combat) {
     if (combat.state === 'orders') return ordersFlow(combat, 0);
     if (combat.state === 'victory') {
       sfx('gold');
-      if (combat.result?.chest) return chestFlow(combat);
-      return combat.onEnd('victory');
+      return victoryScreen(combat);
     }
     if (combat.state === 'fled') return combat.onEnd('fled');
     if (combat.state === 'defeat') return gameOverMode();
+  });
+}
+
+// ---- victory ----------------------------------------------------------------
+// A win always earns its own screen — treasure follows, but even a bare field
+// gets the banner.
+function victoryScreen(combat) {
+  const r = combat.result || {};
+  const proceed = () => (r.chest ? chestFlow(combat) : combat.onEnd('victory'));
+  const lines = [
+    'The last of them falls. The fen goes quiet.',
+    '',
+    `Experience: ${r.xpEach || 0} each`,
+    r.gold ? `Gold gathered: ${r.gold}` : 'No coin among the fallen.',
+    ...(r.chest ? ['', 'Something glints among the bodies…'] : []),
+    '',
+    '(any key — to continue)'
+  ];
+  setMode({
+    menu: `<span class="title">VICTORY</span>\n${esc(lines.join('\n'))}`,
+    hint: 'Any key continues.',
+    bar: [{ k: ' ', label: 'Continue' }],
+    draw: () => renderer.battleVictory(r),
+    onKey() { proceed(); }
   });
 }
 
@@ -1633,18 +1854,11 @@ function newGameFlow() {
 function modeSelectFlow() {
   setMode(menuMode({
     title: 'Choose your experience',
-    body: [
-      'REMASTERED — automap, save anywhere, 7th-slot summons, item charges,',
-      '             shared inventory, reduced XP. All modern comforts on.',
-      '',
-      'LEGACY      — the 1985 experience, unmodified.',
-      '',
-      'CUSTOM      — pick individually which comforts to enable.'
-    ].join('\n'),
+    body: 'Remastered turns on every modern comfort. Legacy is the pure 1985\nexperience. Custom lets you pick each one.\n',
     options: [
-      { k: 'r', label: 'Remastered (all modern comforts)', fn: () => { game.settings = newSettings('remastered'); startNewGame(); } },
-      { k: 'l', label: 'Legacy (classic, unmodified)',     fn: () => { game.settings = newSettings('legacy');     startNewGame(); } },
-      { k: 'c', label: 'Custom…',                         fn: customModeFlow },
+      { k: 'r', label: 'Remastered — automap, save anywhere, shared bag, charges, summon slot, easier XP', fn: () => { game.settings = newSettings('remastered'); startNewGame(); } },
+      { k: 'l', label: 'Legacy — the 1985 experience, unmodified',                                          fn: () => { game.settings = newSettings('legacy');     startNewGame(); } },
+      { k: 'c', label: 'Custom — choose comforts one by one…',                                              fn: customModeFlow },
     ],
     onEsc: () => { game = null; setMode(mainMenu()); },
     draw: () => renderer.splash('THORNMERE', 'The Founding Song')
@@ -1653,17 +1867,15 @@ function modeSelectFlow() {
 
 function customModeFlow() {
   const s = game.settings;
-  const body = TOGGLES.map((t, i) => {
-    const lock = t.lockedAtCreation ? ' [locked at creation]' : '';
-    return `  ${i + 1}. [${s[t.id] ? 'X' : ' '}] ${t.label}${lock} — ${t.desc}`;
-  }).join('\n');
   setMode(menuMode({
-    title: 'Custom mode — toggle features',
-    body,
+    title: 'Custom mode — click or press a number to toggle',
     options: [
+      // checkbox state lives on the clickable line itself, so nothing is ever
+      // pushed out of view by a separate description block
       ...TOGGLES.map((t, i) => ({
         k: String(i + 1),
-        label: `${t.label}: ${s[t.id] ? 'ON  → turn off' : 'OFF → turn on'}`,
+        // short label so every toggle + Start/Back stays on one screen (no clip)
+        label: `[${s[t.id] ? 'X' : ' '}] ${t.label}${t.shortDesc ? ' — ' + t.shortDesc : ''}`,
         fn: () => { s[t.id] = !s[t.id]; customModeFlow(); }
       })),
       { k: 's', label: 'Start game with these settings', fn: startNewGame },
@@ -1676,6 +1888,7 @@ function customModeFlow() {
 
 function startNewGame() {
   if (game.settings.sharedInventory && !game.pool) game.pool = { items: [] };
+  mapViewCycle = game.settings?.automap ? 1 : 0;  // overlay visible from the first step in Remastered
   updateAutomap(game, [], {});
   setMode(exploreMode);
 }
@@ -1819,10 +2032,27 @@ async function boot() {
   renderer = new Renderer(els.view);
   renderer.splash('THORNMERE', 'loading the fen…');
   await Promise.all([loadAll(fetchJson), loadAudio(fetchJson)]);
+  const isForwardKey = (key) => key === 'ArrowUp' || key === 'w' || key === 'W';
   window.addEventListener('keydown', (e) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Tab'].includes(e.key)) e.preventDefault();
+    // during narration Space paces the scroll (hold = fast); any other key skips
+    if (narrating) {
+      if (e.key === ' ') { if (!e.repeat) { spaceDownAt = Date.now(); narrateBoost = true; } }
+      else narrateFlush?.();
+      return;
+    }
+    if (isForwardKey(e.key)) walkHeld = true;   // chain glides while held
     pressKey(e.key);
   });
+  window.addEventListener('keyup', (e) => {
+    if (isForwardKey(e.key)) walkHeld = false;
+    // a quick Space tap means "skip to the end"; a real hold just stops boosting
+    if (e.key === ' ' && narrating) {
+      if (Date.now() - spaceDownAt < 220) narrateFlush?.();
+      else narrateBoost = false;
+    }
+  });
+  window.addEventListener('blur', () => { walkHeld = false; });
   // animation tick: repaint the viewport at idle-loop speed (input never waits)
   setInterval(() => { drawView(); tickNote(); }, 130);
   setMode(mainMenu());

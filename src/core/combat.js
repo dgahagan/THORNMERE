@@ -336,14 +336,14 @@ export function castCombatSpell(c, ch, spell, target, ev) {
         if (!t || !isAlive(t)) continue;
         const amt = eff.full ? t.maxHp : rollDice(c.rng, eff.dice);
         const healed = healChar(t, amt);
-        if (healed) ev(`${t.name} is healed ${healed}.`);
-        for (const flag of eff.cure || []) if (t.status[flag]) { delete t.status[flag]; ev(`${t.name} is cured of ${flag}.`); }
+        if (healed) ev(`${t.name} is healed ${healed}.`, { who: t.id, kind: 'heal' });
+        for (const flag of eff.cure || []) if (t.status[flag]) { delete t.status[flag]; ev(`${t.name} is cured of ${flag}.`, { who: t.id, kind: 'heal' }); }
       }
       break;
     }
     case 'cure': {
       const t = target;
-      if (t) for (const flag of eff.flags) if (t.status[flag]) { delete t.status[flag]; ev(`${t.name} is cured of ${flag}.`); }
+      if (t) for (const flag of eff.flags) if (t.status[flag]) { delete t.status[flag]; ev(`${t.name} is cured of ${flag}.`, { who: t.id, kind: 'heal' }); }
       break;
     }
     case 'shield':
@@ -399,10 +399,10 @@ function actUseItem(c, ch, order, ev) {
   if (use.kind === 'heal') {
     const t = order.targetChar || ch;
     const healed = healChar(t, rollDice(c.rng, use.dice));
-    ev(`${t.name} is healed ${healed}.`);
+    ev(`${t.name} is healed ${healed}.`, { who: t.id, kind: 'heal' });
   } else if (use.kind === 'cure') {
     const t = order.targetChar || ch;
-    for (const flag of use.flags) if (t.status[flag]) { delete t.status[flag]; ev(`${t.name} is cured of ${flag}.`); }
+    for (const flag of use.flags) if (t.status[flag]) { delete t.status[flag]; ev(`${t.name} is cured of ${flag}.`, { who: t.id, kind: 'heal' }); }
   } else if (use.kind === 'damage') {
     const g = c.groups[order.target ?? 0] || livingGroups(c)[0];
     if (!g || g.dist > (use.range || 30)) { ev('It bursts short of any foe!'); }
@@ -451,7 +451,7 @@ function monsterAttackMember(c, group, ev) {
   }
   let dmg = Math.max(1, Math.round(rollDice(c.rng, atk.dmg) * group.rage));
   applyDamage(ch, dmg);
-  ev(`The ${name}'s ${atk.name} hits ${ch.name} for ${dmg}!${ch.status.dead ? ` ${ch.name} falls!` : ''}`);
+  ev(`The ${name}'s ${atk.name} hits ${ch.name} for ${dmg}!${ch.status.dead ? ` ${ch.name} falls!` : ''}`, { who: ch.id, kind: 'hp' });
   if (ch.status.dead && ch.summon) {
     c.game.summons = c.game.summons.filter(s => s.id !== ch.id);
   }
@@ -460,23 +460,23 @@ function monsterAttackMember(c, group, ev) {
     const extraSave = songSaveBonus(c);
     switch (sp.kind) {
       case 'poison':
-        if (!savingThrow(c.rng, ch, sp.dc, extraSave)) { ch.status.poison = true; ev(`${ch.name} is poisoned!`); }
+        if (!savingThrow(c.rng, ch, sp.dc, extraSave)) { ch.status.poison = true; ev(`${ch.name} is poisoned!`, { who: ch.id, kind: 'poison' }); }
         break;
       case 'drain':
         if (!savingThrow(c.rng, ch, sp.dc, extraSave)) {
           if (ch.level > 1) { ch.level -= 1; ch.drained += 1; ch.maxHp = Math.max(1, ch.maxHp - 4); ch.hp = Math.min(ch.hp, ch.maxHp); }
-          ev(`A grave-cold pull — ${ch.name} is drained of life's memory!`);
+          ev(`A grave-cold pull — ${ch.name} is drained of life's memory!`, { who: ch.id, kind: 'drain' });
         }
         break;
       case 'stone':
-        if (!savingThrow(c.rng, ch, sp.dc, extraSave)) { ch.status.stone = true; ev(`${ch.name} stiffens into grey stone!`); }
+        if (!savingThrow(c.rng, ch, sp.dc, extraSave)) { ch.status.stone = true; ev(`${ch.name} stiffens into grey stone!`, { who: ch.id, kind: 'stone' }); }
         break;
       case 'fear':
-        if (!savingThrow(c.rng, ch, sp.dc, extraSave)) { ch.status.fear = true; ev(`${ch.name} is gripped by fear!`); }
+        if (!savingThrow(c.rng, ch, sp.dc, extraSave)) { ch.status.fear = true; ev(`${ch.name} is gripped by fear!`, { who: ch.id, kind: 'fear' }); }
         break;
       case 'spdrain': {
         const loss = Math.min(ch.sp, rollDice(c.rng, sp.amount || '1d4'));
-        if (loss > 0) { ch.sp -= loss; ev(`${ch.name} feels ${loss} points of mind-fire sipped away!`); }
+        if (loss > 0) { ch.sp -= loss; ev(`${ch.name} feels ${loss} points of mind-fire sipped away!`, { who: ch.id, kind: 'drain' }); }
         break;
       }
     }
@@ -497,18 +497,18 @@ function monsterCast(c, group, ev) {
       for (const ch of anyRank(c)) {
         applyDamage(ch, dmg);
         if (ch.status.dead) {
-          ev(`${ch.name} takes ${dmg} and falls!`);
+          ev(`${ch.name} takes ${dmg} and falls!`, { who: ch.id, kind: 'hp' });
           if (ch.summon) c.game.summons = c.game.summons.filter(s => s.id !== ch.id);
         }
       }
-      ev(`The spell tears through the party for ${dmg}!`);
+      ev(`The spell tears through the party for ${dmg}!`, { who: 'party', kind: 'hp' });
     } else {
       const pool = anyRank(c);
       if (pool.length) {
         const ch = c.rng.pick(pool);
         const dmg = rollDice(c.rng, spell.dice);
         applyDamage(ch, dmg);
-        ev(`${ch.name} is blasted for ${dmg}!${ch.status.dead ? ` ${ch.name} falls!` : ''}`);
+        ev(`${ch.name} is blasted for ${dmg}!${ch.status.dead ? ` ${ch.name} falls!` : ''}`, { who: ch.id, kind: 'hp' });
         if (ch.status.dead && ch.summon) c.game.summons = c.game.summons.filter(s => s.id !== ch.id);
       }
     }
@@ -564,7 +564,8 @@ function monsterGroupAct(c, group, ev) {
 // ---- round resolution ------------------------------------------------------
 export function resolveRound(c) {
   const events = [];
-  const ev = (text) => events.push({ type: 'msg', text });
+  // fx (optional) = { who: charId | 'party', kind } — drives the roster status-line flash
+  const ev = (text, fx) => events.push(fx ? { type: 'msg', text, fx } : { type: 'msg', text });
   c.round += 1;
 
   // true sight burns illusions at the top of every round
@@ -642,7 +643,7 @@ export function resolveRound(c) {
           }
           if (r.song.combat.kind === 'regen') {
             for (const t of realParty(c.game)) healChar(t, r.song.combat.amount + (r.power >= 3 ? 1 : 0));
-            ev('The lull knits torn flesh.');
+            ev('The lull knits torn flesh.', { who: 'party', kind: 'heal' });
           }
         }
       }
@@ -665,12 +666,12 @@ function aliveAny(c) {
 }
 
 function finishRound(c, events) {
-  const ev = (text) => events.push({ type: 'msg', text });
+  const ev = (text, fx) => events.push(fx ? { type: 'msg', text, fx } : { type: 'msg', text });
   // poison ticks in battle too
   for (const ch of realParty(c.game)) {
     if (ch.status.poison && isAlive(ch)) {
       applyDamage(ch, 1);
-      if (ch.status.dead) ev(`${ch.name} succumbs to the poison!`);
+      if (ch.status.dead) ev(`${ch.name} succumbs to the poison!`, { who: ch.id, kind: 'hp' });
     }
   }
   // trollish regeneration

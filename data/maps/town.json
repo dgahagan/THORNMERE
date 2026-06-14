@@ -960,8 +960,29 @@
    "t": "gate",
    "id": "north_gate",
    "name": "The North Gate"
+  },
+  "8,22": {
+   "t": "statue",
+   "id": "guardian_west",
+   "name": "Guardian Statue"
+  },
+  "14,22": {
+   "t": "statue",
+   "id": "guardian_east",
+   "name": "Guardian Statue"
   }
  },
+ "streets": [
+  { "id": "gran_mere",  "name": "Gran Mere Way",  "rects": [[1,1,22,3]]  },
+  { "id": "tallow_row", "name": "Tallow Row",      "rects": [[1,8,22,10]] },
+  { "id": "bellward",   "name": "Bellward",        "rects": [[1,15,22,16]] },
+  { "id": "cobbles",    "name": "The Cobbles",     "rects": [[1,21,22,22]] },
+  { "id": "wickfen",    "name": "Wickfen Lane",    "rects": [[7,4,8,22]]  },
+  { "id": "cinder",     "name": "Cinder Street",   "rects": [[14,4,15,22]] },
+  { "id": "wardwell",   "name": "Wardwell Close",  "rects": [[1,4,1,22]]  },
+  { "id": "heron",      "name": "Heron Walk",      "rects": [[21,1,22,14]] },
+  { "id": "standings",  "name": "The Standings",   "rects": [[9,9,13,10]] }
+ ],
  "zones": {},
  "riddle": null,
  "entry": {

@@ -2,6 +2,15 @@
 
 Items raised but intentionally deferred. Not lost — pick up when prioritized.
 
+## ~~UI/gameplay polish pass~~ — DONE 2026-06-12
+
+Period-interface pass (global, both modes): ornate thorn-vine DOM chrome +
+carved buttons/plaque/panels (`data/art/chrome.json`, `style.css`), OFL period
+fonts (`assets/fonts/`), bright-light view distance with horizon haze and a
+smooth one-cell camera glide on step (`src/ui/renderer.js`, `src/ui/slide.js`).
+Dungeon/darkness rendering verified pixel-identical; 27 original logic tests
+untouched. Verdicts/screens in `art-review/art-review.md`.
+
 ## ~~Town first-person viewport polish~~ — DONE 2026-06-11
 
 Implemented (`src/ui/renderer.js`): perspective cobblestone street, soft drifting

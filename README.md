@@ -37,9 +37,10 @@ npm test           # logic + art + audio data integrity suites
 ```
 
 No accounts, no network access, no downloads — everything is in this repo.
-**All audio is synthesized in code; all art is text-grid pixel data. Nothing
-is downloaded, and there are no binary assets to credit — every sprite and
-melody is original to this repo.**
+**All audio is synthesized in code; all art (including the ornate UI chrome) is
+text-grid pixel data — every sprite and melody is original to this repo.** The
+only bundled binaries are four OFL-licensed period fonts under `assets/fonts/`,
+each committed beside its license (Pirata One, IM Fell English, MedievalSharp).
 
 ## Screenshots (what you should see)
 
@@ -55,6 +56,27 @@ melody is original to this repo.**
 - **The roster**: a portrait chip and class icon beside every name, with
   condition colors — wounded yellow, critical red, poisoned green, stoned
   grey, dead dark-red.
+
+## Presentation polish (global — both modes)
+
+A period-interface pass over the original engine, applied to Remastered and
+Legacy alike (no new toggles):
+
+- **Ornate chrome & period type.** An ornate thorn-vine frame (hand-pixeled
+  9-slice `border-image` from `data/art/chrome.json`) surrounds the game; panels
+  carry carved bevels with blackletter nameplate tabs, the viewport sits over a
+  carved location plaque, and buttons are carved wood with gold keycaps. Headers
+  are blackletter (**Pirata One**); narration is an old-style serif (**IM Fell
+  English**); columnar text (menus, roster) stays monospace for alignment. Fonts
+  are OFL, bundled with their licenses under `assets/fonts/`.
+- **Bright-light view distance.** Outdoors at noon the party sees ~6 tiles down
+  the street, the farthest planes dithering into a sky-coloured haze. Dungeon
+  torchlight and the magical-darkness zones keep their short, claustrophobic
+  radius — underground vision is byte-for-byte unchanged.
+- **Smooth step.** Forward/backward moves apply instantly (events, traps, the
+  automap), then the camera glides one cell (~140ms, eased) instead of warping.
+  Turning stays instant; bumps, teleporters and combat snap the camera to the
+  true cell.
 
 ## Keys
 
@@ -317,11 +339,37 @@ scenarios, uses the globally-installed @playwright/mcp's browser),
 `test/smoke.html` (in-page scripted run under headless Chrome),
 `node tools/artcheck.js` (sprite validation), `/dev.html` (sprite preview).
 
+## Feelies
+
+Three printable documents are included, modeled on the paper inserts that shipped with boxed games in 1985:
+
+```sh
+npm run build-feelies
+# Output: feelies/thornmere-map.pdf
+#         feelies/thornmere-manual.pdf
+#         feelies/thornmere-command-card.pdf
+```
+
+PDFs are generated deterministically from game data — no binary assets, no hand-typed numbers. The PDFs themselves are `.gitignore`d; the generator scripts and source data are version-controlled.
+
+| File | Contents | Format |
+|------|----------|--------|
+| `thornmere-map.pdf` | "Cloth map" of Thornmere: street grid, named buildings, gates, guardian statues, Maldrec's Needle, legend, compass rose | Landscape A4 |
+| `thornmere-manual.pdf` | ~25-page manual: races (with stat modifiers), classes (prime stats), places, exploration, combat, magic, spell tables (all 84 spells from data), song list, items (Greta's stock), tips, reference | Portrait A4 |
+| `thornmere-command-card.pdf` | All keybindings, new-game flow, roster abbreviations, Remastered vs Legacy toggle table | Landscape A4, fold in half |
+
+**Printing tips:**
+- The map looks best printed in color and folded to A5 or smaller — crease lines add authenticity.
+- The command card can be folded in half or taped to the monitor.
+- The manual can be stapled on the left spine or ring-bound.
+
+All numeric data in the PDFs (spell SP costs, race stat modifiers, item prices) is read from `data/` at build time. A test in `test/feelies.test.js` verifies that mutating a spell's SP cost in the DB is reflected in the manual's collected text.
+
 ## Tests
 
-`npm test` covers three suites:
+`npm test` covers four suites:
 
-- **Logic** (original 27 tests + 11 Remastered tests): combat resolution and
+- **Logic** (original 27 tests + 11 Remastered tests, 53 total): combat resolution and
   boss phases, leveling math and the class-change chain to Riddlemaster,
   save/load round-tripping the entire game state mid-delve, map traversal
   (walls both sides, spinners, teleporters, riddle gating, perimeter
@@ -338,3 +386,7 @@ scenarios, uses the globally-installed @playwright/mcp's browser),
   pattern agree on length (loops can't drift), all 7 bard songs have distinct
   loops plus flourishes and match `data/songs.json`, all themes exist, and the
   full SFX set is well-formed.
+- **Feelies** (`test/feelies.test.js`): map legend entries validate against town
+  cell data; streets array is well-formed; spoiler lint (no forbidden strings in
+  generated text); SP cost propagation (mutate DB, verify collectManualText reflects
+  it); class primeStat fields are present and valid for all starting classes.
