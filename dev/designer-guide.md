@@ -15,10 +15,13 @@ tonally and structurally consistent with what already ships.
   disagree, **the data wins** — fix the doc.
 - **Companion atlas:** [`dev/maps.md`](maps.md) holds an ASCII floor-grid of
   **every map** (walls, doors, secret/riddle doors, stairs, traps, teleporters,
-  spinners, zones, bosses, secret rooms) plus per-map tables. It is **generated**
-  from the same `data/maps/*.json` by `tools/mapdoc.js` — re-run `node
-  tools/mapdoc.js` whenever a map changes, and the atlas updates itself. Use it
-  alongside §4 to read the actual layout and difficulty of each level.
+  spinners, zones, bosses, secret rooms) plus per-map tables and a
+  [**derived difficulty summary**](maps.md#difficulty-summary-derived)
+  (per-level hazard friction, expected encounter pressure, and boss stats
+  computed from the maps + `data/monsters.json`). It is **generated** by
+  `tools/mapdoc.js` — re-run `node tools/mapdoc.js` whenever a map or the
+  bestiary changes, and the atlas updates itself. Use it alongside §4 to read
+  the actual layout and difficulty of each level.
 
 ---
 

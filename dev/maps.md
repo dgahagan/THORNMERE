@@ -23,6 +23,7 @@ Map-level **dark** (whole floor needs a torch/light) is noted per map; the
 
 ## Contents
 
+- [Difficulty Summary (derived)](#difficulty-summary-derived)
 - [Thornmere](#thornmere)
 - [The Sunken Undercroft — Drowned Cellars](#the-sunken-undercroft--drowned-cellars)
 - [The Sunken Undercroft — The Old Crypts](#the-sunken-undercroft--the-old-crypts)
@@ -33,6 +34,59 @@ Map-level **dark** (whole floor needs a torch/light) is noted per map; the
 - [Maldrec's Needle — The Copying Floors](#maldrecs-needle--the-copying-floors)
 - [Maldrec's Needle — The Gauntlet](#maldrecs-needle--the-gauntlet)
 - [Maldrec's Needle — The Unsung Sanctum](#maldrecs-needle--the-unsung-sanctum)
+
+---
+
+## Difficulty Summary (derived)
+
+Computed by `tools/mapdoc.js` from the maps + `data/monsters.json`.
+Encounter figures are **expected values per wandering fight** (weighted
+over the roster, group-count averaged and capped at 4) — coarse but
+comparable across levels. *E[foes]* = expected enemies; *E[HP]* = their
+combined health; *E[dmg/rd]* = their combined output if each lands its
+best single hit in a round (party-wide boss AOE is in the boss table).
+
+### Navigation & hazards
+
+| Level | Dark | Anti-magic cells | Traps (avg DC) | Spinners | Teleports | Secret doors | Locked gate |
+|---|---|---|---|---|---|---|---|
+| The Sunken Undercroft — Drowned Cellars | yes +16z | — | 4 (11) | 1 | 1 | 7 | riddle |
+| The Sunken Undercroft — The Old Crypts | yes +16z | — | 5 (12) | 2 | 2 | 8 | — |
+| The Howling Barrow — Outer Mounds | yes +21z | — | 4 (13) | 3 | 1 | 8 | — |
+| The Howling Barrow — The Wind Galleries | yes +36z | 9 | 5 (14) | 3 | 2 | 9 | riddle |
+| The Howling Barrow — Hall of the Choir | yes +20z | 9 | 5 (14) | 4 | 3 | 9 | — |
+| Maldrec's Needle — The Threshold | yes | 24 | 5 (15) | 3 | 4 | 8 | — |
+| Maldrec's Needle — The Copying Floors | yes +12z | 25 | 5 (15) | 3 | 5 | 10 | — |
+| Maldrec's Needle — The Gauntlet | yes +12z | 25 | 6 (16) | 4 | 5 | 9 | riddle |
+| Maldrec's Needle — The Unsung Sanctum | yes | 47 | 6 (16) | 4 | 6 | 9 | seal (Riddlemaster) |
+
+### Encounter pressure
+
+| Level | Rate % | Groups | Tier range | E[foes] | E[HP] | E[dmg/rd] |
+|---|---|---|---|---|---|---|
+| Thornmere (night) | 6 | 1d2 | 1–2 | 3.4 | 20 | 10 |
+| The Sunken Undercroft — Drowned Cellars | 7 | 1d2 | 1–1 | 4.8 | 23 | 12 |
+| The Sunken Undercroft — The Old Crypts | 8 | 1d2 | 1–2 | 3.5 | 30 | 13 |
+| The Howling Barrow — Outer Mounds | 8 | 1d3 | 2–2 | 5.8 | 91 | 28 |
+| The Howling Barrow — The Wind Galleries | 9 | 1d3 | 2–3 | 4.8 | 87 | 27 |
+| The Howling Barrow — Hall of the Choir | 9 | 1d3 | 2–3 | 3.3 | 77 | 21 |
+| Maldrec's Needle — The Threshold | 9 | 1d3 | 4–4 | 3.8 | 118 | 34 |
+| Maldrec's Needle — The Copying Floors | 10 | 1d3 | 4–4 | 3.6 | 109 | 34 |
+| Maldrec's Needle — The Gauntlet | 10 | 1d3 | 4–5 | 3.3 | 131 | 40 |
+| Maldrec's Needle — The Unsung Sanctum | 10 | 1d4 | 4–5 | 4 | 165 | 51 |
+
+### Bosses & fixed encounters
+
+| Boss | Level | Tier | HP | AC | Best hit | Party AOE |
+|---|---|---|---|---|---|---|
+| The Tallow King | The Sunken Undercroft — The Old Crypts | 3 | 60 | 3 | 10.5 | 7 |
+| Tallow Acolyte | The Sunken Undercroft — The Old Crypts | 2 | 11 | 6 | 5 | — |
+| Tallow Crawler | The Sunken Undercroft — The Old Crypts | 1 | 11 | 9 | 4.5 | — |
+| The Choir's Eldest | The Howling Barrow — Hall of the Choir | 4 | 80 | 1 | 13.5 | 14 |
+| Hollow Cantor | The Howling Barrow — Hall of the Choir | 3 | 27 | 4 | 4.5 | 9 |
+| Hollow Man | The Howling Barrow — Hall of the Choir | 2 | 18 | 6 | 5 | — |
+| Hollow Man | The Howling Barrow — Hall of the Choir | 2 | 18 | 6 | 5 | — |
+| Maldrec the Unsung | Maldrec's Needle — The Unsung Sanctum | 5 | 190 | -2 | 22.5 | 18 |
 
 ---
 
