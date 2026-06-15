@@ -13,6 +13,12 @@ tonally and structurally consistent with what already ships.
   `data/items.json`, `data/monsters.json`, `data/classes.json`,
   `src/core/services.js`, and `src/main.js`. When this doc and the data
   disagree, **the data wins** — fix the doc.
+- **Companion atlas:** [`dev/maps.md`](maps.md) holds an ASCII floor-grid of
+  **every map** (walls, doors, secret/riddle doors, stairs, traps, teleporters,
+  spinners, zones, bosses, secret rooms) plus per-map tables. It is **generated**
+  from the same `data/maps/*.json` by `tools/mapdoc.js` — re-run `node
+  tools/mapdoc.js` whenever a map changes, and the atlas updates itself. Use it
+  alongside §4 to read the actual layout and difficulty of each level.
 
 ---
 
@@ -53,7 +59,8 @@ town is ungrateful and the Song is always being sung slightly wrong.
 
 ## 2. The World: Thornmere (town hub)
 
-Map `data/maps/town.json` (id `town`). The overworld is the town itself —
+Map `data/maps/town.json` (id `town`) — **atlas:**
+[Thornmere grid](maps.md#thornmere). The overworld is the town itself —
 navigated first-person, by signboard, like 1985. All services live here; there
 is **no SP regeneration underground**, so the town is the pacing heartbeat
 (delve → retreat → heal/recharge/level → delve).
@@ -126,6 +133,8 @@ and stairs.
 
 Entry: **The Boarded Tannery**. Theme: a drowned cellar-system under the town —
 rotted brick, wet sheen, the dark deepening with depth. Two levels.
+**Atlas:** [L1 — Drowned Cellars](maps.md#the-sunken-undercroft--drowned-cellars)
+· [L2 — The Old Crypts](maps.md#the-sunken-undercroft--the-old-crypts).
 
 **Through-line:** the tanners sealed the flooded cellar; it didn't stay sealed.
 Below squats the **Tallow King**, a thing of rendered fat grown fat on three
@@ -154,6 +163,9 @@ the candle/wax/tallow motif consistent if expanding here.
 
 Entry: **East Gate**. Theme: wind-haunted burial mounds on the fen — singing
 stones, wind galleries, hollow stone voices. Three levels.
+**Atlas:** [L1 — Outer Mounds](maps.md#the-howling-barrow--outer-mounds) ·
+[L2 — The Wind Galleries](maps.md#the-howling-barrow--the-wind-galleries) ·
+[L3 — Hall of the Choir](maps.md#the-howling-barrow--hall-of-the-choir).
 
 **Through-line:** the mounds "sing in rounds." A **Choir of Hollow Men** keeps
 what it's given (and what it isn't), conducted by the ancient **Choir's Eldest**,
@@ -188,6 +200,10 @@ Theme: an anti-magic tower that is "taller on the inside, and deeper than tall" 
 glass, mirrors, copying-rooms where Maldrec endlessly (and wrongly) transcribes
 the stolen Verses. Four levels, saturated with **anti-magic zones**, **teleporters**,
 and **spinners**.
+**Atlas:** [L1 — The Threshold](maps.md#maldrecs-needle--the-threshold) ·
+[L2 — The Copying Floors](maps.md#maldrecs-needle--the-copying-floors) ·
+[L3 — The Gauntlet](maps.md#maldrecs-needle--the-gauntlet) ·
+[L4 — The Unsung Sanctum](maps.md#maldrecs-needle--the-unsung-sanctum).
 
 **Through-line:** Maldrec the Unsung has spent three hundred years copying the
 Verses he can't make sing, growing worse with every wrong copy. The tower's
@@ -560,4 +576,5 @@ When adding or editing content, keep these invariants true:
 
 *Compiled from game data at the state of branch `polish-pass-ui-gameplay`. If the
 maps, items, classes, or bell-tower logic change, re-derive this doc from source —
-the data is authoritative.*
+the data is authoritative. The companion [map atlas](maps.md) regenerates
+mechanically: `node tools/mapdoc.js`.*
