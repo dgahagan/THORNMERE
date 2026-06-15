@@ -249,3 +249,58 @@ die in the same round). Level-drain shows 0 because all chars are Level 1
 confirmed by the 47% night wipe rate.
 
 **dayRate=25 is confirmed. No tuning required.**
+
+---
+
+## Addendum — Level 3 Pre-Dungeon Grind (2026-06-15)
+
+Can a fresh party reach Level 3 by grinding the 4 enterable houses before
+diving into the Sunken Undercroft? Models the full BT1 economy:
+
+- House encounters (day 25%), Lorist MEND healing, spell-tier purchases
+- Night → tavern overnight sleep (safe zone, new mechanic)
+- **Dead Level 1–2 chars**: free recruit replacement from Adventurers' Hall
+  (same class, Level 1 reset with inherited gear) — resurrection is
+  unaffordable and makes sense only for veterans who've invested XP and tiers
+- Dead Level 3+ chars: resurrect only if affordable (250g+)
+
+**Harness:** `dev/playtest/run-level3-v1.mjs` · 200 seeded runs · Legacy mode  
+**Party:** 2 blades, warden, skald (reed_pipe), hexen (T0), lorist (T1/MEND)  
+**Muster:** 220g flat; Lorist T1 bought at muster (120g); ~100g reserve
+
+| Metric | Result | Target |
+|---|---|---|
+| All 6 slots at L3 (incl. replacements) | 181/200 (90.5%) | ≥70% |
+| Full party wipe | 19/200 (9.5%) | <15% |
+| Hit clock cap (8+ days, stuck) | 0/200 (0.0%) | ~0 |
+| Avg days to finish | 1.1 | — |
+| Avg house fights to reach L3 | 33.7 | — |
+| Avg recruits from Hall (per success) | 1.6 | — |
+| Avg gold to Temple | 111g | — |
+| Avg gold to spell tiers | 72g | — |
+| Avg final gold | 115g | — |
+
+### Key finding: the BT1 recruit loop is real
+
+53% of successful runs replaced at least one fallen comrade with a Hall
+recruit. The histogram:
+
+- **47%** — original 6 all alive at L3 (lucky run)
+- **28%** — 1 replacement
+- **8%** — 2 replacements
+- **17%** — 3+ replacements (rough early patch; recruitment kept them alive)
+
+Resurrection at Level 1 (250g, starting from ~100g reserve) is effectively
+impossible — and unnecessary. Free recruits keep the loop running. This
+matches the original BT1 design intent: low-level characters are replaceable;
+high-level veterans with invested spell tiers and XP are the ones worth
+resurrecting.
+
+The clock cap collapsed to **0** (from 26% in v5 with resurrection-only
+logic), confirming the design: recruitment is the correct mechanic, not
+attrition.
+
+**Conclusion:** the house grind loop is balanced for a player who uses the
+tavern overnight and replaces fallen comrades. A party can credibly reach
+Level 3 in ~1 in-game day (33 fights, ~400 clock ticks) with a 90.5% success
+rate and meaningful 9.5% wipe risk.
