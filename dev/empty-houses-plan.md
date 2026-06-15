@@ -3,10 +3,11 @@
 **Status:** Plan A approved for implementation. Plan B designed as a contingency
 (do only if Plan A's feel/tuning warrants more grind density).
 
-This file is the durable source of truth. The session prompt
-`dev/prompt-5-empty-houses.md` is generated *from* this file and implements
-**Plan A**. When Plan B is greenlit, generate `prompt-6-*` from the Plan B
-section here.
+This file is the durable source of truth. Two session prompts are generated
+*from* it: `dev/prompt-5-empty-houses.md` implements **Plan A** (the mechanic,
+on the 4 existing empty cells), and `dev/prompt-6-empty-houses-remodel.md`
+implements **Plan B** (the town remodel) — run only if Plan A's feel warrants
+more density. Plan A is a prerequisite for Plan B.
 
 ---
 
