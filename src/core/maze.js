@@ -316,3 +316,29 @@ export function rollEncounter(game, rng, events) {
   if (!groups.length) return;
   events.push({ type: 'combat', groups });
 }
+
+// House entry encounter roll — elevated rate, same day/night tables as street.
+// Kept separate from rollEncounter to preserve that function's exact RNG order.
+export function rollHouseEncounter(game, rng, events) {
+  const map = currentMap(game);
+  const enc = map.encounters;
+  if (!enc?.house) return;
+  const night = isNight(game);
+  const rate = night ? enc.house.nightRate : enc.house.dayRate;
+  const timeEnc = night ? enc.night : enc.day;
+  if (!rng.chance(rate)) return;
+
+  const nGroups = Math.min(4, rollDice(rng, timeEnc.groups));
+  const totalWeight = timeEnc.table.reduce((a, t) => a + t.weight, 0);
+  const groups = [];
+  for (let i = 0; i < nGroups; i++) {
+    let w = rng.int(totalWeight);
+    let pickRow = timeEnc.table[0];
+    for (const row of timeEnc.table) { if (w < row.weight) { pickRow = row; break; } w -= row.weight; }
+    const def = DB.monster(pickRow.monster);
+    if (game.song?.effect?.kind === 'repel_undead' && def.undead && rng.chance(game.song.effect.amount)) continue;
+    groups.push({ monster: pickRow.monster, count: rollDice(rng, def.group) });
+  }
+  if (!groups.length) return;
+  events.push({ type: 'combat', groups });
+}
