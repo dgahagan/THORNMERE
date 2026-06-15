@@ -5,7 +5,7 @@ import { Rng, rollDice } from './core/rng.js';
 import {
   newGame, gameToJSON, gameFromJSON, currentMap, partyChars, realParty,
   aliveParty, charById, mapStateFor, partyHasItem, isNight, partySlotsFree,
-  automapFor, streetAt
+  automapFor, streetAt, DAY_LEN
 } from './core/gamestate.js';
 import { TOGGLES, newSettings } from './core/settings.js';
 import {
@@ -1593,6 +1593,13 @@ function tavernMode(name, id, draws) {
           }
         } },
       { k: 'j', label: 'Review your notes (rumor journal)', fn: () => rumorJournal(name, id, draws) },
+      ...(isNight(game) ? [{ k: 's', label: 'Sleep until morning (safe)', fn: () => {
+          game.clock = (Math.floor(game.clock / DAY_LEN) + 1) * DAY_LEN;
+          for (const ch of realParty(game)) { if (ch.cls === 'skald' && isAlive(ch)) ch.songsLeft = ch.level; }
+          msg('Grey light seeps under the door. Morning comes cold and quiet.', 'good');
+          setMusic('town');
+          tavernMode(name, id, draws);
+        } }] : []),
       { k: 'l', label: 'Leave', fn: () => setMode(exploreMode) }
     ],
     onEsc: () => setMode(exploreMode), ...draws
