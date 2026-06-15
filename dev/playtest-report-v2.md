@@ -222,3 +222,30 @@ Aldari Lorist/Hexen + Skald back; reroll for prime stat + CN). What v2 adds is
 
 Reproduce: `node dev/playtest/run-v2.mjs 30` and
 `node dev/playtest/run-best3-detail.mjs`.
+
+---
+
+## Addendum — Empty House Encounter Balance (2026-06-14)
+
+Plan A: 4 empty houses are now enterable. Each visit costs 1 clock tick
+and rolls `rollHouseEncounter` (day 25%, night 40%) from the existing town
+encounter table.
+
+**Harness:** `dev/playtest/run-house-v1.mjs` (500 seeded runs)  
+**Party:** 6-char prebuilt (2 blades, warden, skald, hexen, lorist); full gear; heal
+between each fight (simulates temple visit — the realistic town grind loop).
+
+| Metric | dayRate=25 | Target |
+|---|---|---|
+| 5 wins before night | 498/500 (99.6%) | ≥70% |
+| 5 wins AND clock ≤ 200 | 498/500 (99.6%) | — |
+| Day wipes | 2/500 (0.4%) | ≈0 |
+| Avg clock at 5-win | 32.3 turns | ≤200 |
+| Night wipes (starting at NIGHT_AT) | 236/500 (47.2%) | ≥5% |
+
+2 day wipes are mutual-annihilation corner cases (last monster and last char
+die in the same round). Level-drain shows 0 because all chars are Level 1
+(drain guards `ch.level > 1`); gate_wights still kill through raw 1d8 damage,
+confirmed by the 47% night wipe rate.
+
+**dayRate=25 is confirmed. No tuning required.**

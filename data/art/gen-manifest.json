@@ -2815,22 +2815,59 @@
         80
       ],
       "allowed": [
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 19, 20, 21, 22, 23, 26, 27, 28, 29, 30
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        15,
+        16,
+        19,
+        20,
+        21,
+        22,
+        23,
+        26,
+        27,
+        28,
+        29,
+        30
       ],
       "bg_indices": [
         0
       ],
       "seeds_to_generate": [
-        3, 7, 11, 17, 23, 42
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
       ],
-      "seeds_generated": [],
-      "chosen_seed": null,
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 17,
       "frame_effects": {},
       "frame_regions": {},
       "frame_ms": {},
-      "status": "pending",
-      "verdict": null,
-      "notes": "Empty house interior #1. No people, no text/UI. Humble/abandoned feel. Import as int_house_a (chosen seed) so resolveVariant('int_house') finds it."
+      "status": "imported",
+      "verdict": "pass",
+      "notes": "s17 chosen: dead cold hearth (no fire — matches 'cold hearth' subject), window with pale light, dusty table. FAIL s3/s7/s11/s23: warm fire violates cold-hearth subject. PASS s42 but two windows. Imported as int_house. Candidates in candidates-interiors-v2/."
     },
     {
       "id": "int_house2",
@@ -2843,22 +2880,59 @@
         80
       ],
       "allowed": [
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 19, 20, 21, 22, 23, 26, 27, 28, 29, 30
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        15,
+        16,
+        19,
+        20,
+        21,
+        22,
+        23,
+        26,
+        27,
+        28,
+        29,
+        30
       ],
       "bg_indices": [
         0
       ],
       "seeds_to_generate": [
-        3, 7, 11, 17, 23, 42
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
       ],
-      "seeds_generated": [],
-      "chosen_seed": null,
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 42,
       "frame_effects": {},
       "frame_regions": {},
       "frame_ms": {},
-      "status": "pending",
-      "verdict": null,
-      "notes": "Empty house interior #2. No people, no text/UI. Ransacked/ransomed feel. Import as int_house2_a (chosen seed)."
+      "status": "imported",
+      "verdict": "pass",
+      "notes": "s42 chosen: overturned chest left, lit tallow candle center, window with cold sky, damp walls — best 'house not dungeon' balance. FAIL s3/s7: read as dungeon treasure room (no window, gold spill). PASS s11 (dark), s17 (no window), s23 (overly bright). Imported as int_house2. Candidates in candidates-interiors-v2/."
     },
     {
       "id": "int_house3",
@@ -2871,22 +2945,59 @@
         80
       ],
       "allowed": [
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 19, 20, 21, 22, 23, 26, 27, 28, 29, 30
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        15,
+        16,
+        19,
+        20,
+        21,
+        22,
+        23,
+        26,
+        27,
+        28,
+        29,
+        30
       ],
       "bg_indices": [
         0
       ],
       "seeds_to_generate": [
-        3, 7, 11, 17, 23, 42
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
       ],
-      "seeds_generated": [],
-      "chosen_seed": null,
+      "seeds_generated": [
+        3,
+        7,
+        11,
+        17,
+        23,
+        42
+      ],
+      "chosen_seed": 3,
       "frame_effects": {},
       "frame_regions": {},
       "frame_ms": {},
-      "status": "pending",
-      "verdict": null,
-      "notes": "Empty house interior #3. No people, no text/UI. Shuttered parlor feel. Import as int_house3_a (chosen seed)."
+      "status": "imported",
+      "verdict": "pass",
+      "notes": "s3 chosen: sheet-draped furniture clearly visible both sides, prominent cobwebs overhead, single dramatic shaft of pale light through central window. Strong batch overall — all 6 pass. s3 has the most readable sheet-composition and shaft-of-light drama. Imported as int_house3. Candidates in candidates-interiors-v2/."
     }
   ]
 }

@@ -134,16 +134,19 @@ without touching the mouse.
 3. The **Review Board** (Magistrate's Court) sells spell tiers: buy
    **Hexen tier 1** (Ash Dart) and **Lorist tier 1** (Mending Word, Scholar's
    Glow) — then you can light the dark for free.
-4. Listen to rumors at **The Drowned Goose** (2g). They point at the boarded
+4. **Farm XP safely** by entering the shuttered houses along the east and west
+   rows (bump into a door face-on). Each visit risks a low-level encounter (day
+   25%, night 40%) and may turn up loose coin. Heal at the Temple between runs.
+5. Listen to rumors at **The Drowned Goose** (2g). They point at the boarded
    tannery on the north row.
-5. **The Boarded Tannery → descend.** Light a torch (`T`). Fight a few packs,
+6. **The Boarded Tannery → descend.** Light a torch (`T`). Fight a few packs,
    grab a chest or two, and run home before HP and SP run dry. There is no SP
    regeneration underground.
-6. Back in town: heal at the **Temple of the Quiet Flame**, recharge SP at
+7. Back in town: heal at the **Temple of the Quiet Flame**, recharge SP at
    **Roskva's Spark House**, level up at the **Review Board** (leveling only
    happens there — never in the field), wine for the Skald at a tavern,
    **save at the Hall**.
-7. Repeat. The riddle-door's answer is something a chandler would say. The
+8. Repeat. The riddle-door's answer is something a chandler would say. The
    Tallow King below is a level-5–6 fight; bring Eyebright or nothing false.
 
 The long game: Verses One and Two open the **bell tower**; the Needle is

@@ -1,6 +1,6 @@
 # Empty Houses — design & implementation plan
 
-**Status:** Plan A approved for implementation. Plan B designed as a contingency
+**Status:** Plan A **DONE** (2026-06-14). Plan B designed as a contingency
 (do only if Plan A's feel/tuning warrants more grind density).
 
 This file is the durable source of truth. Two session prompts are generated

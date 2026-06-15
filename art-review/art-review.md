@@ -826,3 +826,72 @@ at 1× under the 192 cap, so small-scale readability is the deciding test.
 
 Renderer falls back to a text banner when the sprite is absent, so the game shipped
 working before this import.
+
+## int_house / int_house2 / int_house3 — enterable house interiors (2026-06-14)
+
+Phase 4 of the empty-houses mechanic. 3 interior entries, 6 seeds each = 18
+candidates, all crushed to 112×80 sub26 palette via `generate_interiors.py`.
+Judged from sub26 PNGs (crushed, game-scale); confirmed via `artrender.js` 4×
+renders.
+
+### int_house — humble abandoned fenland cottage
+
+Subject: cold hearth, broken stool, dusty table, shuttered window, cobwebs, dim grey.
+
+- **s17 — CHOSEN.** Dead/cold hearth (stone only, dying embers — matches "cold hearth").
+  Window with pale grey sky light. Dusty table visible right. Desolate, abandoned
+  feel. No warm firelight except faint residual — reads as an empty cold house. ✓
+- **s3 — FAIL.** Warm orange fire in hearth. Violates "cold hearth" subject. Good
+  composition otherwise (window, table, cobwebs) but wrong mood.
+- **s7 — FAIL.** Warm fire in hearth. More cluttered/noisier than s3. Same rejection.
+- **s11 — FAIL.** Warm fire. Very dark — hard to read at game scale.
+- **s23 — FAIL.** Warm fire in hearth. Stool visible but fire contradicts subject.
+- **s42 — PASS (not chosen).** Cold/dark hearth ✓ but two windows changes the
+  spatial feel from the single-room description. s17 preferred.
+
+4× artrender: PASS. Cold stone fireplace, pale window shaft, table — reads
+immediately as a vacant cottage interior. 16 colours used.
+
+### int_house2 — ransacked one-room house
+
+Subject: overturned chest, scattered straw, guttering tallow candle, damp stone walls.
+
+- **s42 — CHOSEN.** Window top-left (establishes this as a room, not a dungeon).
+  Overturned chest lower-left, scattered warm debris (straw/detritus). Lit tallow
+  candle center — warm glow against cold damp walls. Shadows everywhere. Best
+  "ransacked house" feel from the set. ✓
+- **s3 — FAIL.** Reads as dungeon treasure room: stone block walls, bright gold-coin
+  spill from chest, no window. No "house" register.
+- **s7 — FAIL.** Same dungeon-treasure read. Even less house-like than s3.
+- **s11 — PASS (not chosen).** Overturned chest, candle, window. Darker/dungeon-
+  adjacent. s42 preferred for cleaner "room" feel.
+- **s17 — PASS (not chosen).** Scattered straw ✓, chest ✓, candle ✓. No window.
+  Atmospheric but s42 has better spatial grounding.
+- **s23 — PASS (not chosen).** Two windows, most house-like walls. Overlit for the
+  subject's "shadows" requirement. s42 preferred.
+
+4× artrender: PASS. Warm candle vs cold window contrast. Chest visible. 18 colours.
+
+### int_house3 — shuttered parlor
+
+Subject: sheet-draped furniture, cobwebbed rafters, single shaft of pale light through
+a cracked shutter.
+
+All 6 seeds pass — this was the strongest generation batch of the three.
+
+- **s3 — CHOSEN.** Sheet-draped furniture both sides (covered armchairs clearly
+  readable), prominent cobweb texture in rafters overhead, dramatic single shaft of
+  pale light through central window. Cool grey-blue palette with stark white shaft.
+  Most legible composition. ✓
+- **s7 — PASS (runner-up).** Vaulted ceiling beams ✓, sheets both sides ✓, central
+  window ✓. Clean but slightly overlit floor. Strong alternative.
+- **s11 — PASS.** Two windows, sheet-draped items ✓, warm tones on floor. Good but
+  the warm patch competes with the "cobwebbed/cold" read.
+- **s17 — PASS.** Framed picture detail, sheet-draped chair/bed, window shaft. Slightly
+  cluttered. Good variety piece.
+- **s23 — PASS.** Minimal/clean. Sheets less detailed than s3.
+- **s42 — PASS.** Draped ceiling cobweb-texture is evocative; pictures on wall;
+  pale light. Close runner-up to s3.
+
+4× artrender: PASS. Sheet-draped chairs flank a bright window shaft with
+cobwebs overhead. Instantly reads as a long-shuttered parlor. 9 colours (cleanest).
