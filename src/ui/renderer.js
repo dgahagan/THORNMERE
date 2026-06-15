@@ -197,7 +197,9 @@ export class Renderer {
       if (st === 'open') return null;
       if (bld) {
         if (st === 'door') {
-          return { tex: beyond.id.startsWith('empty') ? style.boards : style.door, sign: beyond, roof: town };
+          if (beyond.id.startsWith('house')) return { tex: style.door, roof: town };
+          if (beyond.id.startsWith('empty')) return { tex: style.boards, sign: beyond, roof: town };
+          return { tex: style.door, sign: beyond, roof: town };
         }
         return { tex: style.facade || style.wall, roof: town };
       }

@@ -18,7 +18,8 @@ import {
   nextTierFor, canBuyTier, buyTier, classChangeOptions, changeClass
 } from './core/leveling.js';
 import {
-  step, turn, searchSecrets, answerRiddle, FACING_NAMES, edgeState, cellSpecial, DX, DY
+  step, turn, searchSecrets, answerRiddle, FACING_NAMES, edgeState, cellSpecial, DX, DY,
+  advanceClock, rollHouseEncounter
 } from './core/maze.js';
 import { addEffect, hasEffect, lightRadius } from './core/effects.js';
 import { castExplore, canCastNow } from './core/spells.js';
@@ -1091,6 +1092,7 @@ function helpMode() {
 
 // ================================================================== BUILDINGS
 function openBuilding(id, name) {
+  if (id.startsWith('house')) return enterEmptyHouse(id, name);
   if (id.startsWith('empty')) {
     msg(`${name}: boarded fast. Dust, rot, and rat-droppings within.`);
     sfx('bump');
@@ -1110,6 +1112,50 @@ function openBuilding(id, name) {
     case 'belltower': return belltowerMode(name, draws);
     default: return setMode(exploreMode);
   }
+}
+
+function enterEmptyHouse(id, name) {
+  sfx('door');
+  const events = [];
+  advanceClock(game, rng, events);
+  rollHouseEncounter(game, rng, events);
+  // Flush any clock-tick messages before the outcome
+  for (const e of events) {
+    if (e.text) msg(e.text, e.mouth ? 'mouth' : '');
+  }
+  const combat = events.find(e => e.type === 'combat');
+  if (combat) return startCombat({ groups: combat.groups });
+  // No fight — small gold find chance, then show interior peek
+  const enc = currentMap(game).encounters?.house;
+  if (enc?.find && rng.chance(enc.find.chance)) {
+    const gold = rollDice(rng, enc.find.gold);
+    game.gold += gold;
+    msg(`You find ${gold} gold coin${gold === 1 ? '' : 's'} in the dust.`, 'good');
+  }
+  interiorPeek(name);
+}
+
+const HOUSE_FLAVOR = [
+  'Cold hearth. Something dripped here, once.',
+  'A stool lies on its side. The window is nailed shut.',
+  'Cobwebs thick as curtains. Whoever left, left in haste.',
+  'The floor creaks under your boots. No one answers.',
+  'A broken cot. A smell of damp stone and old candles.',
+  'Empty shelves. Dust in the shape of things long gone.',
+];
+let _houseFlavorIdx = 0;
+
+function interiorPeek(name) {
+  const flavor = HOUSE_FLAVOR[_houseFlavorIdx++ % HOUSE_FLAVOR.length];
+  setMode({
+    menu: `<span class="title">${esc(name)}</span>\n<span class="ctx">${esc(flavor)}</span>`,
+    hint: 'Space / Esc — step back.',
+    bar: [{ k: ' ', label: 'Step back' }],
+    draw() { renderer.interior(name, 'house'); },
+    onKey(e) {
+      if (e.key === ' ' || e.key === 'Escape') setMode(exploreMode);
+    }
+  });
 }
 
 function hallMode(name, draws) {
