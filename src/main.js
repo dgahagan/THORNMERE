@@ -422,7 +422,7 @@ function paintRosterFx() {
 const exploreMode = {
   menu: '',
   get hint() {
-    const base = '↑/W forward  ←→/A·D turn  ↓/S about-face  E search  C cast  P song  U use  T torch  L look  1-6 party  Q quit  ? help';
+    const base = '↑/W forward  ←→/A·D turn  ↓/S about-face  E search  C cast  P song  U use  T torch  L look  R order  1-6 party  Q quit  ? help';
     if (!game) return base;
     const extras = [];
     if (game.settings?.automap) extras.push('M map');
@@ -433,7 +433,7 @@ const exploreMode = {
     { k: 'ArrowUp', label: 'Forward' }, { k: 'ArrowLeft', label: 'Turn' }, { k: 'ArrowRight', label: 'Turn' },
     { k: 'ArrowDown', label: 'About-face' }, { k: 'e', label: 'Search' }, { k: 'c', label: 'Cast' },
     { k: 'p', label: 'Song' }, { k: 'u', label: 'Use' }, { k: 't', label: 'Torch' },
-    { k: 'l', label: 'Look' }, { k: '?', label: 'Help' }, { k: 'q', label: 'Quit' }
+    { k: 'l', label: 'Look' }, { k: 'r', label: 'Order' }, { k: '?', label: 'Help' }, { k: 'q', label: 'Quit' }
   ],
   enter() { setMenu(exploreContext()); setMusic('explore'); },
   onKey(e) {
@@ -461,6 +461,7 @@ const exploreMode = {
       return;
     }
     if (k === 'v') return campFlow();
+    if (k === 'r') return orderFlow(() => setMode(exploreMode));
     if (k === 'o') return optionsMode(() => setMode(exploreMode));
     if (k === 'q') return quitFlow();
     if (k === '?') return helpMode();
@@ -1067,7 +1068,7 @@ function helpMode() {
       '  ↑/W forward · ←→/A·D turn · ↓/S about-face',
       '  E search walls · L look (re-read the cell, use stairs)',
       '  C cast · P play/stop song · U use item · T light a torch',
-      '  1-6 character sheet (equip/trade/drop) · O options',
+      '  R marching order · 1-6 character sheet (equip/trade/drop) · O options',
       '  Q quit+autosave',
       '',
       'In combat: A attack · D defend · C cast · S sing · H hide (Knave)',
@@ -1276,7 +1277,7 @@ function removeFlow(hall, draws) {
   }, () => hallMode(hall, draws));
 }
 
-function orderFlow(hall, draws) {
+function orderFlow(back, draws = {}) {
   const list = realParty(game).map((c, i) => `${i + 1}. ${c.name}`).join('\n');
   setMode(menuMode({
     title: 'Marching order — front three meet the blades.',
@@ -1286,12 +1287,12 @@ function orderFlow(hall, draws) {
       fn: () => setMode(menuMode({
         title: `Move ${c.name}`,
         options: [
-          { k: 'u', label: 'up (toward the front)', fn: () => { moveInOrder(game, i, -1); orderFlow(hall, draws); } },
-          { k: 'd', label: 'down (toward the back)', fn: () => { moveInOrder(game, i, 1); orderFlow(hall, draws); } }
-        ], onEsc: () => orderFlow(hall, draws), ...draws
+          { k: 'u', label: 'up (toward the front)', fn: () => { moveInOrder(game, i, -1); orderFlow(back, draws); } },
+          { k: 'd', label: 'down (toward the back)', fn: () => { moveInOrder(game, i, 1); orderFlow(back, draws); } }
+        ], onEsc: () => orderFlow(back, draws), ...draws
       }))
     })),
-    onEsc: () => hallMode(hall, draws), ...draws
+    onEsc: back, ...draws
   }));
 }
 
