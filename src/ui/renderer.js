@@ -22,7 +22,8 @@ const NEAR = 0.16;
 
 const C = {                                   // palette indices for chrome
   black: 0, frame: 3, frameLit: 5, gold: 29, candle: 30,
-  bone: 6, chalk: 7, text: 13, dim: 4
+  bone: 6, chalk: 7, text: 13, dim: 4,
+  green: 16, violet: 31, ember: 26, honey: 12
 };
 
 function planeDist(k) { return k < 0 ? NEAR : DEPTHS[k]; }
@@ -541,10 +542,12 @@ export class Renderer {
         if (!visited.has(x + ',' + y)) continue;
         const sx = ox + x * CS, sy = oy + (map.h - 1 - y) * CS;
         fb.fillRect(sx, sy, CS, CS, C.chalk);
-        if (edgeAt(map, x, y, 0) !== '0') fb.fillRect(sx, sy, CS + 1, 1, C.dim);
-        if (edgeAt(map, x, y, 2) !== '0') fb.fillRect(sx, sy + CS, CS + 1, 1, C.dim);
-        if (edgeAt(map, x, y, 3) !== '0') fb.fillRect(sx, sy, 1, CS + 1, C.dim);
-        if (edgeAt(map, x, y, 1) !== '0') fb.fillRect(sx + CS, sy, 1, CS + 1, C.dim);
+        for (let d = 0; d < 4; d++) {
+          const e = edgeAt(map, x, y, d);
+          if (e !== '0') this._mapEdgeLine(sx, sy, CS, d, (e === 'd' || e === 'r') ? C.gold : C.dim);
+        }
+        const sp = cellSpecial(map, x, y);
+        if (sp) this._mapSpecialDot(fb, sx, sy, CS, sp);
       }
     }
     const cursor = am?.cursor || { x: game.pos.x, y: game.pos.y, facing: game.pos.facing };
@@ -575,11 +578,13 @@ export class Renderer {
         if (mx < 0 || my < 0 || mx >= map.w || my >= map.h) continue;
         if (!visited.has(mx + ',' + my)) continue;
         const sx = ox + wx * CS, sy = oy + (VIEW - 1 - wy) * CS;  // map y grows up; invert for screen
-        fb.fillRect(sx, sy, CS, CS, C.chalk);                    // explored floor
-        if (edgeAt(map, mx, my, 0) !== '0') fb.fillRect(sx, sy, CS + 1, 1, C.dim);
-        if (edgeAt(map, mx, my, 2) !== '0') fb.fillRect(sx, sy + CS, CS + 1, 1, C.dim);
-        if (edgeAt(map, mx, my, 3) !== '0') fb.fillRect(sx, sy, 1, CS + 1, C.dim);
-        if (edgeAt(map, mx, my, 1) !== '0') fb.fillRect(sx + CS, sy, 1, CS + 1, C.dim);
+        fb.fillRect(sx, sy, CS, CS, C.chalk);
+        for (let d = 0; d < 4; d++) {
+          const e = edgeAt(map, mx, my, d);
+          if (e !== '0') this._mapEdgeLine(sx, sy, CS, d, (e === 'd' || e === 'r') ? C.gold : C.dim);
+        }
+        const sp = cellSpecial(map, mx, my);
+        if (sp) this._mapSpecialDot(fb, sx, sy, CS, sp);
       }
     }
     const col = (am && !am.synced) ? C.candle : C.gold;
@@ -614,6 +619,31 @@ export class Renderer {
     };
     tri(r + 1, C.black);   // outline
     tri(r, col);           // body
+  }
+
+  // ---- map icon helpers -------------------------------------------------------
+  _mapEdgeLine(sx, sy, CS, dir, col) {
+    const fb = this.fb;
+    if (dir === 0) fb.fillRect(sx, sy, CS + 1, 1, col);
+    else if (dir === 2) fb.fillRect(sx, sy + CS, CS + 1, 1, col);
+    else if (dir === 3) fb.fillRect(sx, sy, 1, CS + 1, col);
+    else fb.fillRect(sx + CS, sy, 1, CS + 1, col);
+  }
+
+  _buildingColor(id) {
+    return { hall: C.gold, temple: C.candle, greta: C.green, spark: C.violet,
+             goose: C.honey, hart: C.honey, tannery: C.ember }[id] ?? 0;
+  }
+
+  _mapSpecialDot(fb, sx, sy, CS, sp) {
+    let col = 0;
+    if (sp.t === 'building')      col = this._buildingColor(sp.id);
+    else if (sp.t === 'stairs')   col = sp.dir === 'up' ? C.candle : C.ember;
+    else if (sp.t === 'gate' || sp.t === 'seal') col = C.violet;
+    if (!col) return;
+    const cx = (sx + (CS >> 1)) | 0, cy = (sy + (CS >> 1)) | 0;
+    const r = CS >= 6 ? 2 : 1;
+    fb.fillRect(cx - r, cy - r, r * 2, r * 2, col);
   }
 
   // ---- debug automap ----------------------------------------------------------

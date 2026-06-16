@@ -138,11 +138,28 @@ sprites.tex_town_wall = encode(make32(px => {
   runningBond(px, 2, 3, 4, 5, 6, []);
 }));
 
-// TEX_TOWN_DOOR — vertical wood planks, iron banding, clean
-// Wood: peat(8)=gap, umber(9)=shadow, leather(10)=face, amberwood(11)=hi
-// Rail: slate-dark(3)
+// TEX_TOWN_DOOR — stone wall surround with inset wooden door, 3-panel design
+// Stone: shadow(2)=mortar/jamb, slate-dark(3), slate(4), stone(5), bone(6)
+// Wood planks: peat(8)=gap, umber(9), leather(10), amberwood(11)=hi
 sprites.tex_town_door = encode(make32(px => {
-  woodPlanks(px, 8, 11, 10, 9, 3, [10, 11, 21, 22]);
+  // Stone surround matching the town wall
+  runningBond(px, 2, 3, 4, 5, 6, []);
+  // Door jamb reveal: shadow strip at cols 10 and 21, from lintel (row 8) to floor
+  fillRect(px, 10, 8, 1, 24, 2);
+  fillRect(px, 21, 8, 1, 24, 2);
+  // Vertical wood planks: cols 11-20, rows 9-31
+  // 5-col repeating period (2 full planks): peat | umber | leather | leather | amberwood
+  for (let y = 9; y < 32; y++) {
+    for (let x = 11; x <= 20; x++) {
+      px[y][x] = [8, 9, 10, 10, 11][(x - 11) % 5];
+    }
+  }
+  // Horizontal cross-rails (three-panel door): rows 15-16 and 24-25
+  fillRect(px, 11, 15, 10, 2, 8);
+  fillRect(px, 11, 24, 10, 2, 8);
+  // Door handle: amberwood knob on right side, mid-height
+  pset(px, 20, 20, 11);
+  pset(px, 20, 21, 11);
 }));
 
 // TEX_UNDER_WALL — dark warm stone with clumped moss patches
