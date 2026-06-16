@@ -1162,9 +1162,8 @@ function interiorPeek(name) {
 function hallMode(name, draws) {
   const opts = [
     { k: 'c', label: 'Create a character', fn: () => createFlow(name, draws) },
-    { k: 'a', label: 'Add to party', fn: () => addFlow(name, draws) },
-    { k: 'r', label: 'Remove from party', fn: () => removeFlow(name, draws) },
-    { k: 'o', label: 'Marching order', fn: () => orderFlow(name, draws) },
+    { k: 'm', label: 'Manage roster (add / remove / swap)', fn: () => rosterManageFlow(name, draws) },
+    { k: 'o', label: 'Marching order', fn: () => orderFlow(() => hallMode(name, draws), draws) },
     { k: 'x', label: 'Strike a name from the ledger (delete)', fn: () => deleteFlow(name, draws) },
     { k: 's', label: 'SAVE the game', fn: () => { saveTo(SAVE_KEY); sfx('save'); msg('The clerk records everything in a fair hand. Game saved.', 'good'); hallMode(name, draws); } },
     { k: 'l', label: 'Leave', fn: () => leaveBuilding() }
@@ -1182,7 +1181,10 @@ function hallMode(name, draws) {
 }
 
 function leaveBuilding() {
-  if (!game.partyIds.length) msg('The street is no place to be alone. (Muster a party at the Hall.)');
+  if (!game.partyIds.length) {
+    msg('Muster at least one soul before you leave. (Add to party first.)', 'bad');
+    return;
+  }
   setMode(exploreMode);
 }
 
@@ -1304,6 +1306,162 @@ function deleteFlow(hall, draws) {
       hallMode(hall, draws);
     }, () => hallMode(hall, draws));
   }, () => hallMode(hall, draws));
+}
+
+// ---- Unified roster management (add / remove / swap) -----------------------
+const BENCH_KEYS = 'abcdefghijklmnopqrst'; // up to 20 bench chars
+
+function rosterManageFlow(hall, draws) {
+  const party = realParty(game);
+  const bench = game.roster.filter(c => !game.partyIds.includes(c.id));
+  const padR = (s, n) => String(s).padEnd(n).slice(0, n);
+  const padL = (s, n) => String(s).padStart(n).slice(0, n);
+
+  function charBrief(ch) {
+    const flags = [
+      ch.status.dead ? 'DEAD' : '',
+      ch.status.stone ? 'STONE' : '',
+      ch.status.poison ? 'PSN' : '',
+      ch.status.fear ? 'FEAR' : ''
+    ].filter(Boolean).join(' ');
+    return `${padR(ch.name, 14)} ${padR(clsOf(ch).name, 12)} L${padL(ch.level, 2)}`
+      + `  HP ${padL(ch.hp, 3)}/${padL(ch.maxHp, 3)}${flags ? '  [' + flags + ']' : ''}`;
+  }
+
+  const opts = [];
+  for (let i = 0; i < 6; i++) {
+    const ch = party[i];
+    opts.push(ch
+      ? { k: String(i + 1), label: `[${i + 1}] ${charBrief(ch)}`, fn: () => partySlotAction(ch, i, hall, draws) }
+      : { k: String(i + 1), label: `[${i + 1}] — (empty slot)`, dim: true, fn: () => {} }
+    );
+  }
+  bench.forEach((ch, i) => {
+    if (i >= BENCH_KEYS.length) return;
+    opts.push({ k: BENCH_KEYS[i], label: `[${BENCH_KEYS[i].toUpperCase()}] ${charBrief(ch)}`, fn: () => benchCharAction(ch, hall, draws) });
+  });
+
+  setMode(menuMode({
+    title: 'ADVENTURERS\' HALL — The Roster',
+    body: `Party: ${game.partyIds.length}/6  ·  Bench: ${bench.length}  ·  Roster total: ${game.roster.length}`,
+    options: opts,
+    onEsc: () => hallMode(hall, draws),
+    hint: '1-6 select party slot · A-T select bench member · Esc back',
+    ...draws
+  }));
+}
+
+function partySlotAction(ch, idx, hall, draws) {
+  const bench = game.roster.filter(c => !game.partyIds.includes(c.id));
+  setMode(menuMode({
+    title: `${ch.name} — party position ${idx + 1}`,
+    body: `${DB.race(ch.race).name} ${clsOf(ch).name} L${ch.level}  HP ${ch.hp}/${ch.maxHp}  AC ${effectiveAC(ch)}`,
+    options: [
+      {
+        k: 'i', label: 'Inspect character sheet',
+        fn: () => hallCharSheet(ch, () => partySlotAction(ch, idx, hall, draws))
+      },
+      {
+        k: 'r', label: 'Remove from party (stays on bench)',
+        fn: () => { const r = removeFromParty(game, ch.id); msg(r.msg); rosterManageFlow(hall, draws); }
+      },
+      {
+        k: 's', label: 'Swap with a bench member',
+        dim: bench.length === 0,
+        fn: () => {
+          if (!bench.length) return;
+          pickFromList(
+            `Who replaces ${ch.name} at position ${idx + 1}?`,
+            bench,
+            c => `${c.name}  (${clsOf(c).name} L${c.level}  HP ${c.hp}/${c.maxHp})`,
+            (bc) => {
+              game.partyIds[game.partyIds.indexOf(ch.id)] = bc.id;
+              msg(`${ch.name} steps aside; ${bc.name} takes position ${idx + 1}.`);
+              rosterManageFlow(hall, draws);
+            },
+            () => partySlotAction(ch, idx, hall, draws)
+          );
+        }
+      }
+    ],
+    onEsc: () => rosterManageFlow(hall, draws),
+    ...draws
+  }));
+}
+
+function benchCharAction(ch, hall, draws) {
+  const freeSlots = partySlotsFree(game);
+  const party = realParty(game);
+  setMode(menuMode({
+    title: `${ch.name} — on the bench`,
+    body: `${DB.race(ch.race).name} ${clsOf(ch).name} L${ch.level}  HP ${ch.hp}/${ch.maxHp}  AC ${effectiveAC(ch)}`,
+    options: [
+      {
+        k: 'i', label: 'Inspect character sheet',
+        fn: () => hallCharSheet(ch, () => benchCharAction(ch, hall, draws))
+      },
+      {
+        k: 'a', label: 'Add to party',
+        dim: freeSlots <= 0,
+        fn: () => { const r = addToParty(game, ch.id); msg(r.msg); rosterManageFlow(hall, draws); }
+      },
+      {
+        k: 's', label: 'Swap with a party member',
+        dim: party.length === 0,
+        fn: () => {
+          if (!party.length) return;
+          pickFromList(
+            `Who does ${ch.name} replace?`,
+            party,
+            c => `${c.name}  (${clsOf(c).name} L${c.level}  HP ${c.hp}/${c.maxHp})`,
+            (pc) => {
+              game.partyIds[game.partyIds.indexOf(pc.id)] = ch.id;
+              msg(`${pc.name} steps aside; ${ch.name} takes their place.`);
+              rosterManageFlow(hall, draws);
+            },
+            () => benchCharAction(ch, hall, draws)
+          );
+        }
+      }
+    ],
+    onEsc: () => rosterManageFlow(hall, draws),
+    ...draws
+  }));
+}
+
+function hallCharSheet(ch, back) {
+  const cls = clsOf(ch);
+  const lines = [];
+  lines.push(`${ch.name} — ${DB.race(ch.race).name} ${cls.name}, level ${ch.level}`);
+  lines.push(STATS.map(s => `${s} ${ch.stats[s]}`).join('  '));
+  lines.push(`HP ${ch.hp}/${ch.maxHp}  SP ${ch.sp}/${ch.maxSp}  AC ${effectiveAC(ch)}  XP ${ch.xp} (next: ${xpForLevel(ch.cls, ch.level + 1, getXpMult())})`);
+  if (ch.drained) lines.push(`Drained ${ch.drained} level(s) — the Temple can restore them.`);
+  const tiers = Object.entries(ch.schoolTiers).map(([s, t]) => `${s}:${t}`).join(' ');
+  if (tiers) lines.push(`Spell tiers — ${tiers}`);
+  if (ch.cls === 'skald') lines.push(`Songs left today: ${ch.songsLeft}`);
+  const statusBits = [
+    ch.status.dead ? 'DEAD' : '', ch.status.stone ? 'STONE' : '',
+    ch.status.poison ? 'POISONED' : '', ch.status.fear ? 'FEARED' : ''
+  ].filter(Boolean).join(', ');
+  if (statusBits) lines.push(`Status: ${statusBits}`);
+  lines.push('');
+  const eqParts = SLOTS.map(slot => {
+    const i = ch.equip[slot];
+    if (i == null || !ch.inventory[i]) return null;
+    return `${slot}: ${DB.item(ch.inventory[i].id).name}`;
+  }).filter(Boolean);
+  if (eqParts.length) lines.push('Equipped — ' + eqParts.join(' · '));
+  lines.push('');
+  lines.push('(Esc) Return');
+  highlightId = ch.id;
+  setMode({
+    menu: esc(lines.join('\n')),
+    hint: 'Esc to return.',
+    sheet: true,
+    draw: () => renderer.portrait(portraitOf(ch), `${ch.name.toUpperCase()} — ${cls.name.toUpperCase()}`),
+    bar: [{ k: 'Escape', label: 'Return' }],
+    onKey(e) { if (e.key === 'Escape') { highlightId = null; back(); } }
+  });
 }
 
 function loadFenPact(hall, draws) {
@@ -1944,7 +2102,10 @@ function startNewGame() {
   if (game.settings.sharedInventory && !game.pool) game.pool = { items: [] };
   mapViewCycle = game.settings?.automap ? 1 : 0;  // overlay visible from the first step in Remastered
   updateAutomap(game, [], {});
-  setMode(exploreMode);
+  setMusic('explore');
+  const hallName = "Adventurers' Hall";
+  sfx('door');
+  hallMode(hallName, { draw: () => renderer.interior(hallName, 'hall') });
 }
 
 function campFlow() {
