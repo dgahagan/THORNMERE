@@ -1199,10 +1199,20 @@ function raceModLine(race) {
 
 function createFlow(hall, draws) {
   if (game.roster.length >= 20) { msg('The ledger is full (20 souls).'); return hallMode(hall, draws); }
-  const suggestName = () => FEN_NAMES[(nameIdx++) % FEN_NAMES.length];
+  const suggestName = () => {
+    const taken = new Set(game.roster.map(c => c.name.toLowerCase()));
+    let name, tries = 0;
+    do { name = FEN_NAMES[(nameIdx++) % FEN_NAMES.length]; }
+    while (taken.has(name.toLowerCase()) && ++tries < FEN_NAMES.length);
+    return name;
+  };
   textPrompt('Name the newcomer:', (nm) => {
     const nameTrim = nm.trim();
     if (!nameTrim) return hallMode(hall, draws);
+    if (game.roster.some(c => c.name.toLowerCase() === nameTrim.toLowerCase())) {
+      msg(`"${nameTrim}" is already in the ledger. Choose another name.`, 'bad');
+      return createFlow(hall, draws);
+    }
     const raceOpts = DB.races.map((r, i) => ({
       k: String(i + 1),
       label: `${r.name}  [${raceModLine(r)}]  — ${r.desc}`,
