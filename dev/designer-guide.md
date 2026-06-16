@@ -11,6 +11,7 @@ tonally and structurally consistent with what already ships.
   and the exact gates between a new start and victory.
 - **Source of truth:** everything below is drawn from `data/maps/*.json`,
   `data/items.json`, `data/monsters.json`, `data/classes.json`,
+  `data/races.json`, `src/core/character.js`, `src/core/leveling.js`,
   `src/core/services.js`, and `src/main.js`. When this doc and the data
   disagree, **the data wins** — fix the doc.
 - **Companion atlas:** [`dev/maps.md`](maps.md) holds an ASCII floor-grid of
@@ -549,7 +550,203 @@ Note the school identities carry into summons: **Hexen** has the deepest ladder
 
 ---
 
-## 11. Consistency Checklist for New Content
+## 11. Character Generation & Stats
+
+The game documents the *world* in detail but never wrote down the *character
+system*. This section is that spec. Source of truth: `src/core/character.js`
+(the character model, attribute rolling, and every derived number),
+`src/core/leveling.js` (XP curve, level-up, class change), `data/races.json`,
+and `data/classes.json`. A player-facing summary lives in the manual feely
+(`scripts/lib/pdf-manual.js`, §III "Characters"); **this** is the full numeric
+version. When code and this section disagree, the code wins — fix the section.
+
+### 11.1 The five attributes and what they do
+
+`STATS = ['ST','IQ','DX','CN','LK']` (`character.js:7`). Each attribute drives
+**exactly one** area — the system is deliberately narrow:
+
+| Stat | Name | Drives | Where (verified) |
+|---|---|---|---|
+| **ST** | Strength | Melee to-hit **and** melee damage | `attackBonus`/`damageBonus`, `character.js:130-147` |
+| **IQ** | Intelligence | Spell points only (SP at creation **×2**, per level **×1**) | `character.js:53-54`, `leveling.js:31-33` |
+| **DX** | Dexterity | Armour class, **missile** to-hit, initiative | `effectiveAC` `character.js:109`; `combat.js:583,610` |
+| **CN** | Constitution | Hit points only (level-1 **and** per-level) | `character.js:51`, `leveling.js:28` |
+| **LK** | Luck | Saving throws only | `saveBonus`, `character.js:161-166` |
+
+Everything funnels through one modifier curve, `statMod(v)` (`character.js:11-19`):
+
+| Attribute value | 3–5 | 6–8 | 9–14 | 15–16 | 17 | 18–19 | 20 |
+|---|---|---|---|---|---|---|---|
+| **Modifier** | −2 | −1 | 0 | +1 | +2 | +3 | +4 |
+
+So 9–14 is the dead band (no modifier); the interesting outcomes are the tails.
+
+### 11.2 Rolling attributes (creation only)
+
+`rollStats(rng, raceId)` (`character.js:21-29`): each of the five attributes is
+
+> **`3d6 + race modifier`, then clamped to [3, 20].**
+
+Creation offers **free, unlimited rerolls** ("Roll again" / "Accept these
+bones", `main.js:1223-1235`) — there is no point-buy and no swapping. **Class
+does not modify attributes; only race does.**
+
+> **Attributes are immutable after creation.** The only write to `ch.stats`
+> anywhere in the codebase is `rollStats`. There are no stat tomes, potions,
+> trainers, shrines, events, or level-up gains — nothing raises (or lowers) an
+> attribute after the bones are accepted. The single attribute-adjacent
+> mechanic is **level drain** (the `drained` counter, `character.js:43`), which
+> costs *effective levels*, not attribute points, and the Temple restores it.
+> Consequence: **race choice is the only permanent thumb on the scale, and
+> rerolling is the only other lever.** Pick race for the prime stat — it's the
+> one chargen decision that lasts the whole game.
+
+### 11.3 Races
+
+Five races (`data/races.json`), each a fixed modifier vector applied once at the roll:
+
+| Race | ST | IQ | DX | CN | LK | Flavor pull |
+|---|---|---|---|---|---|---|
+| **Vael** | 0 | 0 | 0 | 0 | **+1** | Lucky generalists |
+| **Korrun** | **+2** | −1 | 0 | **+2** | 0 | Strong, tough, dim |
+| **Fennick** | −1 | 0 | **+2** | 0 | 0 | Quick, frail |
+| **Aldari** | 0 | **+2** | 0 | −1 | 0 | Bright, brittle |
+| **Half-Wyld** | **+1** | 0 | **+1** | 0 | −1 | Martial, ill-favoured |
+
+There are **no class restrictions by race** — any race may take any class.
+
+Because the roll is `3d6 (=3–18) + mod`, clamped [3,20], the **attainable range
+per stat** depends only on that stat's race modifier:
+
+| Race modifier | −1 | 0 | +1 | +2 |
+|---|---|---|---|---|
+| **Attainable range** | 3–17 | 3–18 | 4–19 | 5–20 |
+| **Best modifier reachable** | +2 | +3 | +3 | **+4** |
+
+Two consequences matter for the HP/SP ceilings below:
+
+- **Only Korrun can roll CN 20** (CN +2) → the only race that can reach **+4 HP
+  per level**. Aldari (CN −1) caps at CN 17 → +2.
+- **Only Aldari can roll IQ 20** (IQ +2) → the only race that can reach **+4 SP
+  per level**. Korrun (IQ −1) caps at IQ 17 → +2, the worst caster race.
+
+**Race never applies per level** — it is a one-time term on the creation roll.
+But since attributes are frozen afterward, the CN and IQ that race shifted keep
+feeding `statMod(CN)` into every HP roll and `statMod(IQ)` into every SP roll
+for the character's entire career. No per-level term; a permanent indirect effect.
+
+### 11.4 Per-class constants
+
+From `data/classes.json`. These feed every formula in §11.5–§11.7:
+
+| Class | hpDie | spDie | xpFactor | atk/lvl | extra atk every | save | Special |
+|---|---|---|---|---|---|---|---|
+| **Blade** | 10 | 0 | 1.0 | 1.0 | 4 | 0 | — |
+| **Warden** | 9 | 0 | 1.1 | 0.9 | 5 | 4 | +1 AC with shield; blessed |
+| **Knave** | 6 | 0 | 0.9 | 0.7 | — | 1 | hide, disarm, identify discount |
+| **Strider** | 8 | 0 | 1.0 | 0.9 | 6 | 1 | crit (base 8% +2%/lvl) |
+| **Fistwright** | 8 | 0 | 1.0 | 0.9 | 4 | 2 | monk (unarmed scaling, AC bonus) |
+| **Skald** | 7 | 0 | 1.0 | 0.75 | — | 2 | bard (songs need instrument) |
+| **Hexen** | 4 | 8 | 1.0 | 0.4 | — | 2 | school: hexen |
+| **Lorist** | 4 | 8 | 1.0 | 0.4 | — | 2 | school: lorist |
+| **Stormcaller** † | 5 | 9 | 1.3 | 0.5 | — | 3 | school: storm — needs tier 5 hexen/lorist |
+| **Riddlemaster** † | 6 | 10 | 1.6 | 0.6 | — | 4 | school: all — needs tier 6 in two schools |
+
+† **Not creatable.** Stormcaller and Riddlemaster are reached only by class
+change at the Review Board (§5). `changeClass` (`leveling.js`) **resets level
+and XP to 1/0 but keeps accumulated HP, SP, and learned spells** — so these two
+classes never roll a fresh level-1 HP/SP pool; they inherit it. Their dice
+above apply to *subsequent* level-ups only.
+
+### 11.5 Hit Points (generated, not rolled at level 1)
+
+- **Level 1:** `maxHp = max(1, hpDie + statMod(CN))` (`character.js:51`).
+  Note: this uses the **flat hit-die face**, not a roll — **level-1 HP is
+  deterministic** given CN. Only later levels are random.
+- **Per level:** `hpGain = max(1, 1d(hpDie) + statMod(CN))` (`leveling.js:28`).
+  Floored at 1, so a bad roll with negative CN still yields +1.
+
+Ranges (min uses CN mod −2; max uses CN mod +3, with the **Korrun-only +4** in
+parentheses):
+
+| Class | hpDie | Level-1 HP | HP per level |
+|---|---|---|---|
+| **Blade** | 10 | 8 – 13 (14) | 1 – 13 (14) |
+| **Warden** | 9 | 7 – 12 (13) | 1 – 12 (13) |
+| **Strider** | 8 | 6 – 11 (12) | 1 – 11 (12) |
+| **Fistwright** | 8 | 6 – 11 (12) | 1 – 11 (12) |
+| **Skald** | 7 | 5 – 10 (11) | 1 – 10 (11) |
+| **Knave** | 6 | 4 – 9 (10) | 1 – 9 (10) |
+| **Hexen** | 4 | 2 – 7 (8) | 1 – 7 (8) |
+| **Lorist** | 4 | 2 – 7 (8) | 1 – 7 (8) |
+| **Stormcaller** † | 5 | — (via change) | 1 – 8 (9) |
+| **Riddlemaster** † | 6 | — (via change) | 1 – 9 (10) |
+
+### 11.6 Spell Points (casters only)
+
+Only classes with `spDie > 0` (the four caster classes) have SP; everyone else
+sits at `maxSp = 0`. SP is **not** a flat level-scaled pool — it is rolled per
+level and accumulates.
+
+- **Level 1:** `maxSp = max(1, 1d(spDie) + 2·statMod(IQ))` (`character.js:53-54`)
+  — the IQ modifier is **doubled at creation only**.
+- **Per level:** `spGain = max(1, 1d(spDie) + statMod(IQ))` (`leveling.js:31-33`)
+  — ×1 thereafter.
+
+Ranges (min uses IQ mod −2; max uses IQ mod +3, with the **Aldari-only +4** in
+parentheses):
+
+| Class | spDie | Level-1 SP (1d + 2·IQ) | SP per level (1d + IQ) |
+|---|---|---|---|
+| **Hexen** | 8 | 1 – 14 (16) | 1 – 11 (12) |
+| **Lorist** | 8 | 1 – 14 (16) | 1 – 11 (12) |
+| **Stormcaller** † | 9 | — (via change) | 1 – 12 (13) |
+| **Riddlemaster** † | 10 | — (via change) | 1 – 13 (14) |
+
+(Korrun, IQ −1, is the weakest caster race: its IQ caps at 17 → +2, i.e. Hexen
+level-1 SP 1–12, +SP/level 1–10.)
+
+### 11.7 XP and leveling
+
+XP to advance from level **L** to **L+1** (`leveling.js:8-12`):
+
+> `round(xpFactor × 100 × 1.6^(L−1) × xpMult)`, with **L capped at 10** inside
+> the increment — so the curve plateaus at the level-10 step and is flat after.
+
+Base increments at `xpFactor = 1.0`, `xpMult = 1.0` (Legacy); multiply by the
+class `xpFactor` from §11.4, and by **0.60** in Remastered
+(`balance.json: remasteredXpMultiplier`, wired via `getXpMult`):
+
+| L→L+1 | 1→2 | 2→3 | 3→4 | 4→5 | 5→6 | 6→7 | 7→8 | 8→9 | 9→10 | 10+ |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **Base XP** | 100 | 160 | 256 | 410 | 655 | 1049 | 1678 | 2684 | 4295 | 6872 (flat) |
+
+`levelUp` (`leveling.js:25-37`) increments level by 1, rolls `hpGain` (and
+`spGain` for casters) per §11.5–§11.6, and sets a bard's `songsLeft` to its new
+level. **No attribute changes on level up, and there is no HP/SP cap** beyond
+the floor-of-1 on each gain. Leveling happens **only** at the Review Board (§2).
+
+### 11.8 Other derived (computed, never stored) values
+
+All live in `character.js` and are recomputed on demand from level + stats + gear:
+
+| Value | Formula | Floor/Cap |
+|---|---|---|
+| **Armour Class** | `10 − statMod(DX) − party/gear − (monk: ⌊lvl/2⌋+1) − (warden+shield: 1)` | floor −10 |
+| **Attack bonus** | `⌊level × attackBonusPer⌋ + statMod(ST, or DX if missile) + weapon` | −2 if feared |
+| **Damage bonus** | `statMod(ST) + gauntlet + weapon` | — |
+| **Attacks/round** | `min(5, 1 + ⌊level / extraAttackEvery⌋)`; `1` if class has none | cap 5 |
+| **Crit %** (Strider) | `min(50, critBase + critPerLevel × level)` = `min(50, 8 + 2·lvl)` | cap 50% |
+| **Save bonus** | `⌊level/2⌋ + statMod(LK) + class saveBonus (+ shield)` | — |
+| **Unarmed dmg** | non-monk `1d2`; Fistwright `(1+⌊lvl/5⌋)d4 + ⌊lvl/3⌋` | — |
+
+To-hit resolves on a d20 (`combat.js`): natural 1 always misses, natural 20
+always hits, otherwise hit if `roll ≥ 10 + ⌊(10 − targetAC)/2⌋ − attackBonus`
+(clamped 2–20). Saves resolve the same nat-1/nat-20 way against a DC.
+
+---
+
+## 12. Consistency Checklist for New Content
 
 When adding or editing content, keep these invariants true:
 

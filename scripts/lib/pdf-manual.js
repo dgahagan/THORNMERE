@@ -305,6 +305,44 @@ export async function generateManual(outPath, db) {
   y = body(`Two classes cannot be chosen at character creation. The Stormcaller opens when a character reaches tier 5 in either Hexen or Lorist school (gained at the Magistrate\'s Court, which keeps no signboard in the market — the Magistrate prefers her clients to ask). The Riddlemaster requires tier 6 in two schools, and is the only class that may access all three. The Needle will not open without one.`, y);
   y = body(`Class change preserves all learned spell tiers and resets the level counter. A level-6 Hexen who changes to Stormcaller begins at level 1 as a Stormcaller but retains all Hexen spells known. SP rolls improve with the new class.`, y);
 
+  // ---- How stats are generated (numeric chargen reference, data-driven) ----
+  const _smod = (v) => v >= 20 ? 4 : v >= 18 ? 3 : v >= 17 ? 2 : v >= 15 ? 1 : v <= 5 ? -2 : v <= 8 ? -1 : 0;
+  const _bestMod = (stat) => Math.max(...db.races.map(r => _smod(Math.min(20, 18 + (r.mods[stat] || 0)))));
+  const maxCN = _bestMod('CN');   // +4 (only Korrun reaches CN 20)
+  const maxIQ = _bestMod('IQ');   // +4 (only Aldari reaches IQ 20)
+
+  y = newPage('Characters');   // keep the generation tables intact on one page
+  y = h2('How Stats Are Generated', y);
+  y = body(`Each stat is rolled as 3d6 plus your race modifier, then held to the range 3–20. Reroll as often as you like before accepting — there is no point-buy, and your class never touches the roll. Once accepted, a stat never changes again: nothing in Thornmere raises a stat, so your race is the only lasting thumb on the scale. Choose it for your prime stat.`, y) + 2;
+  y = body(`Every stat acts through one modifier curve. The 9–14 band grants nothing; the worth of a high roll is the bonus it buys:`, y) + 2;
+
+  const mcLbl = 70, mcN = (BODY_W - mcLbl) / 7;
+  const modColW = [mcLbl, mcN, mcN, mcN, mcN, mcN, mcN, mcN];
+  y = tableRow(['Stat value', '3–5', '6–8', '9–14', '15–16', '17', '18–19', '20'], modColW, ML, y, true);
+  y = tableRow(['Modifier', '-2', '-1', '—', '+1', '+2', '+3', '+4'], modColW, ML, y, false, true);
+  y += 8;
+
+  y = body(`Hit points and spell points are generated from your class’s dice plus the relevant modifier — Constitution for HP, Intellect for SP. Level-1 HP is the full hit die (not rolled); each later level rolls the die and adds the modifier. Spell points are rolled at every level, and the Intellect bonus counts double at creation. Every gain is floored at +1, so even a poor roll earns at least one point.`, y) + 2;
+
+  const hpW0 = 78, hpN = (BODY_W - hpW0) / 6;
+  const hpColW = [hpW0, hpN, hpN, hpN, hpN, hpN, hpN];
+  y = tableRow(['Class', 'Hit die', 'Lvl-1 HP', 'HP / level', 'Spell die', 'Lvl-1 SP', 'SP / level'], hpColW, ML, y, true);
+  let _hpAlt = false;
+  for (const cls of db.classes) {
+    const adv = !cls.starting;
+    const hd = cls.hpDie, sd = cls.spDie;
+    const l1hp = adv ? '—' : `${Math.max(1, hd - 2)}–${hd + maxCN}`;
+    const hppl = `1–${hd + maxCN}`;
+    const l1sp = (sd && !adv) ? `1–${sd + 2 * maxIQ}` : '—';
+    const sppl = sd ? `1–${sd + maxIQ}` : '—';
+    y = tableRow([cls.name, hd, l1hp, hppl, sd || '—', l1sp, sppl], hpColW, ML, y, false, _hpAlt);
+    _hpAlt = !_hpAlt;
+    if (y > PAGE_H - MB - 60) { y = newPage('Characters'); }
+  }
+  y += 6;
+  y = italic(`Maxima assume the best roll your race allows: only Korrun can reach CN 20 (the +4 in the HP columns) and only Aldari can reach IQ 20 (the +4 in the SP columns); every other race tops out one point lower. Minimums assume the worst modifier (-2), which any race can roll. Stormcaller and Riddlemaster cannot be created — they are reached by class change, which keeps the points you have already earned, so their dice apply only to levels gained afterward.`, y) + 2;
+  y = body(`Experience needed for the next level climbs about 60% each step — roughly 100, 160, 260, 410, 655, 1050, and on — and stops growing after level 10. A few classes cost a little more per level, but the gap is small until the advanced classes. Levels are registered at the Magistrate’s Court.`, y);
+
   // ================================================================ PLACES
   y = newPage('Places in Thornmere');
   y = h1('IV. Places in Thornmere', y);
