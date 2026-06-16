@@ -744,6 +744,52 @@ To-hit resolves on a d20 (`combat.js`): natural 1 always misses, natural 20
 always hits, otherwise hit if `roll ≥ 10 + ⌊(10 − targetAC)/2⌋ − attackBonus`
 (clamped 2–20). Saves resolve the same nat-1/nat-20 way against a DC.
 
+### 11.9 Maximum attainable, and the save-scum ceiling
+
+The per-level ranges in §11.5–§11.6 are the spread of a **single** level-up roll.
+Stacked across a career — rolling the maximum every level, with the prime
+physical/mental stat at 20 — they give the **absolute ceiling**:
+
+> **Max total HP at level N** = `N × (hpDie + statMod(CN)_max)`. Level-1 HP is
+> the flat die face and every later level can roll the die's top, so each level
+> contributes the same `hpDie + CN mod`. Best CN mod is **+4** (Korrun, CN 20).
+>
+> **Max total SP at level N** (casters) = `(spDie + 2·statMod(IQ)) + (N−1)·(spDie
+> + statMod(IQ))` — the creation roll counts the IQ mod **twice**. Best IQ mod is
+> **+4** (Aldari, IQ 20).
+
+| Class | hpDie | L1 | L3 | L5 | L7 | L10 | (SP at L1 / L5 / L10) |
+|---|---|---|---|---|---|---|---|
+| **Blade** | 10 | 14 | 42 | 70 | 98 | 140 | — |
+| **Warden** | 9 | 13 | 39 | 65 | 91 | 130 | — |
+| **Strider** | 8 | 12 | 36 | 60 | 84 | 120 | — |
+| **Fistwright** | 8 | 12 | 36 | 60 | 84 | 120 | — |
+| **Skald** | 7 | 11 | 33 | 55 | 77 | 110 | — |
+| **Knave** | 6 | 10 | 30 | 50 | 70 | 100 | — |
+| **Hexen** | 4 | 8 | 24 | 40 | 56 | 80 | 16 / 64 / 124 |
+| **Lorist** | 4 | 8 | 24 | 40 | 56 | 80 | 16 / 64 / 124 |
+
+> **The HP and SP ceilings are not simultaneously reachable on one character.**
+> Max HP assumes CN 20 (Korrun, IQ −1); max SP assumes IQ 20 (Aldari, CN −1).
+> A caster optimised for SP caps CN at +2, so its real HP ceiling is
+> `N × (hpDie + 2)`, not the `+4` column above. Pick which resource to chase.
+
+**Save-scumming works, by design-of-omission.** HP/SP gains are rolled fresh at
+the Review Board (`levelUp`, `leveling.js:25-37`), and **the RNG is never
+persisted or rewound across a save/load**:
+
+- `gameToJSON` (`gamestate.js:106`) serialises `game` *without* the `Rng` — the
+  stream position is not in the save file.
+- `loadFrom` (`main.js:312`) replaces `game` but **does not touch the global
+  `rng`**; a full page reload reseeds it from `Date.now()` (`main.js:54`).
+
+So the classic loop — **save before levelling → level → if the roll is poor,
+reload and level again** — yields the *next* number in the stream (a different
+roll) every time. The game does not defend against it; this is faithful to the
+1985 original, where players did exactly this. If a future change should *stop*
+it, the fix is to serialise and restore the RNG state in `gameToJSON` /
+`gameFromJSON` (and reseed deterministically on load), not to touch `levelUp`.
+
 ---
 
 ## 12. Consistency Checklist for New Content

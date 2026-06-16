@@ -343,6 +343,24 @@ export async function generateManual(outPath, db) {
   y = italic(`Maxima assume the best roll your race allows: only Korrun can reach CN 20 (the +4 in the HP columns) and only Aldari can reach IQ 20 (the +4 in the SP columns); every other race tops out one point lower. Minimums assume the worst modifier (-2), which any race can roll. Stormcaller and Riddlemaster cannot be created — they are reached by class change, which keeps the points you have already earned, so their dice apply only to levels gained afterward.`, y) + 2;
   y = body(`Experience needed for the next level climbs about 60% each step — roughly 100, 160, 260, 410, 655, 1050, and on — and stops growing after level 10. A few classes cost a little more per level, but the gap is small until the advanced classes. Levels are registered at the Magistrate’s Court.`, y);
 
+  if (y > PAGE_H - MB - 150) y = newPage('Characters');
+  y = h2('Best-Case Totals by Level', y);
+  y = body(`Hit points accumulate, and each level-up is a fresh roll. The chart below is the ceiling: the most you could hold at a given level if you rolled the maximum every time with a Constitution of 20. Real totals run lower — but the gap is what you are weighing when you decide whether a level-up roll was good enough to keep.`, y) + 2;
+
+  const ceilLvls = [1, 3, 5, 7, 10];
+  const ceilW0 = 86, ceilN = (BODY_W - ceilW0) / ceilLvls.length;
+  const ceilColW = [ceilW0, ...ceilLvls.map(() => ceilN)];
+  y = tableRow(['Class', ...ceilLvls.map(n => `Level ${n}`)], ceilColW, ML, y, true);
+  let _cAlt = false;
+  for (const cls of db.classes.filter(c => c.starting)) {
+    const perLvl = cls.hpDie + maxCN;
+    y = tableRow([cls.name, ...ceilLvls.map(n => n * perLvl)], ceilColW, ML, y, false, _cAlt);
+    _cAlt = !_cAlt;
+  }
+  y += 6;
+  const spL1 = 8 + 2 * maxIQ, spPer = 8 + maxIQ, spAt = (n) => spL1 + (n - 1) * spPer;
+  y = italic(`Spell points climb the same way: a Hexen or Lorist with Intellect 20 tops out near ${spL1} SP at level 1, ${spAt(5)} by level 5, and ${spAt(10)} by level 10. Maximum Intellect costs Constitution, though — so a caster’s hit points sit a little under the chart, which assumes the best Constitution. You cannot have both at once.`, y);
+
   // ================================================================ PLACES
   y = newPage('Places in Thornmere');
   y = h1('IV. Places in Thornmere', y);
