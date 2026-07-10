@@ -70,6 +70,16 @@ export function buyTier(ch, school) {
   return tier;
 }
 
+// New recruits open their school's first tier free — BT1 casters knew their
+// level-1 spells from the muster; the Review Board sells the upgrades.
+export function grantStartingSpells(ch) {
+  const cls = DB.cls(ch.cls);
+  if (!cls.school || cls.school === 'all') return false;
+  if ((ch.schoolTiers[cls.school] || 0) >= 1) return false;
+  buyTier(ch, cls.school);
+  return true;
+}
+
 // ---- class change ---------------------------------------------------------
 export function classChangeOptions(ch) {
   const out = [];

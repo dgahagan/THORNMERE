@@ -493,7 +493,7 @@ export async function generateManual(outPath, db) {
   y = body(`Spell points (SP) refresh slowly in daylight. A full night’s rest restores them completely. Roskva’s Spark House recharges SP for gold. Carrying a Lorist with Quickening or Well of Light means the party never runs completely dry, but every point they spend on the party is a point they can’t spend on enemies.`, y);
 
   y = h2('Learning Spells', y);
-  y = body(`Spells are not chosen individually. A caster learns a spell “tier” at the Magistrate’s Court: each tier costs gold and XP. Purchasing tier 2 of a school grants access to all four spells in that tier. Tiers must be purchased in order.`, y);
+  y = body(`Spells are not chosen individually. Every caster knows the first tier of their school from the day they sign the ledger; the higher “tiers” are learned at the Magistrate’s Court, where each costs gold and XP. Purchasing tier 2 of a school grants access to all four spells in that tier. Tiers must be purchased in order.`, y);
   y = body(`The maximum tier available at a given level increases with level, at a rate steeper than the original game. A dedicated caster can reach tier 7 by the final dungeon. An adventurer who cross-trains in a second school will be slower to the top tier of either.`, y);
 
   y = h2('Tiers and Class Change', y);
