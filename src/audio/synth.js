@@ -163,7 +163,8 @@ export class Synth {
     const cur = this.current;
     if (!cur) return;
     clearTimeout(cur.timer);
-    for (const src of cur.nodes) { try { src.stop(this.ctx.currentTime + 0.03); } catch { /* already done */ } }
+    // cur may be a hold marker from the director ({name} only, no nodes)
+    for (const src of cur.nodes ?? []) { try { src.stop(this.ctx.currentTime + 0.03); } catch { /* already done */ } }
     this.current = null;
   }
 
