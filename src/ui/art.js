@@ -2,7 +2,7 @@
 // sprite document under data/art/, decoding text-grid pixel maps into typed
 // arrays. All UI drawing goes through ART; game logic never touches it.
 
-const SPRITE_DOCS = ['textures', 'ui', 'signs', 'monsters', 'monsters2', 'monsters3', 'people', 'scenes'];
+const SPRITE_DOCS = ['textures', 'ui', 'signs', 'monsters', 'monsters2', 'monsters3', 'people', 'scenes', 'chrome'];
 
 export const ART = {
   palette: null,      // {colors:[{hex}], shade:[...]}

@@ -43,7 +43,7 @@ scale, incremental writes, cite paths, loud failures, chunk long commands.
 
 ```
 You are an independent AUDIT session for the Thornmere project
-(/var/home/dgahagan/work/personal/fable/bards-tale-clone). You are auditing a
+(<repo-root>). You are auditing a
 completed AI-art adjudication pass, not building anything.
 
 HARD RULES
@@ -114,7 +114,7 @@ disagree.
 
 ```
 You are an independent AUDIT session for the Thornmere project
-(/var/home/dgahagan/work/personal/fable/bards-tale-clone). Your job is to
+(<repo-root>). Your job is to
 prepare decision BRIEFS for the human game director (Dan) on the two items in
 NEEDS-HUMAN.md. You recommend; Dan decides. Do not "resolve" anything.
 
@@ -171,7 +171,7 @@ ending in a clearly-marked RECOMMENDATION block for Dan.
 
 ```
 You are an independent VERIFICATION session for the Thornmere project
-(/var/home/dgahagan/work/personal/fable/bards-tale-clone). You gather
+(<repo-root>). You gather
 evidence; you do not fix anything.
 
 HARD RULES
@@ -257,7 +257,7 @@ screenshot/render path listed, and a short "anomalies" section at the end.
 
 ```
 You are an independent ART REVIEW session for the Thornmere project
-(/var/home/dgahagan/work/personal/fable/bards-tale-clone). You judge the four
+(<repo-root>). You judge the four
 imported showpiece boss sprites against one bar: "would this ship as 1985
 box art?" (Bard's Tale-era Amiga/C64 box and manual art.)
 
@@ -354,7 +354,7 @@ mon_rat (adorable), mon_hound, mon_moth, mon_blob. A mid-run directive to
 move the rat family toward "mangy/feral" was never written into the
 manifest, so the cute subjects were generated and imported. Fix that now.
 
-Repo: /var/home/dgahagan/work/personal/fable/bards-tale-clone
+Repo: <repo-root>
 Conventions (non-negotiable): incremental writes; contemporaneous logging in
 art-review/art-review.md; mode/state in filenames, never implicit; loud
 failures; one commit per family; the 27 original logic tests are sacrosanct;
@@ -413,7 +413,7 @@ which already holds the audit framing, and it consolidates into
 
 ```
 You are consolidating a completed four-part audit of the Thornmere AI-art
-pipeline (/var/home/dgahagan/work/personal/fable/bards-tale-clone).
+pipeline (<repo-root>).
 
 HARD RULES: read-only except dev/advisor/; never modify game code/data/docs;
 never git add/commit.

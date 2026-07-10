@@ -33,11 +33,11 @@ function drawCompass(facing) {
   ctx.clearRect(0, 0, 32, 32);
   const sp = ART.sprites.ui_compass;
   if (sp) drawSpriteToCtx(ctx, sp, 2);
-  // needle: gold toward facing (screen-up = the way you face)
+  // needle points the cardinal you face: N=up, E=right, S=down, W=left
   ctx.strokeStyle = '#d8a224';
   ctx.lineWidth = 2;
   const cx = 16, cy = 16, r = 9;
-  const ang = [-Math.PI / 2, 0, Math.PI / 2, Math.PI][0]; // needle always up: view-relative
+  const ang = [-Math.PI / 2, 0, Math.PI / 2, Math.PI][facing]; // 0=N 1=E 2=S 3=W
   ctx.beginPath();
   ctx.moveTo(cx - Math.cos(ang) * 3, cy - Math.sin(ang) * 3);
   ctx.lineTo(cx + Math.cos(ang) * r, cy + Math.sin(ang) * r);
@@ -137,7 +137,11 @@ export function renderRoster(game, el, highlightId = null) {
       el.append(row);
       continue;
     }
-    row.dataset.key = String(i + 1);
+    // a roster click means "show me this adventurer" — a dedicated key so it
+    // never doubles as the bare number key (which equips items in a sheet,
+    // picks orders in combat, etc.). Keyboard 1-6 still opens sheets in explore.
+    row.dataset.key = 'view:' + (i + 1);
+    row.dataset.cid = ch.id;   // lets the status-line flasher find this row
     if (ch.summon) {
       const def = DB.monster(ch.monsterId);
       row.className = `row summon${ch.id === highlightId ? ' pick' : ''}`;
@@ -157,7 +161,9 @@ export function renderRoster(game, el, highlightId = null) {
       continue;
     }
     const cond = conditionOf(ch);
-    row.className = `row${ch.id === highlightId ? ' pick' : ''}`;
+    // a steady edge bar for ongoing afflictions — distinct from the transient hit flash
+    const stCls = ch.status.stone ? ' st-stone' : ch.status.poison ? ' st-poison' : ch.status.fear ? ' st-fear' : '';
+    row.className = `row${ch.id === highlightId ? ' pick' : ''}${stCls}`;
     const flags = [ch.status.stone ? 'STONE' : '', ch.status.fear ? 'FEAR' : '',
       ch.status.poison ? 'PSN' : '', ch.drained ? 'DRAIN' : ''].filter(Boolean).join(' ');
     const clsName = clsOf(ch).name + (ch.cls === 'skald' ? ` ${ch.songsLeft}♪` : '');

@@ -1,5 +1,35 @@
 /* THORNMERE chrome — colors drawn from data/art/palette.json */
+
+/* Period typography (OFL fonts bundled under assets/fonts/, licenses alongside):
+   Pirata One — blackletter display, HEADERS ONLY (plaques, data-titles, keycaps).
+   IM Fell English — old-style serif body for prose (log, status, hints).
+   Monospace stays on column-aligned surfaces (menu, roster). */
+@font-face {
+  font-family: 'Pirata One';
+  src: url('assets/fonts/PirataOne-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IM Fell English';
+  src: url('assets/fonts/IMFellEnglish-Regular.ttf') format('truetype');
+  font-weight: normal; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'IM Fell English';
+  src: url('assets/fonts/IMFellEnglish-Italic.ttf') format('truetype');
+  font-weight: normal; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'MedievalSharp';
+  src: url('assets/fonts/MedievalSharp-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
 :root {
+  --font-display: 'Pirata One', 'MedievalSharp', 'Times New Roman', serif;
+  --font-body: 'IM Fell English', Georgia, 'Times New Roman', serif;
+  --font-mono: 'Courier New', ui-monospace, monospace;
+
   --black: #000000;
   --night: #16121e;
   --shadow: #2c2836;
@@ -34,8 +64,8 @@ html, body {
   margin: 0;
   background: var(--night);
   color: var(--parchment);
-  font-family: "Courier New", ui-monospace, monospace;
-  font-size: 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
   height: 100%;
 }
 
@@ -44,9 +74,11 @@ body { display: flex; align-items: center; justify-content: center; }
 #game {
   width: 1100px;
   background: var(--black);
-  border: 2px solid var(--gold-dark);
-  outline: 1px solid var(--umber);
-  padding: 10px;
+  /* ornate thorn-vine frame (assets/chrome/chrome_frame.png, 72×72 9-slice) */
+  border: 24px solid transparent;
+  border-image: url('assets/chrome/chrome_frame.png') 24 round;
+  image-rendering: pixelated;
+  padding: 12px;
   box-shadow: 0 0 50px rgba(216, 162, 36, 0.12);
 }
 
@@ -61,52 +93,77 @@ body { display: flex; align-items: center; justify-content: center; }
   width: 640px;
   height: 480px;
   image-rendering: pixelated;
-  border: 1px solid var(--slate-dark);
+  border: 2px solid var(--gold-dark);
 }
 
 /* viewport movement arrows: mouse parity for ↑ ← → ↓ */
 .nav {
   position: absolute;
   color: var(--candle);
-  background: rgba(22, 18, 30, 0.55);
-  border: 1px solid var(--slate-dark);
-  padding: 2px 10px;
+  background: var(--umber);
+  /* carved button bevel (assets/chrome/chrome_button.png) */
+  border: 8px solid transparent;
+  border-image: url('assets/chrome/chrome_button.png') 8 stretch;
+  image-rendering: pixelated;
+  padding: 1px 8px;
   cursor: pointer;
   user-select: none;
   opacity: 0;
   transition: opacity 0.12s;
   font-size: 16px;
 }
-#viewwrap:hover .nav { opacity: 0.75; }
-.nav:hover { opacity: 1 !important; background: var(--shadow); border-color: var(--gold); }
+#viewwrap:hover .nav { opacity: 0.8; }
+.nav:hover { opacity: 1 !important; color: var(--chalk); }
+.nav:active { border-image: url('assets/chrome/chrome_button_down.png') 8 stretch; }
 #nav-up    { top: 8px; left: 50%; transform: translateX(-50%); }
 #nav-down  { bottom: 28px; left: 50%; transform: translateX(-50%); }
 #nav-left  { left: 8px; top: 50%; transform: translateY(-50%); }
 #nav-right { right: 8px; top: 50%; transform: translateY(-50%); }
 
+/* carved nameplate plaque under the viewport (assets/chrome/chrome_plaque.png) */
 #loc {
-  margin-top: 2px;
-  color: var(--slate);
-  font-size: 12px;
-  height: 16px;
+  margin: 8px auto 0;
+  width: max-content;
+  max-width: 90%;
+  min-width: 140px;
+  text-align: center;
+  color: var(--candle);
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 1px;
+  line-height: 1;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 6px 22px;
+  border: 8px solid transparent;
+  border-image: url('assets/chrome/chrome_plaque.png') 8 fill repeat;
+  image-rendering: pixelated;
 }
+#loc:empty { display: none; }
 
 #right { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
-/* titled panels */
-.panel { position: relative; border: 1px solid var(--slate-dark); }
+/* titled panels — slim carved bevel border (assets/chrome/chrome_panel.png) */
+.panel {
+  position: relative;
+  border: 8px solid transparent;
+  border-image: url('assets/chrome/chrome_panel.png') 8 stretch;
+  image-rendering: pixelated;
+}
 .panel::before {
   content: attr(data-title);
   position: absolute;
-  top: -8px;
-  left: 10px;
+  top: -13px;
+  left: 8px;
   background: var(--black);
   color: var(--gold);
-  font-size: 10px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1;
   letter-spacing: 1px;
   padding: 0 6px;
+  z-index: 1;
 }
 .panel[data-title="·"]::before { content: none; }
 
@@ -129,30 +186,41 @@ body { display: flex; align-items: center; justify-content: center; }
 #menu {
   padding: 6px 8px;
   margin-top: 10px;
+  /* monospace: character sheets, stat rolls and the victory company table
+     align their columns with space-padding */
+  font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.45;
   white-space: pre-wrap;
   color: var(--parchment);
   min-height: 30px;
-  max-height: 230px;
+  /* don't let the EVENTS log squeeze the menu below its own cap: a clipped
+     menu hides clickable options (the Options/Custom screens once did this) */
+  flex-shrink: 0;
+  max-height: 320px;
   overflow-y: auto;
 }
 #menu:empty { display: none; }
 #menu .title { color: var(--gold); }
 #menu .ctx { color: var(--stone); }
 #menu .opt { cursor: pointer; display: inline; }
+#menu .opt.eq    { color: var(--chalk); }   /* equipped — bright white, scans first */
+#menu .opt.held  { color: var(--stone); }   /* carried but not readied — muted grey */
+#menu .grouphead { color: var(--amberwood); letter-spacing: 1px; }  /* Equipped / Pack labels */
 #menu .opt:hover { color: var(--candle); background: var(--shadow); }
 #menu .opt .key { color: var(--gold); }
 #menu .opt.dim { color: var(--slate); cursor: default; }
 #menu .opt.dim:hover { background: none; }
 
 #log {
-  margin-top: 10px;
+  margin-top: 16px;   /* clearance for the taller display-font EVENTS plaque tab */
   padding: 6px 8px;
   flex: 1;
   overflow-y: auto;
-  font-size: 13px;
-  line-height: 1.45;
+  /* serif prose narration — the most period-feeling text surface */
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.4;
   min-height: 90px;
   max-height: 330px;
   color: var(--bone);
@@ -163,10 +231,18 @@ body { display: flex; align-items: center; justify-content: center; }
 #log .party { color: var(--mist-blue); }
 #log .loot { color: var(--candle); }
 #log p { margin: 0 0 2px 0; }
+/* each narrated line eases in as it scrolls into the log */
+#log p.reveal { animation: logreveal 200ms ease-out; }
+@keyframes logreveal {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: none; }
+}
 
 #roster {
   margin-top: 12px;
   padding: 6px 8px;
+  /* monospace: roster cells pad names/numbers to fixed widths for column alignment */
+  font-family: var(--font-mono);
   font-size: 14px;
   line-height: 1.0;
   min-height: 158px;
@@ -196,6 +272,11 @@ body { display: flex; align-items: center; justify-content: center; }
 #roster .summon   { color: var(--mist-blue); font-style: italic; }
 #roster .sp       { color: var(--sky-blue); }
 #roster .flags    { color: var(--ember); font-size: 11px; }
+/* steady edge bar for an ongoing affliction (the transient hit flash is a row
+   background set inline by the renderer; box-shadow keeps the two from clashing) */
+#roster .row.st-poison { box-shadow: inset 3px 0 0 var(--fen-green); }
+#roster .row.st-stone  { box-shadow: inset 3px 0 0 #5a6c8a; }
+#roster .row.st-fear   { box-shadow: inset 3px 0 0 var(--gold); }
 
 #cmdbar {
   margin-top: 10px;
@@ -205,23 +286,26 @@ body { display: flex; align-items: center; justify-content: center; }
   min-height: 30px;
 }
 #cmdbar button {
-  background: var(--night);
+  background: var(--umber);
   color: var(--parchment);
-  border: 1px solid var(--slate-dark);
-  font-family: inherit;
-  font-size: 12px;
-  padding: 4px 10px;
+  /* carved-wood button bevel (assets/chrome/chrome_button.png) */
+  border: 8px solid transparent;
+  border-image: url('assets/chrome/chrome_button.png') 8 stretch;
+  image-rendering: pixelated;
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 2px 9px;
   cursor: pointer;
 }
-#cmdbar button:hover { border-color: var(--gold); color: var(--candle); background: var(--shadow); }
+/* hover = candle-glow text, never a background swap */
+#cmdbar button:hover { color: var(--candle); }
+#cmdbar button:active { border-image: url('assets/chrome/chrome_button_down.png') 8 stretch; }
 #cmdbar button kbd {
-  background: var(--shadow);
-  border: 1px solid var(--slate-dark);
-  border-radius: 2px;
   padding: 0 4px;
-  margin-right: 6px;
+  margin-right: 5px;
   color: var(--gold);
-  font-family: inherit;
+  font-family: var(--font-display);
+  font-size: 14px;
 }
 
 #hint {

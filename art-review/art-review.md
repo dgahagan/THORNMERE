@@ -668,3 +668,230 @@ from `candidates/`. `combatPortrait` cap raised to 224 so 112-wide monsters
 display at a crisp 2× (224px), matching interiors. Verified eye_pulse lands on
 the eyes/visor for spider/golem/mock_king/candleking/knight; 42/42 tests.
 Batch script: `dev/pixel-art/recrush_monsters_112.py`.
+
+---
+
+## Ornate DOM chrome — period UI pass (2026-06-12)
+
+Hand-pixeled in `tools/gen_chrome.js` → `data/art/chrome.json`, rendered with
+`tools/artrender.js`, judged from PNGs at scale 8–16. Brass thorn-vine on
+umber/peat (dark Thornmere palette), 9-slice `border-image` sources for CSS plus
+a title-screen thorn-vine the framebuffer tiles. Stolen-in-spirit from the Amiga
+ornate frame in `dev/original-amiga-screenshots/`, never its cream colours.
+
+- **chrome_frame** (36×36, slice 12) — PASS. `art-review/chrome_frame.png`.
+  Corner brass bosses, winged clasps on top/bottom edges, four-point diamonds on
+  the sides, gold rules in/out over umber. Tiling cells verified seamless: top
+  edge cable runs y5/6 full-width so clasps chain; side cable x5/6 full-height.
+  Caveat: corner bosses are square-blocky (acceptable studs, not filigree).
+- **chrome_panel** (12×12, slice 4) — PASS. Slim carved bevel: gold-dark outer
+  rule, bone/stone light on top-left, slate/shadow dark on bottom-right, umber
+  inner. Replaces the flat 1px slate panel borders.
+- **chrome_plaque** (32×16, 9-slice caps 4 / middle tiles) — PASS w/ caveat.
+  `art-review/chrome_plaque.png`. Gold-rimmed wooden nameplate, scroll caps with
+  candle highlight. Caps are simple (4px) — readable as a plaque; revisit if it
+  looks thin behind the location text in-browser.
+- **chrome_button** (12×12, slice 4) — PASS. Raised carved bevel, candle/gold
+  light top-left, leather/peat shadow bottom-right, gold-dark outer rule.
+- **chrome_button_down** (12×12, slice 4) — PASS. `art-review/chrome_button_down.png`.
+  Inverted bevel (light bottom-right) reads as pressed/inset. First draft was
+  too uniformly bright; ramp split into peat top-left / candle bottom-right fixed
+  it.
+
+In-browser border-image judging (the true test of tiling/scale) recorded below
+as screens are wired.
+
+### In-browser border-image verdicts (2026-06-12)
+
+Wired into `style.css` as `border-image` (assets/chrome/*.png at 2×, displayed
+1:1, `image-rendering: pixelated`). Judged live via Playwright. Cache note: the
+dev server (`tools/devserver.py`) gained a `/vN/` cache-bust prefix because
+Chromium clung to stale ES modules from the pre-`no-store` server.
+
+- **Outer frame** on `#game` — PASS. `art-review/chrome-after-title.png`. Brass
+  thorn-vine reads ornate and period at the container scale; `round` repeat tiles
+  the clasps with no seams; corners crisp.
+- **Title-screen framebuffer border** (`renderer.ornateScreenBorder`) — PASS.
+  Same `chrome_frame` tiled into the 320×240 framebuffer; nests inside the DOM
+  frame like the Amiga's layered borders. First fix needed: `chrome` was missing
+  from `art.js` SPRITE_DOCS, so the sprite was undefined and it fell back to a
+  plain gold rect — added and re-verified.
+- **Panel bevels** on `.panel` — PASS. `art-review/chrome-after-explore.png`.
+  Slim carved frame replaces the flat 1px slate; gold blackletter data-title
+  tabs sit on the top rail.
+- **Location plaque** (`#loc`) — PASS. Carved nameplate centred under the
+  viewport ("Bellward"), gold-on-umber, display font — the Amiga "The guild"
+  nameplate equivalent. `#loc` is now populated with the street/map name
+  (`src/main.js`), previously empty outside debug.
+- **Carved buttons** (`#cmdbar button`, `.nav`) — PASS. Raised bevel + umber
+  fill + gold blackletter keycap; hover = candle-glow text (no bg swap);
+  `:active` swaps to the inset `chrome_button_down` bevel. No flat-modern hover
+  remains.
+
+Before = the Phase-1 commit (flat 1px borders, Courier). All acceptance points
+for the chrome pass met: ornate frame, plaque, period type, dark Thornmere
+palette; no flat-modern borders/buttons remain.
+
+---
+
+## Bright-light view distance (2026-06-12)
+
+`src/ui/renderer.js`: DEPTHS extended 5→7 planes ([0.45 … 6.45]); bright daylight
+town reaches plane 6, with the farthest ~3 planes dithering toward the day-sky
+horizon colour (mist-blue) via the existing Bayer mix — no new palette entries.
+Dungeon torch/spell radii, no-light, and the darkness zone keep the old short
+clamp and render unchanged.
+
+- **Town at noon** — PASS. `art-review/viewdist-town-noon.png`: buildings recede
+  ~6 cells down the daylit street and dissolve into a dithered haze at the limit.
+- **Dungeon pixel-identity** — PASS (rigorous). Framebuffer hash of undercroft1
+  at (2,2) with the pre-change vs post-change renderer, fixed animation clock:
+  torchlit `2565138546` == `2565138546`, no-light `1066362181` == `1066362181`.
+  Byte-for-byte identical → the change is fully isolated to bright daylight.
+  Darkness zone (radius < 0) takes the unchanged one-step branch (haze undefined
+  → mix never runs).
+- Degenerate far rects guarded in frontWall/sideWall (`x2<=x1 || b<=t`); these
+  guards never fire at dungeon depths, preserving identity.
+
+---
+
+## Smooth step (2026-06-12)
+
+`src/ui/slide.js` (pure, unit-tested in `test/slide.test.js`) + `renderer.camOffset`
+threaded through draw/backdrop/walls. A forward/backward move applies instantly;
+the camera then glides one cell (eased, 140ms) via requestAnimationFrame.
+
+- **Glide** — PASS. Real ArrowUp keydown: camOffset swept −1 → 0 over ~50 frames,
+  landed exactly on 0, party advanced one cell.
+- **Mid-glide render** — PASS. `art-review/smoothstep-{rest,mid}.png`: at
+  camOffset −0.5 the near walls slide past the edges and the next plane grows —
+  correct single-point-perspective in-between, not a duplicated frame.
+- **Held-key chaining** — PASS. Holding forward ~650ms walked 5 cells back-to-back
+  at glide pace (no dead time, no queue: repeats are ignored mid-glide and the
+  slide auto-chains on landing while the key is held).
+- **Turning instant** — PASS. A turn keeps camOffset at 0 (no slide) and snaps any
+  in-flight glide first.
+- **Interrupts snap** — by construction: bumps, spinner/teleport desync, and any
+  building/gate/stairs/riddle/combat/mapchange event set canSlide=false →
+  snapSlide(), so the camera is parked on the true cell before the new mode draws.
+- At rest camOffset=0 the renderer math is byte-identical to before (max(NEAR,…)
+  and the −co terms are no-ops), so no non-walking screen changed.
+
+## PC portraits — re-crush to 80×100 (2026-06-13)
+
+Old PCs were crushed to 32×40 (4× display = chunky) while monsters/interiors are
+112px (2× display). The 256×320 seed-42 raws were still on disk, so re-crushed via
+`dev/pixel-art/recrush_pc.py` — NO GPU. (90×112 was tried first but overflowed the
+240px scene framebuffer at 2×, clipping the head and name plate; 80×100 is the
+tallest that shows at full 2× with the plate intact.)
+
+- **Resolution** — PASS. warrior/rogue/caster/skald re-imported at 80×100, shown
+  via new `renderer.portrait()` at cap 224 → 2× (160×200), same pixel density as
+  the monster window. Faces/armour read crisply (judged from candidates-pc-80/ and
+  in-game `?p=` renders).
+- **Eye boxes RE-MEASURED** — PASS. The linearly-scaled 32×40 eye boxes landed on
+  the brow (a "forehead pulse"). Re-measured onto the actual eyes per portrait;
+  overlay render `/tmp` confirmed placement (warrior y38-48, rogue y41-49,
+  caster y35-43, skald y22-29).
+- **Black-line artifact** — FIXED. The `breathe` effect shifted the torso box down
+  1px and left its top row transparent → a black line across the chest on frame b
+  (panel behind is black). Dropped breathe; PCs now eye_pulse only, like monsters.
+- **Animation confinement** — PASS. Live-canvas frame-a vs frame-b diff bbox =
+  x[144,183] y[52,65] = the eye region only; 0 pixels turned transparent. Data-level
+  diff: changes only inside the eye box for all four.
+
+## scene_battle_victory — after-battle banner (2026-06-13)
+
+New showpiece scene shown on EVERY combat win (treasure or not). 160×120, sub22
+palette, scene_wide gen dims (640×480). Generated 10 showpiece seeds on the host
+GPU, crushed locally via `generate.py --id scene_battle_victory`. Judged at TRUE
+game scale (160×120 native, shown 2× for inspection) — the art-box renders scenes
+at 1× under the 192 cap, so small-scale readability is the deciding test.
+
+- **seed 3 — CHOSEN.** Bold central two-figure triumph, golden-edged light shaft,
+  cleanest silhouettes; reads instantly at native scale. The most celebratory of
+  the set.
+- **seed 1 — runner-up.** Clear "standing over the slain beast" storytelling, lute
+  legible, balanced. Slightly less punch than 3.
+- **seed 42 — runner-up.** Warm golden water-reflection path, fuller party. Good,
+  but the reflected light competes with the central shaft at small size.
+- **seed 5** — FAIL (busy). Four figures + cluttered treeline muddy the read at 1×.
+- **seed 7** — FAIL (weak). Figures too small/distant; triumph doesn't register.
+- **seed 11** — borderline; hooded figure on the right reads as an enemy, not party.
+- **seed 13** — FAIL. Lute floats detached to the right; dark, unclear.
+- **seed 17** — FAIL. Over-saturated golden tint on the corpses; mirror-ish.
+- **seed 23** — FAIL (artifact). Near-perfect left/right mirror symmetry — looks
+  synthetically flipped, not a real composition.
+- **seed 31** — borderline; off-center grouping, flatter blue sky, less mood.
+
+Renderer falls back to a text banner when the sprite is absent, so the game shipped
+working before this import.
+
+## int_house / int_house2 / int_house3 — enterable house interiors (2026-06-14)
+
+Phase 4 of the empty-houses mechanic. 3 interior entries, 6 seeds each = 18
+candidates, all crushed to 112×80 sub26 palette via `generate_interiors.py`.
+Judged from sub26 PNGs (crushed, game-scale); confirmed via `artrender.js` 4×
+renders.
+
+### int_house — humble abandoned fenland cottage
+
+Subject: cold hearth, broken stool, dusty table, shuttered window, cobwebs, dim grey.
+
+- **s17 — CHOSEN.** Dead/cold hearth (stone only, dying embers — matches "cold hearth").
+  Window with pale grey sky light. Dusty table visible right. Desolate, abandoned
+  feel. No warm firelight except faint residual — reads as an empty cold house. ✓
+- **s3 — FAIL.** Warm orange fire in hearth. Violates "cold hearth" subject. Good
+  composition otherwise (window, table, cobwebs) but wrong mood.
+- **s7 — FAIL.** Warm fire in hearth. More cluttered/noisier than s3. Same rejection.
+- **s11 — FAIL.** Warm fire. Very dark — hard to read at game scale.
+- **s23 — FAIL.** Warm fire in hearth. Stool visible but fire contradicts subject.
+- **s42 — PASS (not chosen).** Cold/dark hearth ✓ but two windows changes the
+  spatial feel from the single-room description. s17 preferred.
+
+4× artrender: PASS. Cold stone fireplace, pale window shaft, table — reads
+immediately as a vacant cottage interior. 16 colours used.
+
+### int_house2 — ransacked one-room house
+
+Subject: overturned chest, scattered straw, guttering tallow candle, damp stone walls.
+
+- **s42 — CHOSEN.** Window top-left (establishes this as a room, not a dungeon).
+  Overturned chest lower-left, scattered warm debris (straw/detritus). Lit tallow
+  candle center — warm glow against cold damp walls. Shadows everywhere. Best
+  "ransacked house" feel from the set. ✓
+- **s3 — FAIL.** Reads as dungeon treasure room: stone block walls, bright gold-coin
+  spill from chest, no window. No "house" register.
+- **s7 — FAIL.** Same dungeon-treasure read. Even less house-like than s3.
+- **s11 — PASS (not chosen).** Overturned chest, candle, window. Darker/dungeon-
+  adjacent. s42 preferred for cleaner "room" feel.
+- **s17 — PASS (not chosen).** Scattered straw ✓, chest ✓, candle ✓. No window.
+  Atmospheric but s42 has better spatial grounding.
+- **s23 — PASS (not chosen).** Two windows, most house-like walls. Overlit for the
+  subject's "shadows" requirement. s42 preferred.
+
+4× artrender: PASS. Warm candle vs cold window contrast. Chest visible. 18 colours.
+
+### int_house3 — shuttered parlor
+
+Subject: sheet-draped furniture, cobwebbed rafters, single shaft of pale light through
+a cracked shutter.
+
+All 6 seeds pass — this was the strongest generation batch of the three.
+
+- **s3 — CHOSEN.** Sheet-draped furniture both sides (covered armchairs clearly
+  readable), prominent cobweb texture in rafters overhead, dramatic single shaft of
+  pale light through central window. Cool grey-blue palette with stark white shaft.
+  Most legible composition. ✓
+- **s7 — PASS (runner-up).** Vaulted ceiling beams ✓, sheets both sides ✓, central
+  window ✓. Clean but slightly overlit floor. Strong alternative.
+- **s11 — PASS.** Two windows, sheet-draped items ✓, warm tones on floor. Good but
+  the warm patch competes with the "cobwebbed/cold" read.
+- **s17 — PASS.** Framed picture detail, sheet-draped chair/bed, window shaft. Slightly
+  cluttered. Good variety piece.
+- **s23 — PASS.** Minimal/clean. Sheets less detailed than s3.
+- **s42 — PASS.** Draped ceiling cobweb-texture is evocative; pictures on wall;
+  pale light. Close runner-up to s3.
+
+4× artrender: PASS. Sheet-draped chairs flank a bright window shaft with
+cobwebs overhead. Instantly reads as a long-shuttered parlor. 9 colours (cleanest).

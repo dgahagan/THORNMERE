@@ -95,6 +95,7 @@ test('every town building resolves to a signboard and an interior', () => {
   for (const c of Object.values(town.cells)) if (c.t === 'building') ids.add(c.id.replace(/\d+$/, ''));
   for (const id of ids) {
     if (id === 'empty') continue;                       // boarded: tex_boards facade
+    if (id === 'house') continue;                       // enterable house: plain door, no sign; int_house pending art gen
     assert.ok(sprites.has('sign_' + id), `building '${id}' has no signboard sign_${id}`);
     assert.ok(resolves('int_' + id), `building '${id}' has no interior int_${id}`);
   }

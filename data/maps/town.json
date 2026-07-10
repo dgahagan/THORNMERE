@@ -927,23 +927,23 @@
   },
   "8,13": {
    "t": "building",
-   "id": "empty1",
-   "name": "A Boarded House"
+   "id": "house3",
+   "name": "A Shuttered House"
   },
   "14,13": {
    "t": "building",
-   "id": "empty2",
-   "name": "A Boarded House"
+   "id": "house4",
+   "name": "A Cottager's House"
   },
   "8,9": {
    "t": "building",
-   "id": "empty3",
-   "name": "A Shuttered Stall"
+   "id": "house1",
+   "name": "A Quiet House"
   },
   "14,9": {
    "t": "building",
-   "id": "empty4",
-   "name": "A Collapsed Granary"
+   "id": "house2",
+   "name": "An Empty House"
   },
   "22,9": {
    "t": "gate",
@@ -1026,6 +1026,14 @@
      "weight": 1
     }
    ]
+  },
+  "house": {
+   "dayRate": 25,
+   "nightRate": 40,
+   "find": {
+    "chance": 12,
+    "gold": "1d6"
+   }
   }
  }
 }

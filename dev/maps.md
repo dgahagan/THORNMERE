@@ -1,0 +1,1061 @@
+# The Lay of Thornmere — Map Atlas
+
+> **Generated** by `tools/mapdoc.js` from `data/maps/*.json` (the source of
+> truth). Do not hand-edit — re-run `node tools/mapdoc.js` after any map
+> change. Companion to `dev/designer-guide.md` (which links here per dungeon).
+
+North is **up**. Coordinates are `(x,y)`; the grid prints `y` down the left
+and `x` along the bottom, matching the data and in-game automap.
+
+### Legend
+
+| Walls / edges | | Cell contents | | Zone overlay |  |
+|---|---|---|---|---|---|
+| `│ ─` wall | `D` door | `@` party entry | `B` fixed encounter / boss | `÷` anti-magic | (on empty floor) |
+| `R` riddle door | `s` secret door | `▲`/`▼` stairs up/down | `$` secret room / cache | `·` extra-dark zone | |
+| (blank) open | | `m` magic mouth | `^` trap | | |
+| | | `*` spinner | `~` teleporter | | |
+| | | `☒` seal door | `G` gate · `I` statue | | |
+| | | `▓` building | | | |
+
+Map-level **dark** (whole floor needs a torch/light) is noted per map; the
+`·` overlay marks *additional* dark-zone rectangles layered on top.
+
+## Contents
+
+- [Difficulty Summary (derived)](#difficulty-summary-derived)
+- [Thornmere](#thornmere)
+- [The Sunken Undercroft — Drowned Cellars](#the-sunken-undercroft--drowned-cellars)
+- [The Sunken Undercroft — The Old Crypts](#the-sunken-undercroft--the-old-crypts)
+- [The Howling Barrow — Outer Mounds](#the-howling-barrow--outer-mounds)
+- [The Howling Barrow — The Wind Galleries](#the-howling-barrow--the-wind-galleries)
+- [The Howling Barrow — Hall of the Choir](#the-howling-barrow--hall-of-the-choir)
+- [Maldrec's Needle — The Threshold](#maldrecs-needle--the-threshold)
+- [Maldrec's Needle — The Copying Floors](#maldrecs-needle--the-copying-floors)
+- [Maldrec's Needle — The Gauntlet](#maldrecs-needle--the-gauntlet)
+- [Maldrec's Needle — The Unsung Sanctum](#maldrecs-needle--the-unsung-sanctum)
+
+---
+
+## Difficulty Summary (derived)
+
+Computed by `tools/mapdoc.js` from the maps + `data/monsters.json`.
+Encounter figures are **expected values per wandering fight** (weighted
+over the roster, group-count averaged and capped at 4) — coarse but
+comparable across levels. *E[foes]* = expected enemies; *E[HP]* = their
+combined health; *E[dmg/rd]* = their combined output if each lands its
+best single hit in a round (party-wide boss AOE is in the boss table).
+
+### Navigation & hazards
+
+| Level | Dark | Anti-magic cells | Traps (avg DC) | Spinners | Teleports | Secret doors | Locked gate |
+|---|---|---|---|---|---|---|---|
+| The Sunken Undercroft — Drowned Cellars | yes +16z | — | 4 (11) | 1 | 1 | 7 | riddle |
+| The Sunken Undercroft — The Old Crypts | yes +16z | — | 5 (12) | 2 | 2 | 8 | — |
+| The Howling Barrow — Outer Mounds | yes +21z | — | 4 (13) | 3 | 1 | 8 | — |
+| The Howling Barrow — The Wind Galleries | yes +36z | 9 | 5 (14) | 3 | 2 | 9 | riddle |
+| The Howling Barrow — Hall of the Choir | yes +20z | 9 | 5 (14) | 4 | 3 | 9 | — |
+| Maldrec's Needle — The Threshold | yes | 24 | 5 (15) | 3 | 4 | 8 | — |
+| Maldrec's Needle — The Copying Floors | yes +12z | 25 | 5 (15) | 3 | 5 | 10 | — |
+| Maldrec's Needle — The Gauntlet | yes +12z | 25 | 6 (16) | 4 | 5 | 9 | riddle |
+| Maldrec's Needle — The Unsung Sanctum | yes | 47 | 6 (16) | 4 | 6 | 9 | seal (Riddlemaster) |
+
+### Encounter pressure
+
+| Level | Rate % | Groups | Tier range | E[foes] | E[HP] | E[dmg/rd] |
+|---|---|---|---|---|---|---|
+| Thornmere (night) | 6 | 1d2 | 1–2 | 3.4 | 20 | 10 |
+| The Sunken Undercroft — Drowned Cellars | 7 | 1d2 | 1–1 | 4.8 | 23 | 12 |
+| The Sunken Undercroft — The Old Crypts | 8 | 1d2 | 1–2 | 3.5 | 30 | 13 |
+| The Howling Barrow — Outer Mounds | 8 | 1d3 | 2–2 | 5.8 | 91 | 28 |
+| The Howling Barrow — The Wind Galleries | 9 | 1d3 | 2–3 | 4.8 | 87 | 27 |
+| The Howling Barrow — Hall of the Choir | 9 | 1d3 | 2–3 | 3.3 | 77 | 21 |
+| Maldrec's Needle — The Threshold | 9 | 1d3 | 4–4 | 3.8 | 118 | 34 |
+| Maldrec's Needle — The Copying Floors | 10 | 1d3 | 4–4 | 3.6 | 109 | 34 |
+| Maldrec's Needle — The Gauntlet | 10 | 1d3 | 4–5 | 3.3 | 131 | 40 |
+| Maldrec's Needle — The Unsung Sanctum | 10 | 1d4 | 4–5 | 4 | 165 | 51 |
+
+### Bosses & fixed encounters
+
+| Boss | Level | Tier | HP | AC | Best hit | Party AOE |
+|---|---|---|---|---|---|---|
+| The Tallow King | The Sunken Undercroft — The Old Crypts | 3 | 60 | 3 | 10.5 | 7 |
+| Tallow Acolyte | The Sunken Undercroft — The Old Crypts | 2 | 11 | 6 | 5 | — |
+| Tallow Crawler | The Sunken Undercroft — The Old Crypts | 1 | 11 | 9 | 4.5 | — |
+| The Choir's Eldest | The Howling Barrow — Hall of the Choir | 4 | 80 | 1 | 13.5 | 14 |
+| Hollow Cantor | The Howling Barrow — Hall of the Choir | 3 | 27 | 4 | 4.5 | 9 |
+| Hollow Man | The Howling Barrow — Hall of the Choir | 2 | 18 | 6 | 5 | — |
+| Hollow Man | The Howling Barrow — Hall of the Choir | 2 | 18 | 6 | 5 | — |
+| Maldrec the Unsung | Maldrec's Needle — The Unsung Sanctum | 5 | 190 | -2 | 22.5 | 18 |
+
+---
+
+## Thornmere
+
+- `town` · 24×24 · town
+- Entry: (4,16) facing N
+
+```
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+23 │                                                                                               │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+22 │                                 I           G           I                                     │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+21 │                                                                                               │
+   +   +   +───+───+───+───+───+   +   +───+───+───+───+───+   +   +───+───+───+───+───+───+   +   +
+20 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+19 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+18 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+17 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │
+   +   +   +───+───+─D─+───+───+   +   +───+───+─D─+───+───+   +   +───+───+─D─+───+───+───+   +   +
+16 │                 @                                                                             │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+15 │                                                                                               │
+   +   +   +───+───+───+───+───+   +   +   +   +   +   +   +   +   +───+───+───+───+───+   +   +   +
+14 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│                                   │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│           │
+   +   +   +   +   +   +   +   +   +───+   +───+───+───+   +───+   +   +   +   +   +   +   +   +   +
+13 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│   │▓▓▓│   │▓▓▓ ▓▓▓ ▓▓▓│   │▓▓▓│   │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│           │
+   +   +   +   +   +   +   +   +   +─D─+   +   +   +   +   +─D─+   +   +   +   +   +   +   +   +   +
+12 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│           │▓▓▓ ▓▓▓ ▓▓▓│           │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│           │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+11 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│           │▓▓▓ ▓▓▓ ▓▓▓│           │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│           │
+   +   +   +───+───+─D─+───+───+   +   +   +───+─D─+───+   +   +   +───+───+─D─+───+───+   +   +   +
+10 │                                                                                               │
+   +   +   +   +   +   +   +   +   +───+   +   +   +   +   +───+   +   +   +   +   +   +   +   +   +
+ 9 │                               │▓▓▓│                   │▓▓▓│                             G     │
+   +   +   +   +   +   +   +   +   +─D─+   +   +   +   +   +─D─+   +   +   +   +   +   +   +   +   +
+ 8 │                                                                                               │
+   +   +   +───+───+─D─+───+───+   +   +───+───+─D─+───+───+   +   +───+───+─D─+───+───+   +   +   +
+ 7 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│           │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+ 6 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│           │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+ 5 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│           │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+ 4 │       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│       │▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓│           │
+   +   +   +───+───+───+───+───+   +   +───+───+───+───+───+   +   +───+───+───+───+───+   +   +   +
+ 3 │                                                                                               │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+ 2 │                                                                                               │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+ 1 │                                                                                               │
+   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +   +
+ 0 │                                                                                               │
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+```
+
+**Connections**
+
+| Cell | Kind | Leads to |
+|---|---|---|
+| (22,9) | gate — The East Gate | barrow1 (2,11) facing E |
+| (11,22) | gate — The North Gate | — |
+
+**Statues** (`I` on grid)
+
+- (8,22): Guardian Statue
+- (14,22): Guardian Statue
+
+**Buildings** (▓ on grid — 13 structures)
+
+| Building | Footprint (x,y range) | Cells |
+|---|---|---|
+| The Drowned Goose | (2–6, 4–7) | 20 |
+| The Boarded Tannery | (9–13, 4–7) | 20 |
+| The Hart & Hollow | (16–20, 4–7) | 20 |
+| A Shuttered Stall | (8–8, 9–9) | 1 |
+| A Collapsed Granary | (14–14, 9–9) | 1 |
+| Temple of the Quiet Flame | (2–6, 11–14) | 20 |
+| The Bell Tower | (10–12, 11–13) | 9 |
+| Roskva's Spark House | (16–20, 11–14) | 20 |
+| A Boarded House | (8–8, 13–13) | 1 |
+| A Boarded House | (14–14, 13–13) | 1 |
+| Adventurers' Hall | (2–6, 17–20) | 20 |
+| Greta's Provisioner | (9–13, 17–20) | 20 |
+| The Magistrate's Court | (16–21, 17–20) | 24 |
+
+**Wandering encounters — day** (rate 1%, groups 1)
+
+fen_stray (2) · footpad (1)
+
+**Wandering encounters — night** (rate 6%, groups 1d2)
+
+footpad (3) · fen_stray (2) · tavern_tough (2) · gate_wight (1)
+
+---
+
+## The Sunken Undercroft — Drowned Cellars
+
+- `undercroft1` · 22×22 · dungeon · **dark** (needs light)
+- Entry: (2,2) facing N
+- Zone **dark**: (16,14) 4×4
+
+```
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+21 │   │     m                         │   D               │               │               │
+   +   +   +───+───+───+───+───+   +───+   +───+───+   +   +─D─+───+─D─+   +───+   +───+───+
+20 │           │   D       │   D   │       │       │       │   │       │   D   │           │
+   +───+───+───+   +───+   +   +───+─D─+───+   +   +   +─D─+───+   +───+───+   +───+───+   +
+19 │               │   │   │           │       s   │   │   │       │   D   │     ▼     │   │
+   +   +───+───+───+   +   +   +───+───+   +───+   +   +   +   +───+   +───+───+───+   +   +
+18 │   │               │   │ ^ │           │   │   │   s   │   │     ^             │       │
+   +   +   +───+───+───+   +───+   +───+───+   +   +───+   +   +   +───+───+───+─D─+───+   +
+17 │   │                           │           │   │   D   │   │     · │ · D · │ ·         │
+   +   +───+───+   +─s─+   +───+───+   +───+   +   +   +   +   +───+─D─+   +   +───+───+───+
+16 │   │               D       │       D   │           │   │   │     · D · │ ·   ·         │
+   +   +   +   +   +   +───+   +───+───+───+─s─+───+───+   +   +───+───+   +   +───+───+   +
+15 │       │           │   │       D           │   D   │   │       │ ~ D · D · │ ·     │   │
+   +   +───+   +   +   +   +───+   +───+───+   +   +   +───+─D─+   +   +───+───+   +───+   +
+14 │   s               │           D       │       │       │   │   │ ·   · │ ·   ·     │   │
+   +   +   +───+───+   +───+───+   +───+   +───+───+───+   +───+   +───+   +─D─+───+   +   +
+13 │   │       D   │               │       │           │   │       │       │     ^ │   │   │
+   +   +───+───+   +───+───+───+───+   +───+───+   +   +   +   +   +─D─+───+───+───+   +   +
+12 │   │           │           D   │       D           │   │   │   │                   │   │
+   +   +   +───+─D─+───+───+   +   +───+───+───+   +───+   +   +───+   +───+───+   +───+   +
+11 │   │   │   │               │   │   │   D       │       │   D       │       │   │       │
+   +───+   +   +───+───+───+───+   +─D─+   +───+───+   +   +─D─+───+───+─D─+   +   +   +   +
+10 │       │                   │   │   │   │       │   │ m R   │     *     │   │       │   │
+   +   +───+   +   +   +───+   +   +   +   +   +   +   +───+   +   +───+───+   +───+   +─D─+
+ 9 │   │       │       │   │           │       │   │       │   │           │       │   │   │
+   +   +───+───+   +───+   +───+───+───+   +───+───+   +   +   +───+───+   +───+   +   +   +
+ 8 │           │   │               │       │       │   │   │ m D   │       │   │   │   │   │
+   +   +───+   +   +   +───+   +───+   +───+─D─+   +───+   +───+   +   +───+   +   +   +   +
+ 7 │       │   │               │               │       │   │       │   │       │   D   │   │
+   +   +   +   +───+───+   +   +   +───+   +───+───+   +   +   +   +   +   +───+───+─s─+   +
+ 6 │   │   │   │           │       │   D   │           │   │   │   │   │   D           │   │
+   +   +   +   +   +───+───+   +   +   +───+   +   +─D─+   +   +   +   +   +   +───+   +   +
+ 5 │   │   │   │   │       │   │   │   │   D           │   │           │           │   │   │
+   +   +   +   +   +───+   +   +   +   +───+─D─+─D─+   +   +───+───+   +───+   +   +   +   +
+ 4 │   │   │   │   │   D   │   │   │       │               │       │   │           │   │   │
+   +   +   +   +─D─+   +   +─D─+   +───+   +───+   +───+   +   +─D─+   +───+───+   +   +   +
+ 3 │   │   │   │       │   │   │       │   │           │   │   │   │   │       │   │   D   │
+   +   +   +   +───+───+   +   +   +───+   +   +───+───+   +─D─+   +───+   +   +   +───+───+
+ 2 │       │ @                     │       │   │       │   │ ^ │       s $     │   │       │
+   +───+───+───+───+───+───+───+───+   +───+   +   +   +   +   +───+───+   +───+   +───+   +
+ 1 │   D               │           │   │           │   │   │   │   D   │   D   │           │
+   +   +───+───+───+   +   +───+   +   +   +───+───+   +   +   +   +   +───+───+───+───+   +
+ 0 │   │               D   │           │           │       │       │                       │
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+```
+
+**Connections**
+
+| Cell | Kind | Leads to |
+|---|---|---|
+| (2,2) | stairs up | town (11,8) facing S |
+| (19,19) | stairs down | undercroft2 (19,19) facing S |
+
+**Riddle door** (`R` on grid)
+
+- *"Each night I die to light the hall, and my king wears seven of me for a crown. Name me."*
+- Hint: *Answer as a chandler would.*
+- Answers: `candle`, `a candle`, `the candle`, `candles`, `flame`, `a flame`
+
+**Secret rooms / caches** (`$` on grid)
+
+- (17,2): greatcandle, healing_draught, healing_draught, 120g — *A smuggler's nook behind the wall: candles, draughts, and a purse of old coin.*
+
+**Hazards** (`^` trap · `*` spinner · `~` teleport)
+
+| Cell | Type | Detail |
+|---|---|---|
+| (14,2) | trap | crumble (DC 11) |
+| (19,13) | trap | gas (DC 11) |
+| (6,18) | trap | crumble (DC 11) |
+| (16,18) | trap | gas (DC 11) |
+| (16,10) | spinner | — |
+| (16,15) | teleport | → (19,9) |
+
+**Magic mouths** (`m` on grid)
+
+- (14,8): *A mouth of cracked plaster grinds: "The wax remembers what the river forgot. Below, the King of Candles holds the First Verse in molten hands."*
+- (13,10): *The stone mouth whispers: "The split door asks what the King wears for a crown. Answer as a chandler would."*
+- (2,21): *A drowned voice gurgles from the wall: "The tanners sealed the cellar. The cellar did not agree to stay sealed."*
+
+**Wandering encounters** (rate 7%, groups 1d2)
+
+fen_rat (3) · grave_mite (2) · mirefang (3) · cellar_creep (2) · fen_adder (1) · rust_grub (2) · crypt_thief (2) · sodden_dead (1)
+
+---
+
+## The Sunken Undercroft — The Old Crypts
+
+- `undercroft2` · 22×22 · dungeon · **dark** (needs light)
+- Entry: (19,19) facing S
+- Zone **dark**: (8,8) 4×4
+
+```
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+21 │         *     │           │                   │           │           │               │
+   +───+───+   +   +───+─D─+   +───+   +───+───+   +   +───+   +─D─+───+   +   +───+   +───+
+20 │   D       │       │   │           │       D   │   │       │       │   │       │       │
+   +   +───+───+───+   +   +───+───+───+─D─+───+─D─+   +───+   +───+   +   +───+───+───+   +
+19 │   D       │           │   D   D   │       │   D                             @         │
+   +   +   +   +───+───+───+───+   +─D─+───+   +   +───+   +───+───+───+───+───+─s─+───+   +
+18 │               │   D           │       │           │               │           D   │   │
+   +───+   +───+   +───+─D─+   +───+───+   +───+───+   +   +   +   +   +   +───+   +───+   +
+17 │   │   D   │ B     │ ~ │   │       │   D   │       │   │   │   │       D   │   s       │
+   +   +───+   +   +   +   +   +───+   +───+   +   +───+   +─D─+─s─+───+───+   +   +   +───+
+16 │       │   │   │   │   │       │           │   │       │   │ ^     │       │   │       │
+   +   +───+   +   +   +───+───+   +   +───+───+   +───+   +   +   +   +   +───+─D─+───+   +
+15 │               │   │       │               │       │   │   s       │ m     │           │
+   +   +───+───+───+   +   +   +   +───+───+   +───+   +   +   +   +   +───+   +───+───+   +
+14 │   │   │       │       │   │   D               │   │   │       │       s           │   │
+   +   +   +   +   +───+───+   +───+───+───+───+   +   +───+───+───+───+   +───+───+   +   +
+13 │   │   │               │                   │   │                       │   │       │   │
+   +   +─D─+   +   +   +   +─s─+───+   +   +   +─D─+───+───+───+───+───+───+   +   +───+   +
+12 │ m │   │           │   │           │   │   │                   │       D   │           │
+   +   +   +───+   +─D─+─D─+   +───+   +   +   +───+   +─D─+   +───+   +───+─D─+───+───+─D─+
+11 │       │       D   │     ^ │     · │ · │ ·   · │   │       │       │       │       │   │
+   +───+───+─D─+   +   +───+───+   +───+───+───+   +   +───+───+   +───+   +───+   +   +   +
+10 │                       │       │ ·   ·   ·   ·                     │           │       │
+   +   +───+───+   +   +───+   +───+───+   +───+───+───+───+───+───+───+───+─D─+───+───+───+
+ 9 │               │   │       │   D ·   · │ ·   ·             D           │   │           │
+   +───+   +   +───+   +   +─s─+   +   +───+   +───+───+───+───+───+───+   +   +───+   +─D─+
+ 8 │ ^     │ ~     │   │   │       │ ·   · │ · D · │       │               │           │   │
+   +─D─+───+   +   +───+   +───+───+───+   +───+   +   +───+   +───+───+   +───+─D─+─D─+   +
+ 7 │   │               D       │               │   │   D   │   │           │   D   │   │   │
+   +   +   +─D─+───+───+───+   +   +   +───+───+   +   +   +   +   +───+   +   +───+───+   +
+ 6 │   │   │       │       │   │   │   │       │   │   │   │   │       │   │       │       │
+   +   +   +───+   +   +   +   +   +───+   +   +   +───+   +   +   +   +───+───+   +   +───+
+ 5 │   D   │   │       │   │   │           │   │   D           │   │           │   │       │
+   +   +───+   +───+───+   +   +   +───+───+   +───+───+   +   +───+───+───+───+   +───+   +
+ 4 │   │               │   │   │   │       │   │           │       │   │       │           │
+   +   +───+   +───+───+   +   +   +   +   +   +   +───+───+   +   +   +   +   +───+   +   +
+ 3 │           │ *         │   │       │   │           │       │       s $     │       │   │
+   +   +───+───+   +───+   +   +───+───+───+───+───+   +───+   +───+───+───+───+───+   +   +
+ 2 │   │           │   D   │   D           │       │   D       │               │       │   │
+   +───+   +───+───+   +   +───+───+───+   +   +   +───+   +───+   +───+   +───+   +───+─D─+
+ 1 │   D ^ │       │   │               │   │   │       │   │       │           │           │
+   +   +───+   +───+   +───+───+───+   +   +   +───+   +───+   +───+   +───+───+   +───+───+
+ 0 │   │     ^ D       D           │           │       D       │   D                       │
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+```
+
+**Connections**
+
+| Cell | Kind | Leads to |
+|---|---|---|
+| (19,19) | stairs up | undercroft1 (19,19) facing N |
+
+**Fixed encounters** (`B` on grid)
+
+- (3,17): 1× tallow_king, 1d2× tallow_acolyte, 1d3× tallow_crawler — drops verse_first + 500g
+
+**Secret rooms / caches** (`$` on grid)
+
+- (17,3): tallowbrand, 200g — *Behind the false wall, a blade quenched in royal wax: TALLOWBRAND, burning without heat.*
+
+**Hazards** (`^` trap · `*` spinner · `~` teleport)
+
+| Cell | Type | Detail |
+|---|---|---|
+| (2,0) | trap | crumble (DC 12) |
+| (1,1) | trap | crumble (DC 12) |
+| (0,8) | trap | crumble (DC 12) |
+| (6,11) | trap | spikes (DC 12) |
+| (15,16) | trap | spikes (DC 12) |
+| (3,3) | spinner | — |
+| (2,21) | spinner | — |
+| (2,8) | teleport | → (18,10) |
+| (5,17) | teleport | → (3,6) |
+
+**Magic mouths** (`m` on grid)
+
+- (0,12): *A wax-clogged mouth hums: "He renders all his subjects in the end. Bring a light he cannot eat."*
+- (17,15): *The mouth recites, bored: "Crypt seven, row two. Reserved. Do not tarry."*
+
+**Wandering encounters** (rate 8%, groups 1d2)
+
+sodden_dead (3) · bonechatter (3) · tallow_crawler (2) · wisplight (2) · mire_spawn (2) · tallow_acolyte (2) · fen_adder (1)
+
+---
+
+## The Howling Barrow — Outer Mounds
+
+- `barrow1` · 22×22 · dungeon · **dark** (needs light)
+- Entry: (2,11) facing E
+- Zone **dark**: (6,16) 4×3, (14,8) 3×3
+
+```
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+21 │   D               │                           │   D                                   │
+   +   +   +───+───+   +   +───+   +───+───+───+   +───+   +   +───+───+───+─s─+   +───+───+
+20 │   │   │       │       │       │       │   │   │       │   │                           │
+   +   +───+   +   +───+───+───+───+   +   +   +   +   +   +───+─D─+───+───+───+───+───+   +
+19 │   │       │           │           │   │   │   D       │   D   │           │           │
+   +   +   +───+───+───+   +   +───+───+   +   +   +───+   +   +───+───+─D─+───+───+   +   +
+18 │       │               │ ·   ·   · │ · │               │   │           │       │       │
+   +   +───+   +───+───+   +───+───+   +   +───+───+   +───+   +   +   +───+   +   +───+   +
+17 │   │       │       D   │ ·   ·   · │ ·         │       │   │ ^ │       s $     │       │
+   +───+   +───+   +───+───+   +───+───+───+───+   +───+───+   +───+───+   +───+───+───+   +
+16 │       │           │     · │ ·   ·   · │       │                       D   │       │   │
+   +   +───+───+───+───+   +───+───+───+   +   +───+─D─+───+───+─s─+───+───+   +───+   +   +
+15 │                       │       D   │   │           │   │                   │       │   │
+   +─D─+───+───+───+───+───+   +───+   +─D─+───+───+───+   +   +───+───+   +   +   +───+   +
+14 │   │   │                   │       │             *     │           │   D   │       D   │
+   +   +   +─D─+───+   +───+───+   +───+───+   +───+───+   +─D─+   +─D─+───+───+───+───+───+
+13 │   │           │   │       │               │       │               │                   │
+   +   +   +───+───+   +   +   +───+─s─+───+───+   +   +───+   +   +   +─D─+───+───+───+─D─+
+12 │   │   │           │           │       │       │                   │   │           │   │
+   +   +───+   +───+───+─D─+───+   +   +   +   +───+───+───+───+───+   +─D─+   +───+─s─+   +
+11 │         @ │   │       │   │       │                   │       │           │           │
+   +───+───+───+   +   +───+   +───+───+───+   +   +───+   +   +   +   +───+───+   +───+   +
+10 │               │       │                       │       │ · │ · s · │           │       │
+   +───+───+───+   +───+   +   +   +───+───+   +───+   +   +   +   +───+   +   +   +   +───+
+ 9 │         m     │       │   │           │               │ · │ ·   ·     │     ^         │
+   +   +───+───+   +   +───+   +   +───+   +───+───+───+   +   +───+───+─D─+───+───+───+───+
+ 8 │   │       │   │   │       │   │           │           │ · │ ·   · │   │       D * D   │
+   +   +   +   +   +   +   +───+───+   +───+   +   +───+───+   +───+─D─+─D─+   +───+───+   +
+ 7 │       │   │   │       │     ^     │       │   │               │       │   │ ^ D       │
+   +───+───+   +─s─+───+───+─D─+───+───+───+───+─D─+───+   +───+   +───+───+   +─D─+───+───+
+ 6 │       │       │                                           │   │           │           │
+   +   +   +───+   +─D─+───+───+───+───+───+───+───+───+───+───+─D─+   +───+───+───+───+   +
+ 5 │   │       │   │   │ m         │       │                   │ m     │               │   │
+   +   +───+   +   +   +   +───+   +   +   +   +───+───+───+   +───+───+   +───+───+   +   +
+ 4 │       │       │   D       D           │   D   │   D   │   D       D           │   │   │
+   +   +   +───+───+   +   +   +───+───+───+───+   +   +   +   +   +───+───+───+   +   +   +
+ 3 │   │       │         *                     D   │   │       │   D   │         ▼ │   │   │
+   +   +─s─+─D─+   +   +   +   +───+───+───+───+───+   +───+───+   +   +───+   +───+   +─D─+
+ 2 │       │           D   D   │   D ~             │           │   │   │       │       │   │
+   +───+   +───+───+───+─D─+───+─D─+   +───+   +───+───+───+   +   +   +   +───+   +───+   +
+ 1 │       │               │       │       │   │       D   D   │   │   │           │       │
+   +───+───+   +───+───+───+   +───+   +   +───+─D─+───+───+───+───+   +   +───+───+───+─D─+
+ 0 │           │   D   D               │                               │                   │
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+```
+
+**Connections**
+
+| Cell | Kind | Leads to |
+|---|---|---|
+| (19,3) | stairs down | barrow2 (19,3) facing W |
+| (2,11) | stairs up | town (21,9) facing W |
+
+**Secret rooms / caches** (`$` on grid)
+
+- (18,17): wardshield, 300g — *A war-grave unrobbed: upon the bier rests THE WARDSHIELD, its rim ringed with a verse of the Founding Song.*
+
+**Hazards** (`^` trap · `*` spinner · `~` teleport)
+
+| Cell | Type | Detail |
+|---|---|---|
+| (7,7) | trap | gas (DC 13) |
+| (19,7) | trap | gas (DC 13) |
+| (19,9) | trap | gas (DC 13) |
+| (15,17) | trap | gas (DC 13) |
+| (5,3) | spinner | — |
+| (20,8) | spinner | — |
+| (12,14) | spinner | — |
+| (8,2) | teleport | → (14,0) |
+
+**Magic mouths** (`m` on grid)
+
+- (5,5): *Wind hisses through a stone flute: "The mounds sing in rounds. The deepest verse is hollow, and the hollow verse is deep."*
+- (15,5): *A mouth of knotted roots: "Walk widdershins where the wind turns you, or be turned for good."*
+- (2,9): *The flute-stone sighs: "The Choir keeps what it stole. The Eldest keeps the Choir."*
+
+**Wandering encounters** (rate 8%, groups 1d3)
+
+moor_hound (3) · fen_lurker (3) · hollow_man (2) · tomb_spider (2) · wind_shrieker (2) · barrow_wight (1)
+
+---
+
+## The Howling Barrow — The Wind Galleries
+
+- `barrow2` · 22×22 · dungeon · **dark** (needs light)
+- Entry: (19,3) facing W
+- Zone **dark**: (2,2) 5×4, (10,14) 4×4
+- Zone **antimagic**: (12,5) 3×3
+
+```
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+21 │               │               │                   │                   │   │   D       │
+   +───+   +───+   +   +───+   +───+───+   +───+   +───+   +   +───+───+─D─+   +   +   +   +
+20 │       │       │   s   │       │       │       │       │   │           │   │   │       │
+   +   +───+───+───+   +   +───+   +   +───+─D─+───+   +───+   +───+   +─D─+   +   +   +───+
+19 │             ▼     │       │   │   │       │       │   │       │           │   │       │
+   +   +───+───+───+───+   +───+   +   +───+─D─+   +───+   +───+   +   +   +   +─D─+───+   +
+18 │   D                   │       │           D   │           │                       │   │
+   +───+   +───+───+─D─+───+   +   +   +───+───+───+───+   +   +───+───+───+   +   +───+   +
+17 │   │   │           │       │   │   │     ·   ^   ·   · D       │       │       │   D   │
+   +   +   +   +   +───+   +─s─+   +   +───+─D─+   +───+───+───+───+   +   +   +   +   +─D─+
+16 │   │   │   │           │   │   │     * │ · │ ·   ·   · │       │ $     │           │   │
+   +   +   +   +───+   +   +   +   +───+   +───+───+───+   +   +───+─s─+───+───+───+───+───+
+15 │       │       │               │   │   │ ·   ·   ^ │ ·         │   │           D       │
+   +───+───+   +   +   +   +   +   +   +─D─+   +───+   +───+───+   +   +───+───+───+─D─+   +
+14 │       │   │   │   │           │   │   │ ·   · │ ·   ·     │           │       │   │   │
+   +   +   +───+   +   +───+───+   +   +   +───+   +───+───+   +───+   +   +   +   +───+   +
+13 │   │       │ * │               │   │       │         * │       │   │       s       │   │
+   +   +───+   +   +   +───+─D─+───+   +───+   +───+───+   +───+   +   +───+   +───+   +   +
+12 │       │       │   │       │ m R       │               │   │       │     m │       │   │
+   +   +   +   +   +   +   +   +   +   +   +───+─s─+───+───+   +   +─D─+   +───+───+   +   +
+11 │   │   │       │       │   │   │   │   │           │           │   │           │   D   │
+   +───+   +─D─+───+───+───+   +   +   +─D─+   +   +───+   +───+─D─+   +───+───+   +───+   +
+10 │       │   │       D   │       │   │       │   │       │   │   │   │           │       │
+   +   +─s─+   +   +───+   +───+───+─D─+───+───+   +   +───+   +   +   +   +───+   +   +───+
+ 9 │   │       │   │   │           │   │           │   s       │       │   │           │   │
+   +   +───+───+─D─+   +───+   +─D─+   +   +───+───+   +───+   +───+───+─D─+───+   +───+   +
+ 8 │               │           │   │   │           D       │           │   D   │           │
+   +─D─+───+───+───+   +   +───+   +   +   +───+   +   +   +───+───+   +───+   +───+───+   +
+ 7 │           │       │   │       │   D   │         ÷ │ ÷   ÷ │       D   │   │       │   │
+   +───+───+   +   +───+   +─D─+───+   +   +   +───+───+───+   +   +───+───+─D─+   +   +───+
+ 6 │           │ ^     │   │       │       │     ^   ÷ D ÷   ÷ │       │       │   │       │
+   +   +───+───+───+───+   +───+   +   +───+   +───+───+───+───+───+   +   +───+   +───+   +
+ 5 │         ·   · D ·   ·   · │   │   │             ÷   ^   ÷     │   │           │   │   │
+   +───+───+───+   +───+───+───+   +   +───+   +───+─s─+───+───+   +   +───+───+───+   +   +
+ 4 │         ·   ·   ·   ·   · │   │                           │                       │   │
+   +   +───+───+───+   +   +   +   +───+───+───+   +───+───+───+───+   +─s─+───+   +───+   +
+ 3 │   │ ~   ·   · │ ·   · │ · │   │       D   D                   │   │       │ @ │       │
+   +   +   +───+   +───+   +─D─+   +   +   +───+   +───+───+   +───+   +   +   +───+   +   +
+ 2 │   │   │ · │ ·   ·   ~ │ · │   │   │       │           │       D   │       D       │   │
+   +───+   +   +   +   +───+   +   +   +───+   +───+───+───+───+   +───+   +   +   +───+───+
+ 1 │       │   │       │   D   │   │       │   │               │   │       │   │           │
+   +   +───+─D─+───+───+   +───+   +───+   +   +   +───+───+   +───+   +───+   +───+   +   +
+ 0 │   │       D       D           │       │   D   │                   │   D               │
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+```
+
+**Connections**
+
+| Cell | Kind | Leads to |
+|---|---|---|
+| (19,3) | stairs up | barrow1 (19,3) facing E |
+| (3,19) | stairs down | barrow3 (3,19) facing E |
+
+**Riddle door** (`R` on grid)
+
+- *"I sing through every mound yet own no mouth; I touch all faces and hold no shape. What am I?"*
+- Hint: *It is howling at you now.*
+- Answers: `wind`, `the wind`, `a wind`, `air`, `the air`
+
+**Secret rooms / caches** (`$` on grid)
+
+- (16,16): thunder_flask, thunder_flask, strong_draught, 350g — *A priest-hole from the wight-wars: bottled thunder and a strong draught, still corked.*
+
+**Hazards** (`^` trap · `*` spinner · `~` teleport)
+
+| Cell | Type | Detail |
+|---|---|---|
+| (13,5) | trap | gas (DC 14) |
+| (3,6) | trap | spikes (DC 14) |
+| (11,6) | trap | spikes (DC 14) |
+| (12,15) | trap | crumble (DC 14) |
+| (11,17) | trap | pit (DC 14) |
+| (3,13) | spinner | — |
+| (13,13) | spinner | — |
+| (9,16) | spinner | — |
+| (5,2) | teleport | → (2,3) |
+| (1,3) | teleport | → (7,9) |
+
+**Magic mouths** (`m` on grid)
+
+- (7,12): *The gallery itself speaks with a hundred small holes: "What sings without a mouth opens doors without a key."*
+- (18,12): *A mouth full of dust: "The sorcerers were buried with their books. The books did the digging out."*
+
+**Wandering encounters** (rate 9%, groups 1d3)
+
+barrow_wight (3) · hollow_man (3) · wind_shrieker (2) · grave_worm (2) · fen_hag (2) · tomb_spider (2)
+
+---
+
+## The Howling Barrow — Hall of the Choir
+
+- `barrow3` · 22×22 · dungeon · **dark** (needs light)
+- Entry: (3,19) facing E
+- Zone **dark**: (8,2) 4×5
+- Zone **antimagic**: (4,8) 3×3
+
+```
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+21 │                   │                   │   D   │           │       │             *     │
+   +   +───+   +───+   +───+───+───+   +   +   +   +   +   +─D─+   +   +   +───+───+   +   +
+20 │ ^     │   │           │           │       │   │   │   │       │   │       │           │
+   +───+   +   +───+─s─+─D─+   +───+───+───+───+   +───+   +───+─D─+───+───+   +   +───+   +
+19 │   │       │ @     │       │ ^     │                 ~ │       │           │       │   │
+   +   +   +   +   +   +───+───+───+─D─+   +───+───+───+   +   +───+   +───+───+───+   +   +
+18 │       │   │   │   D           │       │               │       │   │       │       │   │
+   +   +───+   +   +───+   +─D─+   +───+───+   +   +───+   +───+───+   +   +   +───+───+   +
+17 │               │   │                   D   │         ~ D       │   s $     │         * │
+   +───+   +   +───+   +───+───+───+   +   +───+───+   +   +───+   +───+───+───+───+───+   +
+16 │   │                   s           │           │           │   D       s           │   │
+   +   +   +   +───+   +───+   +───+   +───+───+   +   +   +   +───+   +───+───+───+   +   +
+15 │   │           │   │       │               │       │   │       │   D           │   │   │
+   +   +   +───+   +   +   +───+   +───+   +───+───+───+   +   +─D─+───+───+───+───+   +   +
+14 │   │   │   │       D   │       │   │           │       │   │                       │   │
+   +   +   +   +   +   +   +   +───+   +───+───+   +   +───+   +───+───+───+───+───+───+   +
+13 │   │   │           D       │               │       │   │           D               │   │
+   +   +   +───+   +   +───+───+───+   +───+   +───+───+   +───+───+───+───+   +   +   +─D─+
+12 │   │   │   D   │   │               │   │   │       │                       │   │   │   │
+   +   +   +   +───+   +   +   +───+───+   +   +   +───+   +───+   +───+   +   +   +   +   +
+11 │   │   │   │           │               │   │       │   │   │       │   │   │   │   │   │
+   +   +   +   +   +───+───+───+   +───+   +   +───+   +   +   +─s─+   +   +─D─+───+   +   +
+10 │   D   │   D   s ÷   ÷ D ÷ │   │       │   │       │   │   D   │   │   │       │       │
+   +   +───+   +   +───+   +   +───+   +   +   +   +───+   +───+   +   +───+───+   +   +───+
+ 9 │   │       │     ÷   ÷ │ ÷ │   D   │                   │       │           │   │       │
+   +   +───+───+   +   +   +   +   +───+   +   +   +───+───+   +   +───+───+   +   +───+───+
+ 8 │                 ÷   ÷   ^     │         m             │   │   │           │       D   │
+   +───+───+───+   +   +   +───+───+   +   +   +   +───+   +   +   +   +───+─D─+───+───+   +
+ 7 │           │           │       D   │               │       │   │       │   │   │   D   │
+   +   +───+   +   +   +   +   +───+───+   +   +   +─D─+───+───+───+───+   +   +   +   +───+
+ 6 │   D   │   │   │   │   │         · D · │ ·   · │       │               │ *     │     ^ │
+   +   +   +───+─D─+   +───+───+   +─s─+───+───+───+───+─D─+   +─s─+───+───+───+   +───+   +
+ 5 │   │ ^         │   │           │ ·   ·   · │ ·     │   D   │           │     m     │   │
+   +─D─+   +───+───+   +   +───+───+   +───+   +───+   +   +───+   +   +   +   +───+───+   +
+ 4 │       │               │         · │ · │ · D · │   D           │   │   │ B │   │       │
+   +   +───+   +   +───+───+   +───+───+   +───+   +───+   +───+───+   +───+   +   +   +───+
+ 3 │   │       │           │   │   D ·   · │ · │ ·     │   │       │               │       │
+   +   +   +───+───+───+   +─D─+───+   +   +   +───+   +   +   +   +───+───+───+   +───+   +
+ 2 │   │       │ ~ │       │       │ · │ ·   · │ ·     │   │   │       D   │       │       │
+   +───+───+   +   +   +───+   +   +   +───+───+   +───+───+   +───+───+   +───+───+   +   +
+ 1 │           │   │       │   │   │   │       │   │           │   │       │       │   D   │
+   +   +───+───+   +───+   +───+   +   +   +   +   +───+   +───+   +   +───+   +   +   +   +
+ 0 │   │                           │       │               │                 * │       s   │
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+```
+
+**Connections**
+
+| Cell | Kind | Leads to |
+|---|---|---|
+| (3,19) | stairs up | barrow2 (3,19) facing N |
+
+**Fixed encounters** (`B` on grid)
+
+- (18,4): 1× choir_eldest, 1d2+1× hollow_cantor, 2d3× hollow_man, 2d3× hollow_man — drops verse_second + 1200g
+
+**Secret rooms / caches** (`$` on grid)
+
+- (17,17): cantors_fork, 400g — *A rehearsal cell, soundproofed with grave-wool. On a velvet rag: THE CANTOR'S FORK, black bone, still humming.*
+
+**Hazards** (`^` trap · `*` spinner · `~` teleport)
+
+| Cell | Type | Detail |
+|---|---|---|
+| (1,5) | trap | gas (DC 14) |
+| (21,6) | trap | crumble (DC 14) |
+| (6,8) | trap | crumble (DC 14) |
+| (7,19) | trap | pit (DC 14) |
+| (0,20) | trap | pit (DC 14) |
+| (18,0) | spinner | — |
+| (18,6) | spinner | — |
+| (21,17) | spinner | — |
+| (20,21) | spinner | — |
+| (3,2) | teleport | → (7,2) |
+| (13,17) | teleport | → (4,4) |
+| (13,19) | teleport | → (5,20) |
+
+**Magic mouths** (`m` on grid)
+
+- (19,5): *A stone mouth sings one pure note, then: "Stand not in the front rank when the Eldest draws breath."*
+- (10,8): *The mouth murmurs: "A black fork tunes the dead. Whoever holds it tunes the living too."*
+
+**Wandering encounters** (rate 9%, groups 1d3)
+
+barrow_wight (2) · wight_lord (1) · barrow_sorcerer (2) · mistcaller (2) · peat_troll (2) · grave_worm (2) · hollow_cantor (1)
+
+---
+
+## Maldrec's Needle — The Threshold
+
+- `needle1` · 22×22 · dungeon · **dark** (needs light)
+- Entry: (11,2) facing N
+- Zone **antimagic**: (4,10) 4×3, (15,4) 3×4
+
+```
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+21 │   │               │   │           │               │ ^             │                   │
+   +   +   +   +───+   +   +   +───+   +   +───+───+   +   +───+───+   +   +───+───+   +───+
+20 │   D   │   │ ^ D   │   │   │   │       │       │       │   D   │   │   │       │       │
+   +   +───+   +   +───+─D─+─D─+   +───+───+   +   +───+───+   +   +   +   +───+   +───+   +
+19 │       │   │   s       │   s               │   │               │   │   │     ▼     │   │
+   +───+───+   +   +   +   +   +───+   +───+───+   +   +───+───+   +   +   +   +───+───+─D─+
+18 │           │       │   │           │       s   │       │   │   │   │   │           │   │
+   +   +───+───+   +───+───+───+───+───+   +   +   +───+   +   +   +   +   +   +───+─D─+   +
+17 │   │ *     │   s               │       │   │       │   │   │   │       │   │       │   │
+   +   +   +   +   +   +───+   +   +   +───+   +   +───+   +   +─D─+   +───+───+   +───+   +
+16 │       │       │           │   │       │       │       │   │   │   │           │       │
+   +   +─D─+───+───+   +   +───+   +───+   +───+───+   +───+   +   +   +   +   +───+   +   +
+15 │   │               │   │       │   │   │   │       │       │   │   D   │   │       │   │
+   +   +───+───+───+───+   +─D─+───+   +─D─+   +   +───+───+   +─D─+───+───+   +   +───+─D─+
+14 │   │   │       │       │           │       │   │           │       │       │       │   │
+   +   +   +   +   +   +   +───+   +───+   +───+   +   +───+───+───+   +   +───+───+   +   +
+13 │       │   │   │   │   │               │       │   │   D           │   D       │   │ * │
+   +   +───+   +─D─+   +───+   +───+───+   +   +───+   +   +───+───+───+   +───+   +─D─+─D─+
+12 │   │             ÷ │ ÷   ÷ │ ÷         │                           │   │       │   │   │
+   +───+   +─D─+   +───+   +───+   +───+   +   +   +───+───+───+───+   +   +   +───+   +   +
+11 │   D             ~   ÷ │ ÷   ÷ │       │               │           │       │       │   │
+   +   +   +   +   +───+───+───+───+─D─+─D─+───+───+   +   +   +   +   +───+───+   +───+   +
+10 │   │             ÷   ÷   ÷ │ ÷         │       │ ~ │   │           │       │   │       │
+   +   +   +───+───+   +───+─D─+   +───+   +   +   +───+   +   +   +   +   +   +   +   +───+
+ 9 │   │   D           │           │       │   │   D       │               │       │       │
+   +   +   +───+─s─+───+───+───+───+   +─s─+   +───+   +───+   +───+─D─+───+───+   +───+   +
+ 8 │   │   │     m     │           │   │       │   D       │   │       │           │   D   │
+   +   +─D─+   +───+   +─D─+───+   +───+   +───+   +   +───+   +   +───+───+─D─+───+   +───+
+ 7 │       │       │       │   │   │       │       │           │ ^   ÷   ÷ │               │
+   +   +───+───+   +───+─D─+   +─D─+   +───+───+   +───+───+───+   +───+─D─+───+───+───+───+
+ 6 │           │   │       │                   │       │         ÷   ÷ │ ÷                 │
+   +───+───+───+   +   +───+   +───+   +───+   +─s─+   +───+───+───+───+───+───+───+─D─+   +
+ 5 │               │   │       │       │       │   │       │     ÷ │ ÷   ÷ │       │   │   │
+   +   +───+───+───+   +   +───+───+───+   +───+   +   +   +   +   +─D─+   +   +   +───+   +
+ 4 │ ^     │                   s       │                     m │ ÷ │ ÷   ÷ D   │   D       │
+   +   +   +───+───+───+───+   +─D─+   +   +   +   +   +   +───+   +   +───+───+───+───+─D─+
+ 3 │   │       │       │   │       │   D           │       │       │   │           D   │   │
+   +   +───+   +   +─D─+   +───+───+───+   +   +   +───+───+   +───+   +   +───+   +───+   +
+ 2 │ ~ D   │       │   │                         @ │           │       │   D   │           │
+   +───+   +───+───+   +   +   +───+   +───+───+───+─D─+───+───+   +───+───+   +───+   +───+
+ 1 │           │       │   │   │       │       D       │           │         ~ │       │   │
+   +───+───+───+   +───+   +   +───+───+   +───+───+───+───+   +───+   +   +───+   +───+   +
+ 0 │       D       │       │         *   ^             D       │       │   D               │
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+```
+
+**Connections**
+
+| Cell | Kind | Leads to |
+|---|---|---|
+| (11,2) | stairs up | town (11,10) facing S |
+| (19,19) | stairs down | needle2 (19,19) facing W |
+
+**Hazards** (`^` trap · `*` spinner · `~` teleport)
+
+| Cell | Type | Detail |
+|---|---|---|
+| (9,0) | trap | crumble (DC 15) |
+| (0,4) | trap | gas (DC 15) |
+| (15,7) | trap | spikes (DC 15) |
+| (3,20) | trap | pit (DC 15) |
+| (13,21) | trap | pit (DC 15) |
+| (8,0) | spinner | — |
+| (21,13) | spinner | — |
+| (1,17) | spinner | — |
+| (18,1) | teleport | → (2,17) |
+| (0,2) | teleport | → (6,13) |
+| (12,10) | teleport | → (1,15) |
+| (4,11) | teleport | → (9,13) |
+
+**Magic mouths** (`m` on grid)
+
+- (14,4): *It titters: "The master copies the Verses over and over. He cannot make them sing. It has made him worse."*
+- (3,8): *A mouth of green glass: "You climb by going in. The Needle is taller on the inside, and deeper than tall."*
+
+**Wandering encounters** (rate 9%, groups 1d3)
+
+spirelash (3) · glass_revenant (2) · needle_scribe (2) · basilisk_moth (2) · storm_sentinel (2)
+
+---
+
+## Maldrec's Needle — The Copying Floors
+
+- `needle2` · 22×22 · dungeon · **dark** (needs light)
+- Entry: (19,19) facing W
+- Zone **antimagic**: (8,8) 4×4, (16,12) 3×3
+- Zone **dark**: (2,12) 3×4
+
+```
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+21 │                   │                           │           │           │       │       │
+   +   +───+   +───+───+   +───+   +───+───+───+   +   +   +   +   +───+   +───+   +   +   +
+20 │   │       │           │       │       │       │   │   │       │   │   D   │       │   │
+   +─D─+───+   +   +───+───+─D─+───+   +─D─+   +───+   +   +───+───+   +───+   +───+───+   +
+19 │       │   │           │   │       │   │       │   │   D   │           │ ^ D @ D   │   │
+   +───+   +   +───+───+   +─D─+   +───+   +───+   +─D─+───+   +   +───+───+───+───+   +   +
+18 │       │   D   │   │   │       │   │   D   │   │           │     ^                     │
+   +   +───+───+   +   +   +───+───+─D─+───+   +   +   +   +───+   +   +   +───+───+───+   +
+17 │   D       │   │   │   │       D       │   │       D   │       │       │       │       │
+   +   +   +   +─D─+   +   +───+───+   +───+─D─+───+   +   +───+───+───+───+   +   +───+───+
+16 │   │   │       D   │           │   │       │           │                   │           │
+   +   +   +───+───+───+───+───+   +   +   +───+───+───+───+   +───+───+───+───+───+───+   +
+15 │         ·   · │ ·                 │           │     ~     │                       │   │
+   +   +─s─+───+   +─D─+───+───+───+───+───+   +─D─+   +   +───+   +───+───+───+─D─+───+   +
+14 │   │     · │ ·   · │         *     D           │     m │   │     ÷ │ ÷   ÷ │           │
+   +   +   +───+───+   +   +───+───+───+───+   +   +───+   +   +   +   +   +   +   +───+   +
+13 │       │ ·   · │ · │     * │           D   │       │ ~ │       │ ÷   ÷   ÷ │   │       │
+   +─s─+───+   +─D─+   +───+   +───+───+─D─+───+─D─+   +   +   +───+   +   +   +   +───+───+
+12 │   D   │ · │ ·   ·     D   │       │           D   │   │   │     ÷   ÷   ÷ │       D   │
+   +─D─+   +   +   +───+   +   +   +─D─+───+───+   +───+   +───+   +─D─+───+   +───+───+   +
+11 │   │           │       │   │   │ ÷ │ ÷   ÷   ÷ │   D   │       │   │           │       │
+   +   +───+───+   +───+───+   +   +   +───+   +───+   +───+   +───+─D─+   +   +─s─+   +─D─+
+10 │           │           │       │ ÷   ÷ │ ÷ │ ÷ │           │   │       │   │       │   │
+   +─D─+───+   +───+───+   +   +───+───+   +   +   +───+   +───+   +   +───+───+─D─+───+   +
+ 9 │   │       │       │   │ ^ │     ÷ D ÷ │ ÷   ÷ │       │   │       s       D   │   │   │
+   +───+   +───+───+   +   +   +─D─+───+───+   +   +   +   +   +   +───+   +───+───+   +   +
+ 8 │   D   │           │   │   │   D ÷   ÷ │ ÷ │ ÷     │   │   │   │       │               │
+   +   +   +   +   +   +   +   +───+───+   +   +───+───+   +   +   +   +   +   +───+───+   +
+ 7 │   D   │   │   D   s   │   │ ^     │   │           │       │ *         │ ^ │       │   │
+   +───+   +   +───+───+   +───+   +   +   +───+───+   +─D─+───+───+   +─D─+───+   +   +───+
+ 6 │       │       D   │       D   │   │   D       │       │       │   │   D       │       │
+   +   +───+───+───+   +───+───+───+   +───+───+   +   +───+─D─+   +   +───+───+───+───+   +
+ 5 │               │       D       │   │       │   │   │   D   │   │   │       │ m         │
+   +   +───+───+   +─D─+   +   +   +─D─+   +   +   +───+   +───+   +   +   +   +   +   +   +
+ 4 │       │       │                   │ ~ │   │               │       s $     │   │   │   │
+   +   +───+   +───+─s─+   +   +───+───+   +   +───+───+───+   +───+───+───+───+───+   +   +
+ 3 │   │       │ ▼     │       D ~         │   │       │   D           │   │       D   │   │
+   +   +   +───+   +───+   +   +───+   +───+   +   +   +───+───+───+─D─+   +   +───+   +   +
+ 2 │   │       s       │   │   │       │       │   │           │           │           │   │
+   +───+───+   +─D─+   +─D─+───+   +───+   +───+   +───+───+   +   +───+───+   +───+   +   +
+ 1 │       │   │   │   │           │ ~     │       │   │       │   │       │           │   │
+   +   +   +   +   +   +───+───+───+   +─s─+   +───+   +   +───+───+   +   +───+───+───+   +
+ 0 │   │   D   │   │               D       D   │               D       s                   │
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+```
+
+**Connections**
+
+| Cell | Kind | Leads to |
+|---|---|---|
+| (3,3) | stairs down | needle3 (3,3) facing N |
+| (19,19) | stairs up | needle1 (19,19) facing E |
+
+**Secret rooms / caches** (`$` on grid)
+
+- (17,4): fenwarden_mail, 500g — *A trophy alcove, lovingly dusted: THE FEN-WARDEN'S MAIL, taken from the east gate's last captain.*
+
+**Hazards** (`^` trap · `*` spinner · `~` teleport)
+
+| Cell | Type | Detail |
+|---|---|---|
+| (7,7) | trap | pit (DC 15) |
+| (18,7) | trap | pit (DC 15) |
+| (6,9) | trap | crumble (DC 15) |
+| (16,18) | trap | pit (DC 15) |
+| (18,19) | trap | gas (DC 15) |
+| (15,7) | spinner | — |
+| (6,13) | spinner | — |
+| (7,14) | spinner | — |
+| (8,1) | teleport | → (4,16) |
+| (7,3) | teleport | → (6,8) |
+| (9,4) | teleport | → (8,13) |
+| (13,13) | teleport | → (17,0) |
+| (13,15) | teleport | → (19,0) |
+
+**Magic mouths** (`m` on grid)
+
+- (19,5): *A mouth shaped like an inkwell: "Every copy is a little wronger. The wrongness has to live somewhere."*
+- (13,14): *It whispers: "The captain of the east gate never came home. Her mail hangs where the scribes dare not write."*
+
+**Wandering encounters** (rate 10%, groups 1d3)
+
+glass_revenant (3) · needle_scribe (3) · rune_golem (2) · illusion_weaver (2) · basilisk_moth (2) · storm_sentinel (2)
+
+---
+
+## Maldrec's Needle — The Gauntlet
+
+- `needle3` · 22×22 · dungeon · **dark** (needs light)
+- Entry: (3,3) facing N
+- Zone **antimagic**: (13,13) 4×4, (5,15) 3×3
+- Zone **dark**: (8,17) 4×3
+
+```
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+21 │           │           │           D           │           │       │           │       │
+   +   +───+───+   +   +─D─+   +───+───+───+───+   +   +   +───+   +   +   +   +─D─+   +───+
+20 │   │       D   │   │   │ ^ │     m     │   │   │   │   │   D   │               │       │
+   +   +   +───+───+   +   +   +   +───+   +   +   +───+   +   +───+───+───+───+───+─s─+   +
+19 │ * │           │   │   │   │     · │ ·   · │ · │   D   │               │       │       │
+   +─D─+───+───+   +   +   +─D─+───+   +───+   +   +   +───+   +───+───+   +   +   +   +   +
+18 │       │   D   │ * │       │     · │ · D · s · │   │       │       │   │ $     │   │   │
+   +   +───+   +───+─D─+───+───+   +───+───+───+   +─D─+   +───+   +   +───+─s─+───+───+   +
+17 │     ^         │     ÷ │ ÷   ÷   ·   ·   ·   · │         * │   │               │       │
+   +   +───+   +───+───+─D─+   +───+───+───+───+───+   +───+   +   +───+───+───+   +   +───+
+16 │       │   │   D     ÷ │ ÷   ÷ │               │     ÷ │ ÷ │ ÷ │ ÷                 │   │
+   +   +   +───+   +   +───+─D─+   +   +───+───+   +───+   +   +   +   +───+───+───+───+   +
+15 │   s   D   │       │ ÷   ÷   ÷         D       │     ÷ │ ÷ │ ÷ │ ÷ │   D   D   D       │
+   +   +───+   +   +   +───+─D─+───+───+   +───+   +   +   +   +   +─D─+───+   +───+───+   +
+14 │   │   │   │   │   D   │   │                   │   │ ÷ │ ÷ │ ÷ │ ÷ │   D               │
+   +   +   +   +   +   +   +   +   +───+───+   +   +   +   +   +   +   +   +   +   +───+───+
+13 │   │       │       │   │   │   │   │       │   │   │ ÷ │ ÷ │ ÷ │ ÷ │     ~         D   │
+   +   +   +───+───+───+   +   +   +   +─D─+───+   +   +───+   +   +   +───+   +───+───+   +
+12 │   │   │           │   │   │   │   │   │       │           │   │           │   │       │
+   +   +   +   +───+   +   +   +   +   +   +───+───+   +───+───+   +───+───+───+   +   +───+
+11 │   │   D   │   │   │   │   │       │           │           │   │               │   │   │
+   +   +───+───+   +   +   +   +───+   +───+───+   +   +───+───+   +   +───+─D─+───+   +   +
+10 │   │           │       │   │   │       │       │     ~         │       │           │   │
+   +   +   +   +───+───+───+   +   +───+─D─+   +───+   +───+───+───+   +   +───+───+───+   +
+ 9 │   │   D   │               │       │   │       │       │       │       │   │           │
+   +─D─+───+   +   +───+───+───+───+   +   +───+   +───+   +   +   +   +───+   +─D─+───+   +
+ 8 │   D   │       │             ^   ^ │       │ m R       │   │   │   │       D   │       │
+   +───+   +   +───+   +   +───+───+───+───+   +   +   +───+   +   +   +   +───+───+   +─D─+
+ 7 │       │   D           │       │ ~         │   │   │       │ ~ │   │               │   │
+   +   +   +─s─+───+─D─+   +   +   +   +───+───+   +   +───+───+   +   +───+   +   +───+   +
+ 6 │   │   │     ~         │   │       │       │   │       │   D   │               │   │   │
+   +   +   +   +─D─+   +   +   +   +───+───+   +   +   +   +   +   +───+─D─+   +   +─D─+   +
+ 5 │   │   │       D   │       │   D       │       │   │   │           │   D           │   │
+   +   +───+   +   +   +───+   +───+   +   +   +   +   +   +───+   +─D─+   +   +   +   +   +
+ 4 │   │                   │   │       │       │   │   │       │   │               │   │   │
+   +   +   +───+   +───+   +─D─+   +───+───+───+   +─D─+───+   +───+───+───+   +   +   +─D─+
+ 3 │   │       │ @ │   │   │       │   D   D       │   │       │       │   s   │ ▼ │       │
+   +   +───+   +   +   +   +───+   +   +───+───+   +   +   +───+   +─D─+   +   +   +─s─+───+
+ 2 │   │       │   │       │   │   │   D   │       │   │         ^     │   D               │
+   +   +   +───+   +   +───+   +   +───+─D─+   +───+   +───+─s─+───+   +   +───+───+───+   +
+ 1 │           │   │       │       │       │   │   │           │       │   │       │       │
+   +───+───+───+   +───+   +───+───+   +───+   +   +───+─s─+───+   +───+   +   +   +   +   +
+ 0 │               │                   │           │             ^ │     *     │       │   │
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+```
+
+**Connections**
+
+| Cell | Kind | Leads to |
+|---|---|---|
+| (3,3) | stairs up | needle2 (3,3) facing S |
+| (19,3) | stairs down | needle4 (11,2) facing N |
+
+**Riddle door** (`R` on grid)
+
+- *"I answer in your own voice, yet I never speak first. What am I?"*
+- Hint: *Shout into the stairwell and listen.*
+- Answers: `echo`, `an echo`, `the echo`, `echoes`
+
+**Secret rooms / caches** (`$` on grid)
+
+- (18,18): stormpike, 700g — *A lightning-scarred vault. Bolted to the floor, still humming: THE STORMPIKE.*
+
+**Hazards** (`^` trap · `*` spinner · `~` teleport)
+
+| Cell | Type | Detail |
+|---|---|---|
+| (15,0) | trap | pit (DC 16) |
+| (15,2) | trap | spikes (DC 16) |
+| (7,8) | trap | pit (DC 16) |
+| (8,8) | trap | crumble (DC 16) |
+| (1,17) | trap | crumble (DC 16) |
+| (6,20) | trap | gas (DC 16) |
+| (17,0) | spinner | — |
+| (14,17) | spinner | — |
+| (4,18) | spinner | — |
+| (0,19) | spinner | — |
+| (3,6) | teleport | → (9,18) |
+| (8,7) | teleport | → (5,10) |
+| (15,7) | teleport | → (14,21) |
+| (13,10) | teleport | → (17,2) |
+| (18,13) | teleport | → (13,17) |
+
+**Magic mouths** (`m` on grid)
+
+- (11,8): *A mouth with too many teeth: "Ask the stairwell what it says when you say nothing."*
+- (8,20): *It recites: "Above this floor, only one door, and the door is a question, and the question has eaten every answer but one."*
+
+**Wandering encounters** (rate 10%, groups 1d3)
+
+rune_golem (2) · illusion_weaver (2) · pit_horror (2) · fell_chorister (2) · maldrec_hand (2) · glass_revenant (1)
+
+---
+
+## Maldrec's Needle — The Unsung Sanctum
+
+- `needle4` · 22×22 · dungeon · **dark** (needs light)
+- Entry: (11,2) facing N
+- Zone **antimagic**: (2,8) 4×4, (16,8) 4×4, (9,12) 5×3
+
+```
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+21 │   │           │                   │                   │                           D   │
+   +   +   +─D─+   +   +───+───+───+   +   +   +───+───+   +───+───+───+───+───+───+───+   +
+20 │   │   │   │   │   │           │       │       │           │           D   D           │
+   +   +   +───+───+───+   +───+   +───+───+   +   +───+───+   +   +───+───+───+───+───+   +
+19 │       │       │       s           D   │   │ B     │       │   │                   │   │
+   +   +───+   +   +   +───+───+───+───+   +   +───+   +   +   +   +   +───+   +───+───+   +
+18 │   │   │ $     │   │     ~             │   │       │           │   │       s           │
+   +   +   +─s─+───+   +   +   +   +───+───+───+   +───+───+───+───+   +───+───+   +───+───+
+17 │       │ ^ D       │           D           │ ☒         │       │ m             │ ^     │
+   +───+   +   +─s─+───+   +   +───+───+───+   +───+───+   +   +   +─D─+───+───+───+───+   +
+16 │ ^     │   │                   D       │               │   │   │       │           D   │
+   +   +───+   +─D─+───+───+───+───+───+   +───+   +───+───+───+   +───+─D─+   +   +───+   +
+15 │   │       │   │                   D   D       │           │       │   │   │           │
+   +   +───+   +   +   +───+   +───+   +───+───+   +───+   +   +   +───+   +   +───+   +   +
+14 │       │   │       │       │   │   │ ÷   ÷ │ ÷   ÷ │ ÷ │ *     │       │ ~ │       │   │
+   +   +   +───+   +   +   +───+   +   +   +   +───+   +─D─+   +───+   +───+   +   +───+───+
+13 │   │   │       │       │           │ ÷ │ ÷   ÷ │ ÷ │ ÷ │   │       │       │           │
+   +   +   +   +───+   +───+───+───+───+   +───+   +   +─D─+───+   +───+───+   +───+───+   +
+12 │       │     m D             ^     │ ÷   ÷ │ ÷   ÷ │ ^         │       │       │       │
+   +───+─D─+───+   +   +   +   +   +   +   +   +   +───+   +───+───+   +   +───+───+   +   +
+11 │         ÷ │ ÷   ÷ D ÷ │           │   │   │       │             ÷ │ ÷   ÷   ÷     │   │
+   +   +───+   +───+   +   +   +   +   +   +   +   +───+───+───+───+───+───+─D─+   +───+   +
+10 │       │ ÷   ÷ │ ÷ │ ÷ s           │   │   │   │                 ÷ │ ÷   ÷ │ ÷ │       │
+   +───+   +   +───+   +   +   +───+───+   +   +   +   +───+   +───+   +─D─+───+   +   +───+
+ 9 │     ~ │ ÷ │ ÷   ÷ │ ÷ │   │       │   │   │           │   │   │ ÷ │ ~   ÷ D ÷ │   │   │
+   +   +   +───+   +───+   +   +   +   +   +   +   +───+───+   +   +   +───+───+───+   +   +
+ 8 │   │   │ ÷ D ÷ │ ÷   ÷ │       │   │   │ * │       │       │   │ ÷   ÷   ÷   ÷ │   │   │
+   +   +───+   +───+   +───+───+───+   +─D─+   +   +───+   +───+─D─+   +───+───+───+   +   +
+ 7 │               │   │           │   │   │   s   │       │           │         ~ │   │   │
+   +   +───+───+───+   +───+   +───+   +   +   +───+   +   +───+───+───+   +───+   +   +─D─+
+ 6 │           │ ~     │       │       │   │   D   │   │   │       D       │       │   │   │
+   +───+   +───+   +───+   +───+   +───+   +───+   +   +───+   +───+───+───+   +───+   +   +
+ 5 │   │   │       s               │   │       │   │       │       D       │           │   │
+   +   +   +   +───+   +───+───+───+   +   +─s─+   +   +   +───+───+───+   +   +───+───+   +
+ 4 │       │   │       │       │           │       │   D       │   D   │     *         │   │
+   +───+───+   +   +───+   +   +   +───+───+   +───+   +───+   +   +─D─+───+───+───+   +   +
+ 3 │   D       │       │   │   │           │   │         * │       │   │           │       │
+   +   +───+───+───+   +   +   +   +───+───+   +───+   +   +───+───+─D─+   +───+   +───+   +
+ 2 │   │           │   │   │   │   │       │     @ │               │   │       s       D   │
+   +   +───+───+   +   +   +   +───+   +   +───+   +   +───+───+   +───+───+   +───+───+───+
+ 1 │           │   │       │           │   D       │       │   │           │ ^     │       │
+   +───+───+   +   +───+   +───+───+───+───+───+───+───+   +   +───+   +   +───+   +   +   +
+ 0 │           │                                                   │                   │   │
+   +───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+───+
+     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+```
+
+**Connections**
+
+| Cell | Kind | Leads to |
+|---|---|---|
+| (11,2) | stairs up | needle3 (19,3) facing S |
+
+**Seal door** (`☒` on grid — Riddlemaster only)
+
+- (11,17): *"A door of grey glass, graven with seven interlocking riddles. It does not ask them aloud; it asks them all at once, in the bone. Only a RIDDLEMASTER could hold seven answers in one breath."*
+
+**Fixed encounters** (`B` on grid)
+
+- (11,19): 1× maldrec — drops verse_third + 2000g
+
+**Secret rooms / caches** (`$` on grid)
+
+- (2,18): needle_shard, strong_draught, strong_draught, 800g — *Maldrec's first workshop, walled over in shame. Among the failures: a NEEDLE SHARD, sharper than his grudge.*
+
+**Hazards** (`^` trap · `*` spinner · `~` teleport)
+
+| Cell | Type | Detail |
+|---|---|---|
+| (18,1) | trap | spikes (DC 16) |
+| (7,12) | trap | pit (DC 16) |
+| (13,12) | trap | spikes (DC 16) |
+| (0,16) | trap | gas (DC 16) |
+| (2,17) | trap | crumble (DC 16) |
+| (20,17) | trap | pit (DC 16) |
+| (13,3) | spinner | — |
+| (18,4) | spinner | — |
+| (10,8) | spinner | — |
+| (14,14) | spinner | — |
+| (3,6) | teleport | → (2,12) |
+| (19,7) | teleport | → (11,0) |
+| (1,9) | teleport | → (11,0) |
+| (17,9) | teleport | → (6,15) |
+| (18,14) | teleport | → (9,5) |
+| (6,18) | teleport | → (14,10) |
+
+**Magic mouths** (`m` on grid)
+
+- (3,12): *A mouth like a keyhole: "He will greet you in his numbers. Trust only what survives being seen."*
+- (16,17): *It says, very quietly: "When he begins to unsing, stop being polite."*
+
+**Wandering encounters** (rate 10%, groups 1d4)
+
+maldrec_hand (3) · fell_chorister (2) · illusion_weaver (2) · rune_golem (2) · pit_horror (2)
+
+---

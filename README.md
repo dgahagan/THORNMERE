@@ -14,6 +14,29 @@ files.
 > them — from the Sunken Undercroft, the Howling Barrow, and Maldrec's Needle —
 > and sing the gates whole.
 
+**[▶ Play it in your browser](https://dgahagan.github.io/THORNMERE/)** — no
+install, no build, no accounts. Saves live in your browser's localStorage.
+
+![Title screen — a walled town on a cold fen](docs/screenshots/title.png)
+
+| | |
+|---|---|
+| ![A daylit street in Thornmere, facades hazing with distance](docs/screenshots/town-street.png) *Thornmere by day — the street hazes into the sky* | ![Greta's Provisioner, signboard over the door](docs/screenshots/signboard.png) *Navigation by signboard, like 1985* |
+| ![Torchlit dungeon corridor fading into darkness](docs/screenshots/dungeon-corridor.png) *The Sunken Undercroft by torchlight* | ![Combat orders against a snarling fen rat portrait](docs/screenshots/combat.png) *Orders, please — the portrait window animates* |
+| ![The Adventurers' Hall roster screen](docs/screenshots/adventurers-hall.png) *Muster the company at the Adventurers' Hall* | ![Full-screen parchment automap of Thornmere](docs/screenshots/automap.png) *The Remastered parchment automap* |
+| ![A graven riddle door barring the way](docs/screenshots/riddle-door.png) *Some doors want an answer* | |
+
+## About this project
+
+Thornmere is a demo project built to test **Claude Fable 5** when the model
+was new: 98 commits over a month (June–July 2026), with the game's code, pixel
+art, chiptune score, maps, balance passes, tests and documentation produced in
+Claude Code sessions — including printable "feelies" and the retrospective in
+[`LESSONS.md`](LESSONS.md). The `dev/` directory is the paper trail: the
+phased prompts that created the game, the session runbook, playtest harnesses
+and the art-pipeline audits. It is left in the repo deliberately, as build
+provenance.
+
 ## Stack justification
 
 Vanilla JavaScript (ES modules) + HTML5 Canvas, **zero dependencies, no build
@@ -30,6 +53,9 @@ tests/tools).
 
 ## Install & run
 
+Play the hosted build at **https://dgahagan.github.io/THORNMERE/**, or run it
+locally:
+
 ```sh
 npm start          # = python3 -m http.server 8377  (or: npx serve)
 # then open http://127.0.0.1:8377/
@@ -37,24 +63,36 @@ npm test           # logic + art + audio data integrity suites
 ```
 
 No accounts, no network access, no downloads — everything is in this repo.
-**All audio is synthesized in code; all art is text-grid pixel data. Nothing
-is downloaded, and there are no binary assets to credit — every sprite and
-melody is original to this repo.**
+**All audio is synthesized in code; all art (including the ornate UI chrome) is
+text-grid pixel data — every sprite and melody is original to this repo.** The
+only bundled binaries are four OFL-licensed period fonts under `assets/fonts/`,
+each committed beside its license (Pirata One, IM Fell English, MedievalSharp).
 
-## Screenshots (what you should see)
+Beyond the gallery above: the dungeon guardians and Maldrec get large
+showpiece portraits in combat, and the roster carries a portrait chip and
+class icon beside every name with condition colors — wounded yellow, critical
+red, poisoned green, stoned grey, dead dark-red.
 
-- **Town street by day**: timber-and-plaster facades under a dithered blue
-  sky, pictorial signboards hanging over shop doors (a boot for Greta's, a
-  drowned goose for the tavern), and the street hazing out with distance.
-- **The Sunken Undercroft by torchlight**: rotted brick walls with moss
-  stains, wet sheen on the floor, each step of depth a darker palette ramp
-  until the dark swallows the corridor.
-- **Combat**: the lead monster group as an animated 2-frame portrait in a
-  carved frame; the dungeon guardians and Maldrec get large showpiece
-  portraits.
-- **The roster**: a portrait chip and class icon beside every name, with
-  condition colors — wounded yellow, critical red, poisoned green, stoned
-  grey, dead dark-red.
+## Presentation polish (global — both modes)
+
+A period-interface pass over the original engine, applied to Remastered and
+Legacy alike (no new toggles):
+
+- **Ornate chrome & period type.** An ornate thorn-vine frame (hand-pixeled
+  9-slice `border-image` from `data/art/chrome.json`) surrounds the game; panels
+  carry carved bevels with blackletter nameplate tabs, the viewport sits over a
+  carved location plaque, and buttons are carved wood with gold keycaps. Headers
+  are blackletter (**Pirata One**); narration is an old-style serif (**IM Fell
+  English**); columnar text (menus, roster) stays monospace for alignment. Fonts
+  are OFL, bundled with their licenses under `assets/fonts/`.
+- **Bright-light view distance.** Outdoors at noon the party sees ~6 tiles down
+  the street, the farthest planes dithering into a sky-coloured haze. Dungeon
+  torchlight and the magical-darkness zones keep their short, claustrophobic
+  radius — underground vision is byte-for-byte unchanged.
+- **Smooth step.** Forward/backward moves apply instantly (events, traps, the
+  automap), then the camera glides one cell (~140ms, eased) instead of warping.
+  Turning stays instant; bumps, teleporters and combat snap the camera to the
+  true cell.
 
 ## Keys
 
@@ -112,16 +150,19 @@ without touching the mouse.
 3. The **Review Board** (Magistrate's Court) sells spell tiers: buy
    **Hexen tier 1** (Ash Dart) and **Lorist tier 1** (Mending Word, Scholar's
    Glow) — then you can light the dark for free.
-4. Listen to rumors at **The Drowned Goose** (2g). They point at the boarded
+4. **Farm XP safely** by entering the shuttered houses along the east and west
+   rows (bump into a door face-on). Each visit risks a low-level encounter (day
+   25%, night 40%) and may turn up loose coin. Heal at the Temple between runs.
+5. Listen to rumors at **The Drowned Goose** (2g). They point at the boarded
    tannery on the north row.
-5. **The Boarded Tannery → descend.** Light a torch (`T`). Fight a few packs,
+6. **The Boarded Tannery → descend.** Light a torch (`T`). Fight a few packs,
    grab a chest or two, and run home before HP and SP run dry. There is no SP
    regeneration underground.
-6. Back in town: heal at the **Temple of the Quiet Flame**, recharge SP at
+7. Back in town: heal at the **Temple of the Quiet Flame**, recharge SP at
    **Roskva's Spark House**, level up at the **Review Board** (leveling only
    happens there — never in the field), wine for the Skald at a tavern,
    **save at the Hall**.
-7. Repeat. The riddle-door's answer is something a chandler would say. The
+8. Repeat. The riddle-door's answer is something a chandler would say. The
    Tallow King below is a level-5–6 fight; bring Eyebright or nothing false.
 
 The long game: Verses One and Two open the **bell tower**; the Needle is

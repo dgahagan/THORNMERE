@@ -305,6 +305,62 @@ export async function generateManual(outPath, db) {
   y = body(`Two classes cannot be chosen at character creation. The Stormcaller opens when a character reaches tier 5 in either Hexen or Lorist school (gained at the Magistrate\'s Court, which keeps no signboard in the market — the Magistrate prefers her clients to ask). The Riddlemaster requires tier 6 in two schools, and is the only class that may access all three. The Needle will not open without one.`, y);
   y = body(`Class change preserves all learned spell tiers and resets the level counter. A level-6 Hexen who changes to Stormcaller begins at level 1 as a Stormcaller but retains all Hexen spells known. SP rolls improve with the new class.`, y);
 
+  // ---- How stats are generated (numeric chargen reference, data-driven) ----
+  const _smod = (v) => v >= 20 ? 4 : v >= 18 ? 3 : v >= 17 ? 2 : v >= 15 ? 1 : v <= 5 ? -2 : v <= 8 ? -1 : 0;
+  const _bestMod = (stat) => Math.max(...db.races.map(r => _smod(Math.min(20, 18 + (r.mods[stat] || 0)))));
+  const maxCN = _bestMod('CN');   // +4 (only Korrun reaches CN 20)
+  const maxIQ = _bestMod('IQ');   // +4 (only Aldari reaches IQ 20)
+
+  y = newPage('Characters');   // keep the generation tables intact on one page
+  y = h2('How Stats Are Generated', y);
+  y = body(`Each stat is rolled as 3d6 plus your race modifier, then held to the range 3–20. Reroll as often as you like before accepting — there is no point-buy, and your class never touches the roll. Once accepted, a stat never changes again: nothing in Thornmere raises a stat, so your race is the only lasting thumb on the scale. Choose it for your prime stat.`, y) + 2;
+  y = body(`Every stat acts through one modifier curve. The 9–14 band grants nothing; the worth of a high roll is the bonus it buys:`, y) + 2;
+
+  const mcLbl = 70, mcN = (BODY_W - mcLbl) / 7;
+  const modColW = [mcLbl, mcN, mcN, mcN, mcN, mcN, mcN, mcN];
+  y = tableRow(['Stat value', '3–5', '6–8', '9–14', '15–16', '17', '18–19', '20'], modColW, ML, y, true);
+  y = tableRow(['Modifier', '-2', '-1', '—', '+1', '+2', '+3', '+4'], modColW, ML, y, false, true);
+  y += 8;
+
+  y = body(`Hit points and spell points are generated from your class’s dice plus the relevant modifier — Constitution for HP, Intellect for SP. Level-1 HP is the full hit die (not rolled); each later level rolls the die and adds the modifier. Spell points are rolled at every level, and the Intellect bonus counts double at creation. Every gain is floored at +1, so even a poor roll earns at least one point.`, y) + 2;
+
+  const hpW0 = 78, hpN = (BODY_W - hpW0) / 6;
+  const hpColW = [hpW0, hpN, hpN, hpN, hpN, hpN, hpN];
+  y = tableRow(['Class', 'Hit die', 'Lvl-1 HP', 'HP / level', 'Spell die', 'Lvl-1 SP', 'SP / level'], hpColW, ML, y, true);
+  let _hpAlt = false;
+  for (const cls of db.classes) {
+    const adv = !cls.starting;
+    const hd = cls.hpDie, sd = cls.spDie;
+    const l1hp = adv ? '—' : `${Math.max(1, hd - 2)}–${hd + maxCN}`;
+    const hppl = `1–${hd + maxCN}`;
+    const l1sp = (sd && !adv) ? `1–${sd + 2 * maxIQ}` : '—';
+    const sppl = sd ? `1–${sd + maxIQ}` : '—';
+    y = tableRow([cls.name, hd, l1hp, hppl, sd || '—', l1sp, sppl], hpColW, ML, y, false, _hpAlt);
+    _hpAlt = !_hpAlt;
+    if (y > PAGE_H - MB - 60) { y = newPage('Characters'); }
+  }
+  y += 6;
+  y = italic(`Maxima assume the best roll your race allows: only Korrun can reach CN 20 (the +4 in the HP columns) and only Aldari can reach IQ 20 (the +4 in the SP columns); every other race tops out one point lower. Minimums assume the worst modifier (-2), which any race can roll. Stormcaller and Riddlemaster cannot be created — they are reached by class change, which keeps the points you have already earned, so their dice apply only to levels gained afterward.`, y) + 2;
+  y = body(`Experience needed for the next level climbs about 60% each step — roughly 100, 160, 260, 410, 655, 1050, and on — and stops growing after level 10. A few classes cost a little more per level, but the gap is small until the advanced classes. Levels are registered at the Magistrate’s Court.`, y);
+
+  if (y > PAGE_H - MB - 150) y = newPage('Characters');
+  y = h2('Best-Case Totals by Level', y);
+  y = body(`Hit points accumulate, and each level-up is a fresh roll. The chart below is the ceiling: the most you could hold at a given level if you rolled the maximum every time with a Constitution of 20. Real totals run lower — but the gap is what you are weighing when you decide whether a level-up roll was good enough to keep.`, y) + 2;
+
+  const ceilLvls = [1, 3, 5, 7, 10];
+  const ceilW0 = 86, ceilN = (BODY_W - ceilW0) / ceilLvls.length;
+  const ceilColW = [ceilW0, ...ceilLvls.map(() => ceilN)];
+  y = tableRow(['Class', ...ceilLvls.map(n => `Level ${n}`)], ceilColW, ML, y, true);
+  let _cAlt = false;
+  for (const cls of db.classes.filter(c => c.starting)) {
+    const perLvl = cls.hpDie + maxCN;
+    y = tableRow([cls.name, ...ceilLvls.map(n => n * perLvl)], ceilColW, ML, y, false, _cAlt);
+    _cAlt = !_cAlt;
+  }
+  y += 6;
+  const spL1 = 8 + 2 * maxIQ, spPer = 8 + maxIQ, spAt = (n) => spL1 + (n - 1) * spPer;
+  y = italic(`Spell points climb the same way: a Hexen or Lorist with Intellect 20 tops out near ${spL1} SP at level 1, ${spAt(5)} by level 5, and ${spAt(10)} by level 10. Maximum Intellect costs Constitution, though — so a caster’s hit points sit a little under the chart, which assumes the best Constitution. You cannot have both at once.`, y);
+
   // ================================================================ PLACES
   y = newPage('Places in Thornmere');
   y = h1('IV. Places in Thornmere', y);
@@ -389,6 +445,41 @@ export async function generateManual(outPath, db) {
 
   y = h2('Summons', y);
   y = body(`Several spells summon creatures to fight for the party. In Legacy mode, a summon occupies a party slot — so a six-person party can only summon if someone sits out. In Remastered 7th-Slot mode, summons occupy a dedicated slot and do not crowd the roster. Press 7 to see the summon’s status.`, y);
+
+  // ---- Area spells & group targeting ----
+  if (y > PAGE_H - MB - 90) y = newPage('Combat — Area Spells');
+  y = h2('Area Spells and Group Targeting', y);
+  y = body(`Most attack spells strike a single foe. Others engulf a whole group, and a handful fall on every group in the room at once. Each combat spell reaches its target in one of three ways:`, y);
+  y = body(`• One foe — a single creature within the targeted group.`, y);
+  y = body(`• One group — all members of a single group. When more than one group faces you, the game asks “Against which group?” You choose (the rats or the wolves, say), and the spell engulfs every member of that one group. Damage is rolled once and dealt in full to each member, which makes group spells brutal against numerous, fragile foes. If only one group survives, it is targeted automatically.`, y);
+  y = body(`• All groups — every group within range at once, with no choosing. These are the room-enders, and they are priced like it.`, y);
+  y = body(`Range still applies. Enemy groups stand from 10 to 90 feet away, and a spell reaches only groups within its listed range: a 30-foot group spell cannot touch a rank lurking at 90 feet, and even an all-groups spell skips any group beyond its reach. The 90-foot spells span the whole battlefield. Spells listed below show their range in feet; none are unlimited.`, y) + 4;
+
+  const areaColW = [30, 120, 58, 20, 42, BODY_W - 30 - 120 - 58 - 20 - 42];
+  const sortArea = (a, b) =>
+    a.school.localeCompare(b.school) || a.tier - b.tier || a.sp - b.sp;
+  const areaTable = (title, list) => {
+    if (y > PAGE_H - MB - 45) y = newPage('Combat — Area Spells');
+    doc.font('Times-Bold').fontSize(9).fillColor(ACCENT);
+    doc.text(title, ML, y); y += 13;
+    const hdr = ['Code', 'Name', 'School / Tier', 'SP', 'Range', 'Effect'];
+    y = tableRow(hdr, areaColW, ML, y, true);
+    for (const [i, sp] of list.entries()) {
+      if (y > PAGE_H - MB - 14) {
+        y = newPage('Combat — Area Spells (continued)');
+        y = tableRow(hdr, areaColW, ML, y, true);
+      }
+      const st  = `${sp.school.charAt(0).toUpperCase()+sp.school.slice(1)} ${sp.tier}`;
+      const rng = sp.range ? `${sp.range} ft` : 'self';
+      y = tableRow([sp.code, sp.name, st, sp.sp, rng, effectDesc(sp)], areaColW, ML, y, false, i%2===1);
+    }
+    y += 8;
+  };
+
+  const oneGroup = db.spells.filter(s => s.combat && s.target === 'group').sort(sortArea);
+  const allGroup = db.spells.filter(s => s.combat && s.target === 'allgroups').sort(sortArea);
+  areaTable('One Group — all members of a single group you choose', oneGroup);
+  areaTable('All Groups — every group within range, no choosing', allGroup);
 
   // ================================================================ MAGIC
   y = newPage('The Magic System');

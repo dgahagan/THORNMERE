@@ -1,0 +1,128 @@
+{
+  "DEFAULT": {
+    "remastered/managed": {
+      "n": 40,
+      "successPct": 18,
+      "wipePct": 83,
+      "avgTownWins": 5,
+      "avgDungeonWins": 1.9,
+      "avgDeaths": 6.1,
+      "avgBattles": 7.7,
+      "avgFinalGold": 73
+    },
+    "remastered/attrition": {
+      "n": 40,
+      "successPct": 0,
+      "wipePct": 100,
+      "avgTownWins": 4,
+      "avgDungeonWins": 0.2,
+      "avgDeaths": 6,
+      "avgBattles": 5.2,
+      "avgFinalGold": 389
+    },
+    "legacy/managed": {
+      "n": 40,
+      "successPct": 20,
+      "wipePct": 80,
+      "avgTownWins": 5,
+      "avgDungeonWins": 1.6,
+      "avgDeaths": 6,
+      "avgBattles": 7.5,
+      "avgFinalGold": 71
+    },
+    "legacy/attrition": {
+      "n": 40,
+      "successPct": 0,
+      "wipePct": 100,
+      "avgTownWins": 4,
+      "avgDungeonWins": 0.2,
+      "avgDeaths": 6,
+      "avgBattles": 5.2,
+      "avgFinalGold": 389
+    }
+  },
+  "DEFAULT_SPELLS": {
+    "remastered/managed": {
+      "n": 40,
+      "successPct": 75,
+      "wipePct": 25,
+      "avgTownWins": 5,
+      "avgDungeonWins": 4.3,
+      "avgDeaths": 2.3,
+      "avgBattles": 9.6,
+      "avgFinalGold": 20
+    },
+    "remastered/attrition": {
+      "n": 40,
+      "successPct": 0,
+      "wipePct": 100,
+      "avgTownWins": 4.9,
+      "avgDungeonWins": 1.1,
+      "avgDeaths": 6,
+      "avgBattles": 7,
+      "avgFinalGold": 167
+    },
+    "legacy/managed": {
+      "n": 40,
+      "successPct": 53,
+      "wipePct": 48,
+      "avgTownWins": 5,
+      "avgDungeonWins": 3.3,
+      "avgDeaths": 3.6,
+      "avgBattles": 8.8,
+      "avgFinalGold": 24
+    },
+    "legacy/attrition": {
+      "n": 40,
+      "successPct": 0,
+      "wipePct": 100,
+      "avgTownWins": 4.9,
+      "avgDungeonWins": 1.1,
+      "avgDeaths": 6,
+      "avgBattles": 7,
+      "avgFinalGold": 167
+    }
+  },
+  "TUNED": {
+    "remastered/managed": {
+      "n": 40,
+      "successPct": 98,
+      "wipePct": 3,
+      "avgTownWins": 5,
+      "avgDungeonWins": 4.9,
+      "avgDeaths": 0.6,
+      "avgBattles": 9.9,
+      "avgFinalGold": 31
+    },
+    "remastered/attrition": {
+      "n": 40,
+      "successPct": 28,
+      "wipePct": 73,
+      "avgTownWins": 5,
+      "avgDungeonWins": 2.8,
+      "avgDeaths": 5,
+      "avgBattles": 8.6,
+      "avgFinalGold": 150
+    },
+    "legacy/managed": {
+      "n": 40,
+      "successPct": 80,
+      "wipePct": 20,
+      "avgTownWins": 5,
+      "avgDungeonWins": 4.4,
+      "avgDeaths": 1.5,
+      "avgBattles": 9.6,
+      "avgFinalGold": 22
+    },
+    "legacy/attrition": {
+      "n": 40,
+      "successPct": 28,
+      "wipePct": 73,
+      "avgTownWins": 5,
+      "avgDungeonWins": 2.8,
+      "avgDeaths": 5,
+      "avgBattles": 8.6,
+      "avgFinalGold": 150
+    }
+  }
+}
