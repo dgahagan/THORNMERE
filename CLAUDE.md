@@ -48,8 +48,8 @@ No build step, no npm deps — plain ES modules served statically.
   host — sessions prepare exact commands and stop.
 - Import winners with `tools/import_sprite.py`. When sprite art changes,
   re-measure `frame_regions` (eye_pulse boxes were fitted to the old pixels).
-- Paper trail: `PIPELINE-HANDOFF.md`, `art-review/art-review.md`,
-  `NEEDS-HUMAN.md`, plus the manifest.
+- Paper trail: `dev/PIPELINE-HANDOFF.md`, `art-review/art-review.md`,
+  `dev/NEEDS-HUMAN.md`, plus the manifest. (`dev/` is untracked — local only.)
 
 ## Areas
 
