@@ -18,7 +18,7 @@ sprite and judge them like contact sheets from a film roll.
 
 A quirk of the setup: the coding agent doing the work ran inside a distrobox
 container *without* GPU access, so every generation run crosses a bridge to the
-host (`distrobox-host-exec` → a Python venv → `dev/pixel-art/host_gen.py`).
+host (`distrobox-host-exec` → a Python venv → the `host_gen.py` generator).
 The generator reads a JSON request file, loads the model once, renders every
 pending image, and skips anything that already exists — idempotent re-runs,
 deterministic seeds.
@@ -86,8 +86,8 @@ The paper trail is in the repo: `art-review/art-review.md` logs every verdict
 including rejections — a memorable pass threw out four whole monster families
 (rat, hound, moth, blob) as **"too cute"** and regenerated them from rewritten,
 feral subject prompts. Ties went to `NEEDS-HUMAN.md` for a human call. A
-separate advisor session later audited the finished art and forced seven
-re-adjudications (`dev/advisor/`), several of which flipped the chosen seed.
+separate read-only advisor session later audited the finished art and forced
+seven re-adjudications, several of which flipped the chosen seed.
 
 ## Animation without a second generation
 
@@ -103,8 +103,8 @@ re-imported, the regions are re-measured against the new pixels.
 
 Not everything went to the model. **Wall/floor/door textures stayed
 procedural** for a fundamental reason: FLUX is transformer-based and can't
-produce cleanly tileable output (circular padding only wraps the VAE's
-convolution edges — the experiment is preserved in `dev/pixel-art/`). Small
+produce cleanly tileable output — a tiling experiment confirmed that circular
+padding only wraps the VAE's convolution edges, not the composition. Small
 distance-scaled elements — signboards, UI glyphs, FX sprites — also stayed
 procedural: at 36×28 and below, bold hand-authored pixel shapes beat crushed
 diffusion output every time. The split that emerged: **FLUX for the large art
