@@ -85,7 +85,7 @@ once, then decide).
 The paper trail is in the repo: `art-review/art-review.md` logs every verdict
 including rejections — a memorable pass threw out four whole monster families
 (rat, hound, moth, blob) as **"too cute"** and regenerated them from rewritten,
-feral subject prompts. Ties went to `NEEDS-HUMAN.md` for a human call. A
+feral subject prompts. Ties were flagged to a NEEDS-HUMAN list for a human call. A
 separate read-only advisor session later audited the finished art and forced
 seven re-adjudications, several of which flipped the chosen seed.
 
