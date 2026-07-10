@@ -14,6 +14,29 @@ files.
 > them — from the Sunken Undercroft, the Howling Barrow, and Maldrec's Needle —
 > and sing the gates whole.
 
+**[▶ Play it in your browser](https://dgahagan.github.io/THORNMERE/)** — no
+install, no build, no accounts. Saves live in your browser's localStorage.
+
+![Title screen — a walled town on a cold fen](docs/screenshots/title.png)
+
+| | |
+|---|---|
+| ![A daylit street in Thornmere, facades hazing with distance](docs/screenshots/town-street.png) *Thornmere by day — the street hazes into the sky* | ![Greta's Provisioner, signboard over the door](docs/screenshots/signboard.png) *Navigation by signboard, like 1985* |
+| ![Torchlit dungeon corridor fading into darkness](docs/screenshots/dungeon-corridor.png) *The Sunken Undercroft by torchlight* | ![Combat orders against a snarling fen rat portrait](docs/screenshots/combat.png) *Orders, please — the portrait window animates* |
+| ![The Adventurers' Hall roster screen](docs/screenshots/adventurers-hall.png) *Muster the company at the Adventurers' Hall* | ![Full-screen parchment automap of Thornmere](docs/screenshots/automap.png) *The Remastered parchment automap* |
+| ![A graven riddle door barring the way](docs/screenshots/riddle-door.png) *Some doors want an answer* | |
+
+## About this project
+
+Thornmere is a demo project built to test **Claude Fable 5** when the model
+was new: 98 commits over a month (June–July 2026), with the game's code, pixel
+art, chiptune score, maps, balance passes, tests and documentation produced in
+Claude Code sessions — including printable "feelies" and the retrospective in
+[`LESSONS.md`](LESSONS.md). The `dev/` directory is the paper trail: the
+phased prompts that created the game, the session runbook, playtest harnesses
+and the art-pipeline audits. It is left in the repo deliberately, as build
+provenance.
+
 ## Stack justification
 
 Vanilla JavaScript (ES modules) + HTML5 Canvas, **zero dependencies, no build
@@ -30,6 +53,9 @@ tests/tools).
 
 ## Install & run
 
+Play the hosted build at **https://dgahagan.github.io/THORNMERE/**, or run it
+locally:
+
 ```sh
 npm start          # = python3 -m http.server 8377  (or: npx serve)
 # then open http://127.0.0.1:8377/
@@ -42,20 +68,10 @@ text-grid pixel data — every sprite and melody is original to this repo.** The
 only bundled binaries are four OFL-licensed period fonts under `assets/fonts/`,
 each committed beside its license (Pirata One, IM Fell English, MedievalSharp).
 
-## Screenshots (what you should see)
-
-- **Town street by day**: timber-and-plaster facades under a dithered blue
-  sky, pictorial signboards hanging over shop doors (a boot for Greta's, a
-  drowned goose for the tavern), and the street hazing out with distance.
-- **The Sunken Undercroft by torchlight**: rotted brick walls with moss
-  stains, wet sheen on the floor, each step of depth a darker palette ramp
-  until the dark swallows the corridor.
-- **Combat**: the lead monster group as an animated 2-frame portrait in a
-  carved frame; the dungeon guardians and Maldrec get large showpiece
-  portraits.
-- **The roster**: a portrait chip and class icon beside every name, with
-  condition colors — wounded yellow, critical red, poisoned green, stoned
-  grey, dead dark-red.
+Beyond the gallery above: the dungeon guardians and Maldrec get large
+showpiece portraits in combat, and the roster carries a portrait chip and
+class icon beside every name with condition colors — wounded yellow, critical
+red, poisoned green, stoned grey, dead dark-red.
 
 ## Presentation polish (global — both modes)
 
