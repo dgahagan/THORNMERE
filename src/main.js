@@ -15,7 +15,7 @@ import {
 } from './core/character.js';
 import {
   xpForLevel, canLevelUp, levelUp, maxTierAtLevel, tierCost, schoolsAvailable,
-  nextTierFor, canBuyTier, buyTier, classChangeOptions, changeClass
+  nextTierFor, canBuyTier, buyTier, classChangeOptions, changeClass, grantStartingSpells
 } from './core/leveling.js';
 import {
   step, turn, searchSecrets, answerRiddle, FACING_NAMES, edgeState, cellSpecial, DX, DY,
@@ -422,7 +422,7 @@ function paintRosterFx() {
 const exploreMode = {
   menu: '',
   get hint() {
-    const base = '↑/W forward  ←→/A·D turn  ↓/S about-face  E search  C cast  P song  U use  T torch  L look  R order  1-6 party  Q quit  ? help';
+    const base = '↑/W forward  ←→/A·D turn  ↓/S about-face  E search  C cast  P song  U use  T torch  L look  R order  1-6 party  O options  Q quit  ? help';
     if (!game) return base;
     const extras = [];
     if (game.settings?.automap) extras.push('M map');
@@ -433,7 +433,8 @@ const exploreMode = {
     { k: 'ArrowUp', label: 'Forward' }, { k: 'ArrowLeft', label: 'Turn' }, { k: 'ArrowRight', label: 'Turn' },
     { k: 'ArrowDown', label: 'About-face' }, { k: 'e', label: 'Search' }, { k: 'c', label: 'Cast' },
     { k: 'p', label: 'Song' }, { k: 'u', label: 'Use' }, { k: 't', label: 'Torch' },
-    { k: 'l', label: 'Look' }, { k: 'r', label: 'Order' }, { k: '?', label: 'Help' }, { k: 'q', label: 'Quit' }
+    { k: 'l', label: 'Look' }, { k: 'r', label: 'Order' }, { k: 'o', label: 'Options' },
+    { k: '?', label: 'Help' }, { k: 'q', label: 'Quit' }
   ],
   enter() { setMenu(exploreContext()); setMusic('explore'); },
   onKey(e) {
@@ -1266,6 +1267,10 @@ function createFlow(hall, draws) {
       const purse = 90 + rng.range(0, 60);
       game.gold += purse;
       msg(`${ch.name} signs the ledger and tips ${purse} gold into the party purse.`, 'good');
+      if (grantStartingSpells(ch)) {
+        const school = DB.cls(ch.cls).school;
+        msg(`${ch.name} knows the first ${school[0].toUpperCase() + school.slice(1)} tier by heart.`, 'good');
+      }
       if (game.partyIds.length < 6) addToParty(game, ch.id);
       hallMode(hall, draws);
     };
@@ -1487,6 +1492,7 @@ function loadFenPact(hall, draws) {
     });
     ch.portrait = `pc_${spec.race}_${archetypeOf(spec.cls)}_a`;
     addToInventory(ch, 'torch');
+    grantStartingSpells(ch);
     for (const slotKey of ['weapon', 'armor', 'shield', 'helm', 'gauntlets', 'instrument']) {
       if (spec[slotKey]) {
         const idx = ch.inventory.length;
